@@ -10,4 +10,4 @@ wheels/
 .venv
 
 .cache/
-.site/
+site/
