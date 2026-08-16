@@ -251,6 +251,7 @@ public class CachedOrderServiceDecorator implements OrderService {
 
 | ⬅️ Previous | 📋 Catalog | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **0010: Standardizing Response Envelopes & DTO Pattern**](0010-dto-pattern-and-response-envelopes.md) | [**All Lessons**](index.md) | *(Module 3 Coming Next: Hibernate & JPA)* |
+| [⬅️ **0010: Standardizing Response Envelopes & DTO Pattern**](0010-dto-pattern-and-response-envelopes.md) | [**All Lessons**](index.md) | [➡️ **0012: JDBC vs Hibernate ORM Internals**](0012-jdbc-vs-hibernate-orm-internals.md) |
 
 🎉 **Congratulations on completing Module 2: RESTful Web Services & Spring MVC!**
+

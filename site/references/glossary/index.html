@@ -578,6 +578,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#observability-tooling-logging" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        Observability, Tooling &amp; Logging
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#distributed-systems-messaging" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
@@ -644,8 +655,33 @@ A behavioral design pattern that enables selecting an algorithm's implementation
 An Object-Relational Mapping framework that translates between Java objects (Entities) and relational database tables.</p>
 <p><strong>Spring Data JPA</strong>:
 An abstraction layer built on top of JPA/Hibernate that generates repository implementations and queries at runtime based on interface method signatures.</p>
+<p><strong>Persistence Context</strong>:
+A first-level in-memory cache and staging environment managed by an <code>EntityManager</code> where entity lifecycle states and dirty checks are tracked.</p>
+<p><strong>Dirty Checking</strong>:
+Hibernate's automatic mechanism of comparing managed entity states against their initial snapshot during transaction flush to issue minimal SQL <code>UPDATE</code> statements without manual save calls.</p>
+<p><strong>N+1 Query Problem</strong>:
+A performance anti-pattern where 1 query fetches <span class="arithmatex">\(N\)</span> parent records, and subsequent iteration triggers <span class="arithmatex">\(N\)</span> additional queries to fetch lazily loaded children.</p>
+<p><strong>JOIN FETCH</strong>:
+A JPQL query clause that instructs Hibernate to initialize associations eagerly in a single SQL <code>JOIN</code> query, eliminating N+1 queries.</p>
+<p><strong>Transaction Propagation</strong>:
+A Spring configuration specifying how transactional boundaries behave when one transactional method invokes another (e.g. <code>REQUIRED</code>, <code>REQUIRES_NEW</code>, <code>NESTED</code>).</p>
+<p><strong>Hibernate Envers</strong>:
+A Hibernate extension that automatically maintains historical revision logs in shadow <code>_AUD</code> tables whenever audited entities are inserted, updated, or deleted.</p>
 <p><strong>R2DBC (Reactive Relational Database Connectivity)</strong>:
 A non-blocking database driver specification designed for reactive streams, replacing blocking JDBC calls.</p>
+<h2 id="observability-tooling-logging">Observability, Tooling &amp; Logging<a class="headerlink" href="#observability-tooling-logging" title="Permanent link">&para;</a></h2>
+<p><strong>Spring Boot Actuator</strong>:
+A production-ready feature suite that exposes monitoring, health probes, metrics, and application metadata over HTTP/JMX endpoints.</p>
+<p><strong>Micrometer</strong>:
+A vendor-neutral application metrics facade for the JVM that exports dimensional metrics to systems like Prometheus, Datadog, and InfluxDB.</p>
+<p><strong>Liveness Probe</strong>:
+A Kubernetes health probe that determines whether a container is alive; if failed, Kubernetes kills and restarts the pod container.</p>
+<p><strong>Readiness Probe</strong>:
+A Kubernetes health probe that checks whether an application is ready to accept live traffic; if failed, the pod is removed from service endpoints without restarting.</p>
+<p><strong>MDC (Mapped Diagnostic Context)</strong>:
+An SLF4J mechanism backed by <code>ThreadLocal</code> storage that allows injecting contextual key-value pairs (e.g. <code>traceId</code>, <code>userId</code>) into every log statement emitted on that thread.</p>
+<p><strong>OpenAPI 3 (OAS3)</strong>:
+A vendor-neutral specification standard for describing RESTful APIs in JSON/YAML, visualized interactively through tools like Swagger UI.</p>
 <h2 id="distributed-systems-messaging">Distributed Systems &amp; Messaging<a class="headerlink" href="#distributed-systems-messaging" title="Permanent link">&para;</a></h2>
 <p><strong>Idempotency</strong>:
 A property of an operation whereby performing it multiple times yields the exact same outcome as performing it once.</p>

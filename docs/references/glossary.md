@@ -50,10 +50,50 @@ An Object-Relational Mapping framework that translates between Java objects (Ent
 **Spring Data JPA**:
 An abstraction layer built on top of JPA/Hibernate that generates repository implementations and queries at runtime based on interface method signatures.
 
+**Persistence Context**:
+A first-level in-memory cache and staging environment managed by an `EntityManager` where entity lifecycle states and dirty checks are tracked.
+
+**Dirty Checking**:
+Hibernate's automatic mechanism of comparing managed entity states against their initial snapshot during transaction flush to issue minimal SQL `UPDATE` statements without manual save calls.
+
+**N+1 Query Problem**:
+A performance anti-pattern where 1 query fetches $N$ parent records, and subsequent iteration triggers $N$ additional queries to fetch lazily loaded children.
+
+**JOIN FETCH**:
+A JPQL query clause that instructs Hibernate to initialize associations eagerly in a single SQL `JOIN` query, eliminating N+1 queries.
+
+**Transaction Propagation**:
+A Spring configuration specifying how transactional boundaries behave when one transactional method invokes another (e.g. `REQUIRED`, `REQUIRES_NEW`, `NESTED`).
+
+**Hibernate Envers**:
+A Hibernate extension that automatically maintains historical revision logs in shadow `_AUD` tables whenever audited entities are inserted, updated, or deleted.
+
 **R2DBC (Reactive Relational Database Connectivity)**:
 A non-blocking database driver specification designed for reactive streams, replacing blocking JDBC calls.
 
+
+## Observability, Tooling & Logging
+
+**Spring Boot Actuator**:
+A production-ready feature suite that exposes monitoring, health probes, metrics, and application metadata over HTTP/JMX endpoints.
+
+**Micrometer**:
+A vendor-neutral application metrics facade for the JVM that exports dimensional metrics to systems like Prometheus, Datadog, and InfluxDB.
+
+**Liveness Probe**:
+A Kubernetes health probe that determines whether a container is alive; if failed, Kubernetes kills and restarts the pod container.
+
+**Readiness Probe**:
+A Kubernetes health probe that checks whether an application is ready to accept live traffic; if failed, the pod is removed from service endpoints without restarting.
+
+**MDC (Mapped Diagnostic Context)**:
+An SLF4J mechanism backed by `ThreadLocal` storage that allows injecting contextual key-value pairs (e.g. `traceId`, `userId`) into every log statement emitted on that thread.
+
+**OpenAPI 3 (OAS3)**:
+A vendor-neutral specification standard for describing RESTful APIs in JSON/YAML, visualized interactively through tools like Swagger UI.
+
 ## Distributed Systems & Messaging
+
 
 **Idempotency**:
 A property of an operation whereby performing it multiple times yields the exact same outcome as performing it once.

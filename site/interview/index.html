@@ -571,10 +571,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#data-transactions-caching" class="md-nav__link">
+  <a href="#persistence-jpa-transactions-caching" class="md-nav__link">
     <span class="md-ellipsis">
       <span class="md-typeset">
-        💾 Data, Transactions &amp; Caching
+        💾 Persistence, JPA, Transactions &amp; Caching
+      </span>
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observability-actuator-logging-api-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      <span class="md-typeset">
+        🛠️ Observability, Actuator, Logging &amp; API Documentation
       </span>
     </span>
   </a>
@@ -686,12 +697,30 @@
 <li><strong>Strategy Pattern with Spring IoC</strong>: How do you implement dynamic algorithm/payment provider selection using Spring's automatic <code>Map&lt;String, StrategyInterface&gt;</code> injection?</li>
 </ul>
 <hr />
-<h2 id="data-transactions-caching">💾 Data, Transactions &amp; Caching<a class="headerlink" href="#data-transactions-caching" title="Permanent link">&para;</a></h2>
+<h2 id="persistence-jpa-transactions-caching">💾 Persistence, JPA, Transactions &amp; Caching<a class="headerlink" href="#persistence-jpa-transactions-caching" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Transaction Propagation</strong>: Compare <code>REQUIRED</code>, <code>REQUIRES_NEW</code>, and <code>NESTED</code> in Spring Data JPA.</li>
+<li><strong>Hibernate Dirty Checking</strong>: Explain the exact snapshot comparison mechanism Hibernate uses during <code>flush()</code> and why calling <code>repository.save()</code> on a managed entity is redundant.</li>
+<li><strong>Entity Lifecycle States</strong>: Contrast <code>TRANSIENT</code>, <code>MANAGED</code>, <code>DETACHED</code>, and <code>REMOVED</code>. What happens if you call <code>setBalance()</code> on a detached entity?</li>
+<li><strong>N+1 Problem &amp; Mitigation</strong>: Walk through the N+1 query problem, why JPA's default <code>FetchType.EAGER</code> on <code>@ManyToOne</code> is dangerous, and compare <code>JOIN FETCH</code>, <code>@EntityGraph</code>, <code>@BatchSize</code>, and DTO projections.</li>
+<li><strong>Transaction Propagation</strong>: Compare <code>REQUIRED</code>, <code>REQUIRES_NEW</code>, and <code>NESTED</code>. Walk through a scenario where audit logs must persist even if the parent business transaction fails and rolls back.</li>
+<li><strong>Proxy Self-Invocation</strong>: Why does <code>@Transactional</code> fail to start a transaction when called from another method within the same bean, and how does Spring's CGLIB proxy architecture cause this?</li>
+<li><strong>Rollback Rules</strong>: Which exception types trigger an automatic transaction rollback by default in Spring, and how do you ensure checked exceptions roll back?</li>
+<li><strong>Isolation Levels &amp; Anomalies</strong>: Compare <code>READ_COMMITTED</code> vs <code>REPEATABLE_READ</code> vs <code>SERIALIZABLE</code> in terms of Dirty Reads, Non-Repeatable Reads, and Phantom Reads.</li>
+<li><strong><code>Page&lt;T&gt;</code> vs <code>Slice&lt;T&gt;</code></strong>: Why does <code>Page&lt;T&gt;</code> cause serious performance degradation on large tables, and how does <code>Slice&lt;T&gt;</code> avoid the <code>COUNT(*)</code> query?</li>
+<li><strong>Polyglot &amp; Multi-DataSource</strong>: How do you configure multiple <code>EntityManagerFactory</code> and <code>PlatformTransactionManager</code> beans to connect to PostgreSQL and MySQL in the same Spring Boot application?</li>
+<li><strong>Hibernate Envers &amp; Soft Deletes</strong>: How does Envers maintain historical audit logs via shadow tables (<code>_AUD</code>), and how does <code>@SQLRestriction</code> implement modern soft deletes in Hibernate 6.x?</li>
 <li><strong>Cache Stampede</strong>: How do you prevent cache breakdown / stampede when using Redis caching with high concurrency?</li>
 </ul>
 <hr />
+<h2 id="observability-actuator-logging-api-documentation">🛠️ Observability, Actuator, Logging &amp; API Documentation<a class="headerlink" href="#observability-actuator-logging-api-documentation" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Kubernetes Liveness vs Readiness</strong>: What is the difference between <code>/actuator/health/liveness</code> and <code>/actuator/health/readiness</code>? What action does Kubernetes take when each returns <code>DOWN</code>?</li>
+<li><strong>Micrometer Metrics</strong>: Contrast a <code>Counter</code>, <code>Timer</code>, and <code>Gauge</code>. How do you publish pre-calculated percentile SLAs (<code>p50</code>, <code>p95</code>, <code>p99</code>) to Prometheus?</li>
+<li><strong>MDC &amp; Thread Pools</strong>: Why is clearing SLF4J MDC in a <code>finally</code> block mandatory in Tomcat/Jetty web servers, and how do you propagate MDC context into <code>@Async</code> worker threads?</li>
+<li><strong>Dynamic Log Level Adjustments</strong>: How do you change a production logger from <code>INFO</code> to <code>DEBUG</code> in real time without restarting the application container?</li>
+<li><strong>Spring Boot DevTools Classloaders</strong>: Explain the Two-ClassLoader architecture (Base vs Restart) and how it achieves sub-second local restarts.</li>
+<li><strong>OpenAPI / Swagger UI Security</strong>: How do you configure SpringDoc to require and inject a JWT Bearer token across protected REST API endpoints?</li>
+</ul>
 <h2 id="distributed-systems-microservices">⚡ Distributed Systems &amp; Microservices<a class="headerlink" href="#distributed-systems-microservices" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>SAGA vs 2PC</strong>: Why is Two-Phase Commit anti-pattern in microservices, and how does SAGA choreography handle rollbacks via compensating transactions?</li>

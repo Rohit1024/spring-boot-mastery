@@ -172,4 +172,5 @@ public class CorsConfig implements WebMvcConfigurer {
 
 | ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **Circular Dependencies & BeanCreationException**](circular-dependencies.md) | [**All Debugging Guides**](index.md) | *(Module 3 Hibernate Debugging Coming Soon)* |
+| [⬅️ **Circular Dependencies & BeanCreationException**](circular-dependencies.md) | [**All Debugging Guides**](index.md) | [➡️ **Hibernate N+1 & LazyInitializationException**](jpa-n-plus-one-and-lazy-init.md) |
+

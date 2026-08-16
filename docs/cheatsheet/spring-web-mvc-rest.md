@@ -136,4 +136,5 @@ public interface OrderMapper {
 
 | ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Core & Annotations Cheatsheet**](spring-core-annotations.md) | [**All Cheatsheets**](index.md) | *(Module 3 JPA Cheatsheet Coming Soon)* |
+| [⬅️ **Spring Core & Annotations Cheatsheet**](spring-core-annotations.md) | [**All Cheatsheets**](index.md) | [➡️ **Spring Data JPA & Hibernate Cheatsheet**](spring-data-jpa-hibernate.md) |
+

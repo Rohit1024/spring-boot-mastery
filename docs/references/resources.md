@@ -8,8 +8,24 @@
   Covers Auto-Configuration, Actuator, Profiles, DevTools, and Starters.
 - [Jakarta Bean Validation Specification](https://jakarta.ee/specifications/bean-validation/3.0/)
   Standard for constraint annotations, validation groups, and custom validators.
+- [Jakarta Persistence Specification 3.1](https://jakarta.ee/specifications/persistence/3.1/)
+  Official standard for Entity lifecycle, EntityManager, PersistenceContext, and JPQL.
+- [Hibernate ORM User Guide](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html)
+  Authoritative manual for dirty checking, ActionQueue, fetching strategies, Envers, and caching.
+- [High-Performance Java Persistence — Vlad Mihalcea](https://vladmihalcea.com/books/high-performance-java-persistence/)
+  The definitive industry handbook on optimizing JPA, Hibernate, batching, caching, and connection pooling.
+- [Spring Data JPA Reference Documentation](https://docs.spring.io/spring-data/jpa/reference/)
+  Covers repository interfaces, derived queries, entity graphs, and auditing.
 - [MapStruct Reference Guide](https://mapstruct.org/documentation/stable/reference/html/)
   High-performance, compile-time type-safe Java bean mapping framework.
+- [SpringDoc OpenAPI 3 Documentation](https://springdoc.org/)
+  Interactive API documentation generation, Swagger UI, and OpenAPI 3 spec builder for Spring Boot 3.
+- [Micrometer Application Observability Guide](https://micrometer.io/docs/)
+  Dimensional metrics facade for Prometheus, Datadog, InfluxDB, and New Relic.
+- [Logstash Logback Encoder Guide](https://github.com/logfellow/logstash-logback-encoder)
+  Structured JSON log formatting for SLF4J, Logback, and ELK stack integration.
+
+
 - [Spring Security Reference Manual](https://docs.spring.io/spring-security/reference/)
   Covers Security Filter Chains, OAuth2, JWT, Session Management, and Method Security in Spring 6.
 - [Spring AI Documentation](https://docs.spring.io/spring-ai/reference/)
