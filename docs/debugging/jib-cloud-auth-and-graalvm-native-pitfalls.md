@@ -200,4 +200,4 @@ Cap the GraalVM compiler's maximum heap and configure parallel thread limits in 
 
 | ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Security Filter Chains & JWT**](security-filter-chain-and-jwt-pitfalls.md) | [**All Debugging Guides**](index.md) | *(Module 7 Kafka Debugging Coming Soon)* |
+| [⬅️ **Troubleshooting Security Filter Chains & JWT**](security-filter-chain-and-jwt-pitfalls.md) | [**All Debugging Guides**](index.md) | [➡️ **Spring Batch & Scheduler Troubleshooting**](spring-batch-and-scheduler-locking-pitfalls.md) |

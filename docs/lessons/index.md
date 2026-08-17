@@ -64,50 +64,81 @@ All concepts from your comprehensive roadmap are organized into structured, prog
 
 ---
 
-## 🧪 Module 7: Enterprise Testing & Quality Assurance
-- [ ] **0033: Unit Testing with JUnit 5 & AssertJ**
-- [ ] **0034: Mocking Dependencies with Mockito (`@Mock`, `@InjectMocks`, `verify`)**
-- [ ] **0035: Integration Testing REST APIs with `@SpringBootTest` & `MockMvc`**
-- [ ] **0036: Database Integration Testing with Testcontainers**
+## ⚙️ Module 7: Batch Processing, Enterprise Schedulers & Distributed Locking
+- [x] [**0033: Spring Batch Core Architecture & JobRepository Persistence**](0033-spring-batch-architecture-jobrepository.md)
+- [x] [**0034: Chunk-Oriented Processing: Readers, Processors & Writers**](0034-chunk-oriented-processing-readers-writers.md)
+- [x] [**0035: Fault Tolerance in Spring Batch: Skip, Retry & Rollback Policies**](0035-fault-tolerance-skip-retry-policies.md)
+- [x] [**0036: High-Scale Batch Processing: Multi-Threaded Steps & Partitioning**](0036-multithreaded-steps-and-partitioning.md)
+- [x] [**0037: Enterprise Task Scheduling with Quartz & Distributed Locking with ShedLock**](0037-quartz-scheduler-and-shedlock-distributed-locking.md)
 
 ---
 
-## ⚡ Module 8: High-Performance Caching & Messaging Systems
-- [ ] **0037: Spring Cache Abstraction with Redis (`@Cacheable`, `@CachePut`, `@CacheEvict`)**
-- [ ] **0038: Redis Pub/Sub Messaging for Real-Time Event Fanout**
-- [ ] **0039: Apache Kafka Architecture: Topics, Partitions, Offsets & Consumer Groups**
-- [ ] **0040: Kafka Producer & Consumer Integration with Spring Kafka & DLQ (Dead Letter Queue)**
-- [ ] **0041: Rate Limiting Algorithms in Redis: Token Bucket, Sliding Window, Fixed Window**
+## 🛰️ Module 8: Alternative API Protocols — GraphQL, gRPC & WebSockets
+- [x] [**0038: Spring for GraphQL: Schema Design, Queries, Mutations & GraphiQL**](0038-spring-graphql-schema-queries-mutations.md)
+- [x] [**0039: GraphQL Batch Mapping, DataLoaders & Real-Time Subscriptions**](0039-graphql-batch-mapping-dataloaders-subscriptions.md)
+- [x] [**0040: High-Performance Microservice RPC with Spring gRPC & Protocol Buffers**](0040-spring-grpc-and-protocol-buffers-microservices.md)
+- [x] [**0041: Full-Duplex Real-Time Messaging with WebSockets & STOMP**](0041-websockets-and-stomp-bidirectional-messaging.md)
 
 ---
 
-## 🧩 Module 9: Microservices, Cloud & Distributed Patterns
-- [ ] **0042: Monolith vs Microservices: System Design Principles & Service Boundaries**
-- [ ] **0043: Inter-Service Communication: RestTemplate, WebClient & Spring Cloud OpenFeign**
-- [ ] **0044: Service Registry & Discovery with Spring Cloud Netflix Eureka**
-- [ ] **0045: API Gateway Routing & Security with Spring Cloud Gateway**
-- [ ] **0046: Centralized Configuration with Spring Cloud Config Server & Dynamic Bus Refresh**
-- [ ] **0047: Distributed Tracing with Micrometer Tracing / Sleuth & Zipkin**
-- [ ] **0048: Fault Tolerance with Resilience4j: Circuit Breaker, Retry, Bulkhead & Rate Limiter**
-- [ ] **0049: Distributed Transactions: SAGA Pattern with Kafka Choreography**
-- [ ] **0050: Guaranteed Message Delivery: Transactional Outbox Pattern with PostgreSQL & Kafka**
-- [ ] **0051: High-Scale Reads: CQRS Architecture**
-- [ ] **0052: Distributed Idempotency: Duplicate Prevention with Redis `SETNX`**
-- [ ] **0053: CAP Theorem in Action: Consistency vs Availability in Payment Systems**
-- [ ] **0054: Containerization: Dockerfile Multi-Stage Builds & Docker Compose**
-- [ ] **0055: Kubernetes Orchestration: Pods, Deployments, Services, ConfigMaps & Dashboard**
-- [ ] **0056: Cloud CI/CD: AWS CodePipeline, Buildspec & Elastic Beanstalk Deployment**
+## 🏗️ Module 9: Architecture Paradigms & Modern Java Features
+- [x] [**0042: Modular Monoliths with Spring Modulith: DDD & Boundary Enforcement**](0042-spring-modulith-modular-monoliths-ddd.md)
+- [x] [**0043: Decoupling Modules with Transactional Event Publication**](0043-transactional-event-publication-spring-modulith.md)
+- [x] [**0044: Lightweight Concurrency: Java 21 Virtual Threads (Project Loom) in Spring Boot**](0044-java-virtual-threads-project-loom-spring-boot.md)
 
 ---
 
-## 🚀 Module 10: Reactive Programming (WebFlux) & Spring AI
-- [ ] **0057: Blocking vs Non-Blocking I/O: The Reactive Paradigm at Scale**
-- [ ] **0058: Project Reactor Fundamentals: Mono, Flux, Schedulers & Reactive Pipeline Model**
-- [ ] **0059: Building Reactive REST APIs with Spring WebFlux**
-- [ ] **0060: Non-Blocking Persistence with R2DBC & Reactive Redis (`ReactiveRedisTemplate`)**
-- [ ] **0061: Real-Time Streaming with Server-Sent Events (SSE)**
-- [ ] **0062: Reactive Backpressure Handling: Bounded `flatMap` & Buffer Strategies**
-- [ ] **0063: Integration Testing Reactive APIs with `WebTestClient` & Testcontainers**
-- [ ] **0064: Spring AI: LLM Chat Clients, Prompts & Multi-Model Integration**
-- [ ] **0065: Retrieval-Augmented Generation (RAG) with Vector Stores & Embeddings in Spring AI**
-- [ ] **0066: MCP (Model Context Protocol) Server & Tool Integration with Spring AI**
+## 📈 Module 10: Vendor-Neutral Observability — Prometheus, Grafana & OpenTelemetry
+- [x] [**0045: Production Metrics with Prometheus: Scraping, PromQL & Alert Rules**](0045-production-metrics-prometheus-scraping-promql.md)
+- [x] [**0046: Enterprise Dashboarding with Grafana: The RED & USE Metrics Methods**](0046-grafana-dashboards-red-and-use-metrics.md)
+- [x] [**0047: OpenTelemetry (OTel): Vendor-Neutral Tracing, Spans & OTLP Collectors**](0047-opentelemetry-otel-tracing-and-otlp-collectors.md)
+
+---
+
+## 🧪 Module 11: Enterprise Testing & Quality Assurance
+- [x] [**0048: Unit Testing with JUnit 5 & AssertJ**](0048-unit-testing-junit-5-assertj.md)
+- [x] [**0049: Mocking Dependencies with Mockito (`@Mock`, `@InjectMocks`, `verify`)**](0049-mocking-dependencies-with-mockito.md)
+- [x] [**0050: Integration Testing REST APIs with `@SpringBootTest` & `MockMvc`**](0050-integration-testing-rest-apis-mockmvc.md)
+- [x] [**0051: Database Integration Testing with Testcontainers**](0051-database-integration-testing-testcontainers.md)
+
+---
+
+## ⚡ Module 12: High-Performance Caching & Messaging Systems
+- [x] [**0052: Spring Cache Abstraction with Redis (`@Cacheable`, `@CachePut`, `@CacheEvict`)**](0052-spring-cache-abstraction-redis.md)
+- [x] [**0053: Redis Pub/Sub Messaging for Real-Time Event Fanout**](0053-redis-pub-sub-messaging.md)
+- [x] [**0054: Apache Kafka Architecture: Topics, Partitions, Offsets & Consumer Groups**](0054-apache-kafka-architecture-and-internals.md)
+- [x] [**0055: Kafka Producer & Consumer Integration with Spring Kafka & DLQ (Dead Letter Queue)**](0055-kafka-producer-consumer-spring-dlq.md)
+- [x] [**0056: Rate Limiting Algorithms in Redis: Token Bucket, Sliding Window, Fixed Window**](0056-redis-rate-limiting-algorithms.md)
+
+---
+
+## 🧩 Module 13: Microservices, Cloud & Distributed Patterns
+- [x] [**0057: Monolith vs Microservices: System Design Principles & Service Boundaries**](0057-monolith-vs-microservices-system-design.md)
+- [x] [**0058: Inter-Service Communication: RestTemplate, WebClient & Spring Cloud OpenFeign**](0058-interservice-communication-feign-webclient.md)
+- [x] [**0059: Service Registry & Discovery with Spring Cloud Netflix Eureka**](0059-service-registry-discovery-eureka.md)
+- [x] [**0060: API Gateway Routing & Security with Spring Cloud Gateway**](0060-api-gateway-routing-security-spring-cloud.md)
+- [x] [**0061: Centralized Configuration with Spring Cloud Config Server & Dynamic Bus Refresh**](0061-centralized-config-server-bus-refresh.md)
+- [x] [**0062: Distributed Tracing with Micrometer Tracing / Sleuth & Zipkin**](0062-distributed-tracing-micrometer-zipkin.md)
+- [x] [**0063: Fault Tolerance with Resilience4j: Circuit Breaker, Retry, Bulkhead & Rate Limiter**](0063-fault-tolerance-resilience4j.md)
+- [x] [**0064: Distributed Transactions: SAGA Pattern with Kafka Choreography**](0064-distributed-transactions-saga-pattern.md)
+- [x] [**0065: Guaranteed Message Delivery: Transactional Outbox Pattern with PostgreSQL & Kafka**](0065-transactional-outbox-pattern-postgres-kafka.md)
+- [x] [**0066: High-Scale Reads: CQRS Architecture**](0066-high-scale-reads-cqrs-architecture.md)
+- [x] [**0067: Distributed Idempotency: Duplicate Prevention with Redis `SETNX`**](0067-distributed-idempotency-redis-setnx.md)
+- [x] [**0068: CAP Theorem in Action: Consistency vs Availability in Payment Systems**](0068-cap-theorem-consistency-availability-payments.md)
+- [x] [**0069: Containerization: Dockerfile Multi-Stage Builds & Docker Compose**](0069-dockerfile-multistage-builds-docker-compose.md)
+- [x] [**0070: Kubernetes Orchestration: Pods, Deployments, Services, ConfigMaps & Dashboard**](0070-kubernetes-orchestration-pods-services.md)
+- [x] [**0071: Cloud CI/CD: AWS CodePipeline, Buildspec & Elastic Beanstalk Deployment**](0071-cloud-cicd-aws-codepipeline-beanstalk.md)
+
+---
+
+## 🚀 Module 14: Reactive Programming (WebFlux) & Spring AI
+- [x] [**0072: Blocking vs Non-Blocking I/O: The Reactive Paradigm at Scale**](0072-blocking-vs-nonblocking-reactive-paradigm.md)
+- [x] [**0073: Project Reactor Fundamentals: Mono, Flux, Schedulers & Reactive Pipeline Model**](0073-project-reactor-mono-flux-schedulers.md)
+- [x] [**0074: Building Reactive REST APIs with Spring WebFlux**](0074-building-reactive-rest-apis-spring-webflux.md)
+- [x] [**0075: Non-Blocking Persistence with R2DBC & Reactive Redis (`ReactiveRedisTemplate`)**](0075-nonblocking-persistence-r2dbc-reactive-redis.md)
+- [x] [**0076: Real-Time Streaming with Server-Sent Events (SSE)**](0076-realtime-streaming-server-sent-events-sse.md)
+- [x] [**0077: Reactive Backpressure Handling: Bounded `flatMap` & Buffer Strategies**](0077-reactive-backpressure-flatmap-buffer-strategies.md)
+- [x] [**0078: Integration Testing Reactive APIs with `WebTestClient` & Testcontainers**](0078-integration-testing-reactive-webtestclient-testcontainers.md)
+- [x] [**0079: Spring AI: LLM Chat Clients, Prompts & Multi-Model Integration**](0079-spring-ai-llm-chatclient-prompts.md)
+- [x] [**0080: Retrieval-Augmented Generation (RAG) with Vector Stores & Embeddings in Spring AI**](0080-rag-vector-stores-embeddings-spring-ai.md)
+- [x] [**0081: MCP (Model Context Protocol) Server & Tool Integration with Spring AI**](0081-mcp-server-tool-integration-spring-ai.md)

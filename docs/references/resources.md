@@ -28,6 +28,14 @@
 
 - [Spring Security Reference Manual](https://docs.spring.io/spring-security/reference/)
   Covers Security Filter Chains, OAuth2, JWT, Session Management, and Method Security in Spring 6.
+- [Spring Data Redis Reference](https://docs.spring.io/spring-data/redis/reference/)
+  Official manual for Lettuce/Jedis connections, RedisCacheManager, Pub/Sub, and serialization.
+- [Spring for Apache Kafka Documentation](https://docs.spring.io/spring-kafka/reference/)
+  Covers KafkaTemplate, @KafkaListener, @RetryableTopic, DefaultErrorHandler, and DLQ topics.
+- [Spring Cloud Official Documentation](https://docs.spring.io/spring-cloud/reference/)
+  The authoritative guide for OpenFeign, Spring Cloud Gateway, Config Server, Eureka, and Spring Cloud Bus.
+- [Resilience4j User Guide](https://resilience4j.readme.io/)
+  Comprehensive manual for Circuit Breaker, RateLimiter, Retry, and Bulkhead patterns.
 - [Spring AI Documentation](https://docs.spring.io/spring-ai/reference/)
   Guides for Models, ChatClients, Prompt engineering, Vector Stores, RAG, and MCP tool servers.
 - [Project Reactor Core Documentation](https://projectreactor.io/docs/core/release/reference/)
@@ -38,8 +46,14 @@
   Essential text for distributed systems, CAP theorem, replication, partitions, transactions, and eventual consistency.
 - [Kafka: The Definitive Guide — Gwen Shapira et al.](https://www.oreilly.com/library/view/kafka-the-definitive/9781492043072/)
   Primary source for Kafka architecture, partitions, consumer groups, offset management, and delivery guarantees.
+- [R2DBC Official Specification & Drivers](https://r2dbc.io/)
+  The reactive relational database connectivity standard for non-blocking SQL in Java.
+- [Model Context Protocol (MCP) Specification](https://modelcontextprotocol.io/)
+  Anthropic's open standard for connecting AI applications to external microservice tools and data sources.
 - [Kubernetes Official Documentation](https://kubernetes.io/docs/)
   Core reference for Pods, Deployments, Services, Ingress, and cluster orchestration.
+- [AWS CodePipeline & CodeBuild Documentation](https://docs.aws.amazon.com/codepipeline/)
+  Official reference for automated buildspec CI/CD pipelines and cloud deployments.
 
 ## Wisdom (Communities)
 

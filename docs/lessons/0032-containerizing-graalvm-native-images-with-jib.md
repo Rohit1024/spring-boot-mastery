@@ -271,6 +271,6 @@ flowchart TD
 
 | ⬅️ Previous | 📋 Catalog | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **0031: GraalVM AOT Native Images**](0031-graalvm-aot-native-image-compilation.md) | [**All Lessons**](index.md) | [➡️ **0033: Unit Testing with JUnit 5 & AssertJ**](../lessons/index.md) |
+| [⬅️ **0031: GraalVM AOT Native Images**](0031-graalvm-aot-native-image-compilation.md) | [**All Lessons**](index.md) | [➡️ **0033: Spring Batch Core Architecture**](0033-spring-batch-architecture-jobrepository.md) |
 
 🎉 **Congratulations on completing Module 6: Building, Packaging & Containerizing Spring Boot Applications!**

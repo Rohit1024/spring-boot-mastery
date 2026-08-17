@@ -17,5 +17,11 @@ Practical troubleshooting workflows, root-cause analyses, and diagnostic playboo
 - [x] [**Actuator Security Exposure, Wildcard Leaks & ThreadLocal MDC Pollution**](actuator-security-and-logging-leaks.md)
 - [x] [**Troubleshooting Security Filter Chains, JWT Exceptions & CORS Pitfalls**](security-filter-chain-and-jwt-pitfalls.md)
 - [x] [**Troubleshooting Jib Multi-Cloud Authentication & GraalVM Native Compilation Pitfalls**](jib-cloud-auth-and-graalvm-native-pitfalls.md)
-- [ ] **Kafka Consumer Rebalance Storms & Consumer Lag Troubleshooting** *(Available in Module 8)*
-- [ ] **Reactive WebFlux Blocking Call Detection with BlockHound** *(Available in Module 10)*
+- [x] [**Troubleshooting Spring Batch & Scheduler Locking Pitfalls**](spring-batch-and-scheduler-locking-pitfalls.md)
+- [x] [**Troubleshooting GraphQL N+1, gRPC RPC & WebSocket Broker Pitfalls**](graphql-n-plus-1-grpc-and-websocket-broker-pitfalls.md)
+- [x] [**Troubleshooting Spring Modulith & Virtual Thread Pinning Pitfalls**](spring-modulith-and-virtual-thread-pinning-pitfalls.md)
+- [x] [**Troubleshooting Prometheus Scraping & OpenTelemetry Collector Pitfalls**](prometheus-scraping-and-opentelemetry-collector-pitfalls.md)
+- [x] [**Troubleshooting Spring Boot Testing & Testcontainers Pitfalls**](spring-boot-testing-and-testcontainers-pitfalls.md)
+- [x] [**Troubleshooting Redis Cache Stampede & Kafka Consumer Lag Pitfalls**](redis-cache-stampede-and-kafka-consumer-lag.md)
+- [x] [**Troubleshooting Microservices, Circuit Breaker & SAGA Pitfalls**](microservices-circuit-breaker-and-distributed-transaction-pitfalls.md)
+- [x] [**Troubleshooting Reactive WebFlux & Spring AI Pitfalls**](reactive-webflux-blocking-and-spring-ai-pitfalls.md)

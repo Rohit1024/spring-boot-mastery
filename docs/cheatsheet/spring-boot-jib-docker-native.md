@@ -144,4 +144,4 @@ mvn clean package jib:build -Pnative-jib
 
 | ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Security 6, JWT & OAuth2 Cheatsheet**](spring-security-6-jwt-oauth2.md) | [**All Cheatsheets**](index.md) | *(Module 7 Testing Cheatsheet Coming Soon)* |
+| [⬅️ **Spring Security 6, JWT & OAuth2 Cheatsheet**](spring-security-6-jwt-oauth2.md) | [**All Cheatsheets**](index.md) | [➡️ **Spring Batch & Schedulers Cheatsheet**](spring-batch-quartz-shedlock.md) |

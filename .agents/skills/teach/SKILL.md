@@ -60,6 +60,39 @@ A lesson should be styled beautifully based on Zensical's typography and structu
 **Visual & Mermaid Requirement**:
 - **Always include clear Mermaid diagrams** (flowcharts, sequence diagrams, state diagrams, or architecture maps) in every **Lesson** and **Debugging guide** to visualize runtime flows, lifecycles, and request paths. Visualizing mechanics simplifies complexity and solidifies mental models.
 
+## Mermaid Diagram Standards & Automated Verification
+
+To ensure all diagrams render reliably across desktop and mobile screens and never break doc builds:
+
+### 1. Vertical Layout Standard (`flowchart TD`)
+- **Default Orientation**: Always use `flowchart TD` (top-to-bottom). Avoid horizontal `flowchart LR` for multi-step or parallel flows.
+- **Vertical Subgraph Stacking**: When contrasting two architectures (e.g. REST vs GraphQL, JIT vs AOT, Naive vs Batch), stack parallel subgraphs vertically using invisible links (`SubA ~~~ SubB`) or vertical sequence connections so nodes take 100% viewport width and avoid horizontal squishing.
+- **Escaping Special Characters**: Always quote node labels containing parentheses, brackets, or punctuation (e.g., `Node["Item (Details)"]`). Avoid raw parentheses, brackets, or `<br/>` tags inside edge labels (`-->|text|`), or phrase them as plain text labels without nested brackets.
+
+### 2. Automated Syntax Verification
+Before completing any teaching session, you MUST execute the project's automated Mermaid syntax validation script:
+
+```bash
+python3 .agents/skills/teach/scripts/validate_mermaid.py
+```
+
+- This script scans markdown files under `docs/`, checks SHA-256 hashes against `.cache/mermaid_validation_cache.json`, and incrementally validates only new or modified diagrams in parallel via `npx -y @mermaid-js/mermaid-cli` (`mmdc`) while instantly skipping unchanged, previously verified diagrams. Use `--force` to revalidate all diagrams if needed.
+- **Strict Quality Gate**: There must be **0 syntax errors**. If any diagram fails, resolve the syntax issue immediately before responding.
+
+### 3. Documentation Build Verification
+Verify the entire documentation portal compiles cleanly without broken links or admonition errors:
+
+```bash
+uv run zensical build
+```
+
+- Ensure the build exits with `0` errors and reports `No issues found`.
+
+### 4. Mandatory Turn Completion Report
+Always include a summary of the validation and build results at the end of your response to the user:
+- **Total Mermaid diagrams validated** (and 0 syntax errors confirmation).
+- **Zensical build status** (clean build time and 0 warnings/errors).
+
 The lesson should be short, and completable very quickly. Learners' working memory is very small, and we need to stay within it. But each lesson should give the user a single tangible win that they can build on. It should be directly tied to the mission, and should be in the user's zone of proximal development.
 
 If possible, open the lesson file for the user (or tell them to open it) after creation.
