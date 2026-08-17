@@ -225,7 +225,36 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Spring Data JPA Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (Spring Data JPA 3)"]
+        JPQLConstructor["Verbose JPQL SELECT new com.pkg.Dto(...)"]
+        OffsetPaging["Standard Offset Pagination Page<T>"]
+        InterfaceProj["Interface Dynamic Proxy Projections"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Spring Data JPA 4)"]
+        AutoRecordProj["Automatic Record Return Type Inference"]
+        ScrollAPI["Keyset Pagination via KeysetScrollPosition"]
+        StringTemplateSQL["Java 21+ Type-Safe Query Templates"]
+    end
+
+    SB3 ==>|Query Performance Optimization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Repository Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Record DTO Projections** | Required full package path in JPQL: `SELECT new com.example.dto.UserDto(u.id, ...)`. | **Automatic Record Projection**: Simply specify `List<UserDto> findByStatus(...)` and Spring Data auto-maps fields! |
+| **Keyset / Cursor Pagination** | Required manual `Window<T>` / `ScrollPosition` configuration. | **Native Keyset Scroll API**: First-class infinite scroll support without performance degradation on deep offsets. |
+| **Query Validation** | Validated via regex / HQL parser during context startup. | **AOT-Validated Query AST**: Pre-compiled query syntax verification at build time. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Spring Data JPA Official Reference Documentation](https://docs.spring.io/spring-data/jpa/reference/) — Authoritative guide for repository query methods, projections, and paging.
 - [Spring Data Common: Query Methods](https://docs.spring.io/spring-data/commons/reference/repositories/query-methods.html) — Query creation keywords and syntax tree.
@@ -233,7 +262,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why does `Slice<T>` query for `pageSize + 1` elements instead of running a `COUNT(*)` query?"
     **Answer**: By requesting one extra row (`limit + 1`), Spring Data checks if another page exists (`hasNext()`) without incurring the heavy performance penalty of a full database `COUNT(*)` scan.

@@ -38,6 +38,8 @@ flowchart TD
     
     Logstash -->|Bulk REST Indexing| ES
     Kibana -->|Query REST API| ES
+
+    Microservices ~~~ LogShipper ~~~ Storage ~~~ Visualization
 ```
 
 ---
@@ -197,7 +199,34 @@ sequenceDiagram
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Centralized Logging Pipeline Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x Pipeline"]
+        App3["Spring Boot 3"] -->|TCP Socket JSON| Logstash["Logstash Pipeline (:5000)"]
+        Logstash -->|Bulk REST| ES3["Elasticsearch (:9200)"]
+    end
+
+    subgraph SB4["Spring Boot 4.x Pipeline"]
+        App4["Spring Boot 4 (OTLP)"] -->|gRPC / HTTP OTLP Logs| OTelColl["OpenTelemetry Collector / Direct ES"]
+        OTelColl -->|Direct Indexing| ES4["OpenSearch / Elasticsearch (:9200)"]
+    end
+
+    SB3 ~~~ SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Shipping Pipeline Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Ingestion Protocol** | Custom Logstash TCP Socket encoder (`LogstashTcpSocketAppender`). | **Native OTLP Log Protocol (gRPC/HTTP)**: Directly streams standard OpenTelemetry log records. |
+| **Intermediate Processing** | Required Logstash container running JVM for JSON transformations and mutations. | **OTel Collector / Direct ES Exporter**: Ultra-lightweight Go-based collector or direct backend streaming. |
+| **Log-to-Trace Correlation** | Required custom manual fields (`includeMdcKeyName`) in `logback-spring.xml`. | **Automatic Semantic Conventions**: Inherent correlation with trace ID and span ID headers. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Elasticsearch Reference Guide](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html) — Indices, mappings, and inverted index search architecture.
 - [Logstash TCP Socket Documentation](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html) — Ingesting network socket telemetry.
@@ -205,7 +234,7 @@ sequenceDiagram
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the main advantage of shipping structured JSON logs directly to Logstash via TCP compared to tailing text files?"
     **Answer**: Direct TCP streaming avoids file I/O latency, eliminates custom regex parsing steps in Logstash, and enables pre-indexed JSON field ingestion directly into Elasticsearch.

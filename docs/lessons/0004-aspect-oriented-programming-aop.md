@@ -13,9 +13,9 @@ Without Aspect-Oriented Programming (AOP), you would have to duplicate code in e
 ## 1. Core AOP Concepts Demystified
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph Request_Pipeline["Method Execution Pipeline"]
-        direction LR
+        direction TB
         Caller["Controller / Caller"] --> Proxy["Spring AOP Proxy<br/><i>(Aspect Advice)</i>"]
         Proxy --> Target["Target Service Bean<br/><i>(Business Logic)</i>"]
     end
@@ -176,6 +176,8 @@ flowchart TD
         style Inner stroke:#f44,stroke-width:2px;
         noteInner["❌ Proxy is Bypassed!<br/>@Transactional / @TrackLatency on saveAuditLog will NOT run!"]
     end
+
+    ScenarioA ~~~ ScenarioB
 ```
 
 ### Why it happens:
@@ -187,14 +189,43 @@ When `processOrder()` calls `this.saveAuditLog()`, it is executing directly on t
 
 ---
 
-## 6. Primary Source & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: AOP & Proxying Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        CGLIB["CGLIB / ByteBuddy Runtime Proxy Gen"]
+        ThreadLocalAOP["ThreadLocal Aspect Context"]
+        BuildTimeAOT["Explicit AOT Proxy Metadata"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        ClassFileAPIAOP["JDK Class-File API Proxy Generation"]
+        ScopedValAOP["Loom ScopedValue Context in Advice"]
+        ZeroReflectAOT["Zero-Reflection Compile-Time Proxies"]
+    end
+
+    SB3 ==>|Bytecode Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| AOP Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Proxy Bytecode Engine** | Bundled CGLIB / ByteBuddy subclass generation. | **JDK 24+ Class-File API**: Native JVM bytecode transformations without external bytecode libraries. |
+| **Virtual Thread Context in Advice** | Aspect advice capturing `ThreadLocal` context risks memory leaks under Virtual Threads. | **Scoped Values Integration**: Aspect advice natively binds and restores scoped context safely. |
+| **AOT Proxy Generation** | Required GraalVM reflection registration for target classes. | **Static Proxy Baking**: AOT compiler bakes direct-dispatch proxy classes at build time. |
+
+---
+
+## 7. Primary Source & Further Reading
 
 - [Spring Framework Reference: Aspect-Oriented Programming](https://docs.spring.io/spring-framework/reference/core/aop.html) — Comprehensive guide on Pointcuts and AspectJ integration.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Which Advice type provides complete control over target method execution and return values?"
     **Answer**: The `@Around` advice wraps execution completely, controlling when to proceed, modify outputs, or catch exceptions.

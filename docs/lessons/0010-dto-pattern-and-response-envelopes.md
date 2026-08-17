@@ -24,6 +24,8 @@ flowchart TD
         Entity2 -->|MapStruct Mapper| DTO["UserResponse (Java Record)<br/><i>(id, username, email, active)</i>"]
         DTO -->|Jackson Serializer| CleanAPI["🔒 Clean, Secure & Versioned REST API"]
     end
+
+    AntiPattern ~~~ DTO_Pattern
 ```
 
 ### The 5 Critical Risks of Exposing Entities:
@@ -148,7 +150,7 @@ public class ApiResponse<T> {
 ## 4. Entity <-> DTO Mapping: Manual vs ModelMapper vs MapStruct
 
 ``` mermaid
-flowchart LR
+flowchart TD
     M1["1. Manual Mapping<br/>• Builder pattern<br/>• High maintenance<br/>• Zero dependencies"]
     M2["2. ModelMapper<br/>• Reflection at runtime<br/>• Slower performance<br/>• Obscure runtime errors"]
     M3["3. MapStruct (Recommended)<br/>• Compile-time code generation<br/>• Type-safe & fast<br/>• Clear compiler errors"]
@@ -229,15 +231,53 @@ public class UserService {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: DTO & Mapping Evolution
 
-- [MapStruct Official Documentation](https://mapstruct.org/documentation/stable/reference/html/) — Complete guide to advanced mappings, qualifiers, and decorators.
-- [Martin Fowler on DTOs](https://martinfowler.com/eaaCatalog/dataTransferObject.html) — The seminal definition of the Data Transfer Object pattern.
-- [Java 17 Record Specification](https://docs.oracle.com/en/java/javase/17/language/records.html) — Official documentation for Java records.
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        RecordDTOs["Java 17 Records as DTOs"]
+        LombokPOJOs["Lombok @Data for Mutable DTOs"]
+        MapStruct15["MapStruct 1.5.x Annotation Processors"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        RecordPatterns["Java 21+ Record Deconstruction & Patterns"]
+        DirectProjections["Zero-Mapper Direct Repository Projections"]
+        Jackson3Fast["Jackson 3 Direct Record Serializers"]
+    end
+
+    SB3 ==>|Serialization Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| DTO & Mapping Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Record Pattern Matching** | Traditional getters (`dto.username()`). | **Record Pattern Deconstruction**: Pattern-matching in switch statements for DTO transformations. |
+| **Serialization Engine** | Jackson 2.15+ with reflection-based record property introspection. | **Jackson 3 / Fast Record Introspection**: Directly invokes canonical record constructors without reflection. |
+| **Repository-to-DTO Projections** | Interface-based dynamic proxies or manual JPQL constructor expressions. | **Direct Record Query Mapping**: Spring Data JPA directly populates record components without proxies. |
+
+```java
+// Spring Boot 4 / Java 21+ Record Deconstruction Pattern in Business Services
+public void handlePayload(Object event) {
+    if (event instanceof CreateUserRequest(String name, String email, String password)) {
+        log.info("Processing user registration for email: {}", email);
+    }
+}
+```
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Primary Sources & Further Reading
+
+- [MapStruct Official Documentation](https://mapstruct.org/documentation/stable/reference/html/) — Complete guide to advanced mappings, qualifiers, and decorators.
+- [Martin Fowler on DTOs](https://martinfowler.com/eaaCatalog/dataTransferObject.html) — The seminal definition of the Data Transfer Object pattern.
+- [Java 21 Record Patterns Specification](https://docs.oracle.com/en/java/javase/21/language/record-patterns.html) — Pattern matching and deconstruction for records.
+
+---
+
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is mass-assignment (over-posting) vulnerability, and how does the DTO pattern prevent it?"
     **Answer**: Attackers send unauthorized fields (e.g., `role: ADMIN`) in the request JSON. By binding incoming requests to dedicated Request DTOs that only contain permitted user-editable fields, unapproved fields cannot reach the database entity.

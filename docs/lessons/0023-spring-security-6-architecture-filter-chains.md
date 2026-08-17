@@ -44,6 +44,8 @@ flowchart TD
     SF1 --> SF2 --> SF3 --> SF4 --> SF5 --> SF6
     SF6 --> F2
     F2 -->|Authorized Request| DS["DispatcherServlet & @RestController"]
+
+    StandardServletFilters ~~~ SpringContext ~~~ SecurityFilterChain
 ```
 
 ### How the Bridge Works
@@ -263,15 +265,44 @@ public class AsyncSecurityConfig {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 (Security 6) vs Spring Boot 4 (Security 7) Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (Spring Security 6)"]
+        LambdaDSL["HttpSecurity Lambda DSL (Customizer.withDefaults)"]
+        TLContext["ThreadLocal SecurityContextHolder"]
+        ExplicitStateless["Explicit sessionCreationPolicy(STATELESS)"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Spring Security 7)"]
+        FluentChain["Simplified Declarative Filter Chains"]
+        ScopedValSec["ScopedValue SecurityContext (Loom Native)"]
+        StatelessDefault["Stateless by Default for REST Web MVC"]
+    end
+
+    SB3 ==>|Security Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Security Capability | Spring Boot 3.x (Security 6) | Spring Boot 4.x (Security 7) |
+| :--- | :--- | :--- |
+| **Security Context Strategy** | `ThreadLocal` (`MODE_THREADLOCAL`). Required `DelegatingSecurityContextAsyncTaskExecutor` for background threads. | **`ScopedValue` Security Context**: Native Virtual Thread propagation without thread pool pollution or memory leaks. |
+| **Default Session Policy** | `SessionCreationPolicy.IF_REQUIRED` (creates `JSESSIONID` unless explicitly configured stateless). | **Smart Protocol Defaults**: Automatically applies stateless token handling when REST controllers are detected. |
+| **Configuration DSL** | Lambda DSL (`http.csrf(AbstractHttpConfigurer::disable)`). | **Streamlined Fluent DSL**: Deprecated legacy configurers removed; cleaner one-line method chaining. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Spring Security 6 Official Architecture Documentation](https://docs.spring.io/spring-security/reference/servlet/architecture.html) — Deep dive into `FilterChainProxy`, `SecurityFilterChain`, and request dispatching.
-- [Spring Security Authentication Architecture](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html) — Comprehensive guide on `AuthenticationManager`, `ProviderManager`, and `SecurityContextHolder`.
+- [Spring Security 7 Next-Gen Architecture Vision](https://github.com/spring-projects/spring-security/wiki) — Project Loom scoped security context integration.
 - [Spring Boot 3 Migration Guide for Security](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide#spring-security) — Architectural migration away from deprecated adapters.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the exact role of `DelegatingFilterProxy` in the Spring Security filter pipeline?"
     **Answer**: It acts as a bridge between the Servlet container's standard filter lifecycle and Spring's `ApplicationContext`, delegating request processing to the Spring-managed `FilterChainProxy` bean named `springSecurityFilterChain`.

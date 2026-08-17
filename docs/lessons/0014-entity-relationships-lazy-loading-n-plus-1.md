@@ -204,7 +204,36 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Spring Boot 3 vs Spring Boot 4: Fetching Optimization Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        ManualN1Audit["Manual datasource-proxy / QuickPerf N+1 Detection"]
+        BatchSizeAnnotation["Explicit @BatchSize on Entity Collections"]
+        RuntimeFetchPlan["Dynamic Runtime SQM Query Translation"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        AutoBatchSubquery["Auto-Subquery In-Clause Batch Fetching"]
+        StaticFetchGraph["Compile-Time Fetch Graph Verification"]
+        H7QueryPlan["Hibernate 7 Zero-Alloc Query Plan Cache"]
+    end
+
+    SB3 ==>|Query Optimization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Fetching Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Batch Fetching Mode** | Required explicit `@BatchSize` or `hibernate.default_batch_fetch_size`. | **Proactive Subquery Batching**: Uses subselect batch fetching by default on bulk queries. |
+| **N+1 Diagnostic Tooling** | Relied on third-party log sniffers (`datasource-proxy`, `p6spy`). | **Built-in Actuator N+1 Metric Counters**: Surfaces anomalous query-per-request spikes directly to Micrometer. |
+| **Query Plan Caching** | SQM query plan cache created allocation pressure under high QPS. | **Hibernate 7 Pre-Compiled AST**: Near-zero heap allocations during repeated parameter binding. |
+
+---
+
+## 8. Primary Sources & Further Reading
 
 - [Hibernate ORM User Guide: Fetching Strategies](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#fetching) — Official guide on dynamic vs static fetching.
 - [Vlad Mihalcea: The N+1 Query Problem with JPA and Hibernate](https://vladmihalcea.com/n-plus-1-query-problem-jpa-hibernate/) — Comprehensive diagnostics and solutions for N+1 queries.
@@ -212,7 +241,7 @@ flowchart TD
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 9. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why does JPA's default `FetchType.EAGER` on `@ManyToOne` cause unexpected performance issues?"
     **Answer**: It automatically forces immediate SQL joins or secondary selects to fetch associated entities on every query, inflating memory consumption and database query count even when the association is not used.

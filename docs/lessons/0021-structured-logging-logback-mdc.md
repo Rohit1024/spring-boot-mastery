@@ -13,7 +13,7 @@ Modern observability demands **Structured JSON Logging** and **Distributed Conte
 ## 1. Plaintext Logs vs Structured JSON Logs
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph Legacy["❌ Legacy Plaintext Logs"]
         Plain["2026-08-17 14:32:01.102 INFO 4920 --- [nio-8080-exec-1] c.e.OrderService : Processing order 99201 for user usr_44"]
     end
@@ -21,6 +21,8 @@ flowchart LR
     subgraph Structured["✅ Modern Structured JSON Log Event"]
         JSON["{<br/>  '@timestamp': '2026-08-17T14:32:01.102Z',<br/>  'level': 'INFO',<br/>  'service': 'order-service',<br/>  'traceId': 'c7b91a2e',<br/>  'userId': 'usr_44',<br/>  'orderId': '99201',<br/>  'message': 'Order processed successfully'<br/>}"]
     end
+
+    Legacy ~~~ Structured
 ```
 
 ### Why Structured JSON Wins:
@@ -194,7 +196,36 @@ curl -X POST http://localhost:8080/actuator/loggers/com.example.demo \
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Logging & Context Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        ThreadLocalMDC["ThreadLocal-backed SLF4J MDC"]
+        CustomJsonEncoder["logstash-logback-encoder / ecs-logging"]
+        ManualMdcWrap["Manual TaskDecorator for Async Threads"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        OTelBaggage["OpenTelemetry Baggage & Scoped Values"]
+        NativeJsonLogger["Built-in Structured JSON Logging Starters"]
+        AutoLoomProp["Auto-Loom Context Propagation"]
+    end
+
+    SB3 ==>|Telemetry Convergence| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Logging Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Contextual MDC Storage** | `ThreadLocal` storage; prone to leaks or carrier thread pollution under Virtual Threads without careful `finally` cleanup. | **Java 21+ Scoped Values & OTel Baggage**: Immutable, leak-proof context propagation natively preserved across Loom forks. |
+| **JSON Logging Setup** | Required third-party `logstash-logback-encoder` or `ecs-logging-logback` in `pom.xml`. | **Native Structured Logging**: Configurable directly via `logging.structured.format.console=json` out-of-the-box. |
+| **Trace Context Standard** | Wired through Micrometer Tracing bridges (Brave / OpenTelemetry). | **Pure W3C Distributed TraceContext**: Zero-bridge native header propagation. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [SLF4J Mapped Diagnostic Context (MDC) Manual](https://www.slf4j.org/manual.html#mdc) — Official guide on ThreadLocal context propagation.
 - [Logstash Logback Encoder Documentation](https://github.com/logfellow/logstash-logback-encoder) — Custom JSON fields, masking, and formatting.
@@ -202,7 +233,7 @@ curl -X POST http://localhost:8080/actuator/loggers/com.example.demo \
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why is clearing MDC via `MDC.clear()` inside a `finally` block mandatory in Servlet environments?"
     **Answer**: Web servers like Tomcat use thread pools; failing to clear MDC causes residual context variables (e.g. `traceId`) to bleed into unrelated subsequent requests executed by the reused thread.

@@ -72,7 +72,7 @@ public class OrderService {
 ```
 
 ``` mermaid
-flowchart LR
+flowchart TD
     Caller["Caller"] --> Proxy["Spring Proxy<br/><i>(TransactionInterceptor)</i>"]
     Proxy -->|"Intercepts"| M1["methodA()<br/><i>(@Transactional)</i>"]
     M1 -->|"❌ this.methodB()<br/>Bypasses Proxy!"| M2["methodB()<br/><i>(@Transactional ignored!)</i>"]
@@ -185,7 +185,36 @@ public void executeCriticalFinancialTransfer(Long fromId, Long toId, BigDecimal 
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Transaction Architecture Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        TLTransaction["ThreadLocal TransactionSynchronizationManager"]
+        PlatformTM["PlatformTransactionManager Hierarchy"]
+        SeparateReactive["Separate ReactiveTransactionManager"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        ScopedValTx["ScopedValue Transaction Context (Loom Native)"]
+        UnifiedTM["Unified Transaction Pipeline Coordinator"]
+        ZeroLeakVirtual["Zero-Leak Virtual Thread Synchronization"]
+    end
+
+    SB3 ==>|Loom Concurrency Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Transaction Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Context Storage Engine** | `ThreadLocal` storage map in `TransactionSynchronizationManager`. | **Java 21+ `ScopedValue` Context**: Immutable, lightweight, zero-leak transaction context binding across millions of Virtual Threads. |
+| **Virtual Thread Safety** | Susceptible to memory overhead if `TransactionSynchronizationManager` cleanup fails in deeply nested forks. | **Native Structured Concurrency Support**: Transactions propagate safely into sub-tasks via `StructuredTaskScope`. |
+| **Reactive & Relational Bridge** | Strict split between `PlatformTransactionManager` (JDBC/JPA) and `ReactiveTransactionManager` (R2DBC). | **Unified Transaction SPI**: Seamless coordination across relational and reactive database drivers. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Spring Framework Reference: Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html) — Core reference on AOP proxies and `PlatformTransactionManager`.
 - [Vlad Mihalcea: Spring @Transactional Rules and Pitfalls](https://vladmihalcea.com/spring-transactional-rules-and-pitfalls/) — In-depth analysis of proxy self-invocation and rollback traps.
@@ -193,7 +222,7 @@ public void executeCriticalFinancialTransfer(Long fromId, Long toId, BigDecimal 
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why does calling `@Transactional methodB()` from `methodA()` in the same class fail to initiate a transaction?"
     **Answer**: Internal method calls use the standard `this` pointer in Java heap memory, bypassing the Spring AOP dynamic proxy (`TransactionInterceptor`) that manages transaction boundaries.

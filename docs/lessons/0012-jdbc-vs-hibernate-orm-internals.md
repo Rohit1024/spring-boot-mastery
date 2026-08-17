@@ -39,7 +39,7 @@ try (Connection conn = dataSource.getConnection();
 **Hibernate ORM** solves the **Object-Relational Impedance Mismatch** — bridging the paradigm divide between relational databases (tables, foreign keys, set theory) and object-oriented programming (classes, references, encapsulation, inheritance).
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph JavaApp["☕ Java OOP Model"]
         UserObj["User Object<br/><code>user.getOrders()</code>"]
     end
@@ -57,6 +57,8 @@ flowchart LR
     UserObj <--> PC
     PC <--> Dialect
     Dialect <--> RelationalDB
+
+    JavaApp ~~~ Hibernate ~~~ RelationalDB
 ```
 
 ---
@@ -263,15 +265,45 @@ public class AccountService {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Spring Boot 3 vs Spring Boot 4: Persistence Engine Evolution
 
-- [Jakarta Persistence Specification 3.1](https://jakarta.ee/specifications/persistence/3.1/) — Official specification for Entity lifecycle, states, and EntityManager.
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        H6["Hibernate ORM 6.x (SQM Engine)"]
+        JPA31["Jakarta Persistence 3.1"]
+        ClassEntities["Class-Only Entity Hierarchies"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        H7["Hibernate ORM 7.x (Stateless & Direct SQL)"]
+        JPA32["Jakarta Persistence 3.2"]
+        RecordEmbeddables["Java Record Embeddables & Projections"]
+    end
+
+    SB3 ==>|ORM Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Persistence Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **ORM Specification** | Hibernate ORM 6.x / Jakarta Persistence 3.1. | **Hibernate ORM 7.x / Jakarta Persistence 3.2**. |
+| **Record Embeddables** | Java Records required custom AttributeConverters or `@Embeddable` POJO wrappers. | **Native Java Record `@Embeddable`**: Records can be embedded directly into entities without boilerplate. |
+| **Virtual Thread Connection Pooling** | HikariCP could pin carrier threads under synchronized locks in older drivers. | **Loom-Native HikariCP & JDBC Drivers**: Zero thread pinning during physical socket reads/writes. |
+| **Stateless Batching** | Manual `StatelessSession` management via unwrap. | **First-Class `StatelessRepository` Support**: Bypasses L1 cache and dirty checking for blazing fast bulk ETL. |
+
+---
+
+## 8. Primary Sources & Further Reading
+
+- [Jakarta Persistence Specification 3.2](https://jakarta.ee/specifications/persistence/3.2/) — Official specification for Entity lifecycle, states, and EntityManager.
 - [Hibernate ORM User Guide: Persistence Context & Flushing](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#flushing) — Deep dive into dirty checking and the ActionQueue.
 - [Vlad Mihalcea: The JPA and Hibernate Entity Lifecycle](https://vladmihalcea.com/jpa-hibernate-entity-lifecycle/) — In-depth architectural breakdown of entity state transitions.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 9. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What happens if you modify a field on an entity in the `MANAGED` state without calling `save()`?"
     **Answer**: Hibernate's dirty checking mechanism compares the modified entity against the initial snapshot at transaction flush/commit and automatically issues the SQL `UPDATE` statement.

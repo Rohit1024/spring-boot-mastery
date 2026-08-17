@@ -214,7 +214,36 @@ When enabled, Spring MVC converts missing request parameters, unsupported media 
 
 ---
 
-## 5. Primary Sources & Further Reading
+## 5. Spring Boot 3 vs Spring Boot 4: Exception Handling Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        OptInRFC["Opt-In RFC 7807 (spring.mvc.problemdetails.enabled=true)"]
+        ManualTrace["Manual MDC TraceId Extraction"]
+        IfElseHandler["Separate Handler Methods per Exception Type"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        DefaultRFC["RFC 9457 Enabled by Default"]
+        AutoTraceOTel["Native OpenTelemetry Trace & Span ID Injection"]
+        PatternMatch["Java Pattern-Matching Switch in Exception Handlers"]
+    end
+
+    SB3 ==>|Error Spec Standardization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Exception Handling Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **RFC 9457 ProblemDetail** | Disabled by default; required `spring.mvc.problemdetails.enabled=true`. | **Enabled by Default**: All uncaught framework and custom errors emit RFC 9457 JSON envelopes. |
+| **Distributed Trace Linking** | Required manual extraction of `MDC.get("traceId")` and adding custom properties. | **Automatic OTel Linkage**: Automatically attaches `traceId`, `spanId`, and `timestamp` fields. |
+| **Handler Dispatch Syntax** | Required verbose discrete `@ExceptionHandler` methods for each exception subclass. | **Pattern-Matching Switch**: Unified handling using Java 21+ sealed domain exception hierarchies. |
+
+---
+
+## 6. Primary Sources & Further Reading
 
 - [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) — The IETF standard specification.
 - [Spring Framework Reference: Error Responses & ProblemDetail](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-ann-rest-exceptions.html) — Official documentation on `ProblemDetail` and `@ExceptionHandler`.
@@ -222,7 +251,7 @@ When enabled, Spring MVC converts missing request parameters, unsupported media 
 
 ---
 
-## 6. Knowledge Check & Retrieval Practice
+## 7. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why should internal exception messages and stack traces never be returned to the API client in production?"
     **Answer**: Exposing stack traces leaks internal database structures, framework versions, and class paths to attackers, violating the principle of least privilege.

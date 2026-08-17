@@ -28,7 +28,7 @@ public class OrderService {
 With IoC, **you do not create objects; the Container creates and injects them.** Control over the object lifecycle is inverted from your application code to the framework.
 
 ``` mermaid
-flowchart LR
+flowchart TD
     A[Java Classes / Components] --> C[Spring IoC Container]
     B[Configuration Metadata<br/>@Configuration / @Component] --> C
     C --> D[Fully Configured Ready-to-Use Application]
@@ -166,14 +166,69 @@ public class CacheWarmupService {
 
 ---
 
-## 6. Primary Source & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: IoC & Bean Lifecycle Evolution
+
+As the Spring ecosystem advances from Spring Boot 3.x (Spring Framework 6) to **Spring Boot 4.x (Spring Framework 7)**, the core IoC container undergoes major architectural upgrades:
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (Spring 6)"]
+        J17["Java 17 Baseline"]
+        Reflect["Runtime Reflection & CGLIB"]
+        CustomNull["org.springframework.lang.@Nullable"]
+        ManualAOT["Opt-in AOT Hints"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Spring 7)"]
+        J21["Java 21/25 Baseline (Loom Native)"]
+        ClassFileAPI["Class-File API & Direct Invocations"]
+        JSpecify["Standard JSpecify Null-Safety"]
+        NativeFirst["Native-First AOT Compilation"]
+    end
+
+    SB3 ==>|Generational Evolution| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Architectural Capability | Spring Boot 3.x (Spring Framework 6) | Spring Boot 4.x (Spring Framework 7) |
+| :--- | :--- | :--- |
+| **Java Baseline** | Java 17 (Supports Java 21) | **Java 21 LTS / Java 25 LTS Baseline** |
+| **Null-Safety Standard** | Custom `@NonNull` / `@Nullable` annotations. | **Standard JSpecify (`org.jspecify.annotations.*`)** across container APIs. |
+| **AOT & GraalVM Engine** | Required manual `@RegisterReflectionForBinding` runtime hints for dynamic beans. | **Native-First AOT**: Container generates static factory registrations at build time automatically. |
+| **Virtual Threads (Loom)** | Opt-in via `spring.threads.virtual.enabled=true`. | **Virtual Threads Enabled by Default** with thread-safe singleton synchronization. |
+| **Bytecode Manipulation** | Heavy reliance on bundled CGLIB / ByteBuddy proxies. | **JDK 24+ Class-File API** for zero-dependency proxy generation and lifecycle interceptors. |
+
+```java
+// Spring Boot 4.x / Spring 7: Standard JSpecify Null-Safety in Bean Declarations
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.springframework.stereotype.Service;
+
+@Service
+public class PaymentProcessingService {
+
+    private final PaymentGateway gateway;
+    private final @Nullable AuditLogger auditLogger; // Explicitly marked optional for DI
+
+    public PaymentProcessingService(PaymentGateway gateway, @Nullable AuditLogger auditLogger) {
+        this.gateway = gateway;
+        this.auditLogger = auditLogger;
+    }
+}
+```
+
+---
+
+## 7. Primary Source & Further Reading
 
 - [Spring Core Technologies: The IoC Container](https://docs.spring.io/spring-framework/reference/core/beans.html) — Read Section 1.1 to 1.6 for official architecture specifications.
+- [Spring Framework 7 / Boot 4 Roadmap](https://github.com/spring-projects/spring-framework/wiki) — Ahead-of-time engine, JSpecify adoption, and Java 21+ baselines.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 Test your understanding of the concepts covered in this lesson.
 

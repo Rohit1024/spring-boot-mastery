@@ -15,7 +15,7 @@ In this lesson, you will implement automated entity auditing using **Spring Data
 Understanding the scope of both tools is critical for proper system design:
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph JPAAudit["Spring Data JPA Auditing"]
         JPAField["Tracks Current Metadata Only<br/>(created_by, created_at,<br/>last_modified_by, last_modified_at)"]
     end
@@ -23,6 +23,8 @@ flowchart LR
     subgraph Envers["Hibernate Envers"]
         ShadowTable["Captures Full Historical Delta Log<br/>(users_aud + revinfo shadow tables)<br/><i>Every single update preserved!</i>"]
     end
+
+    JPAAudit ~~~ Envers
 ```
 
 - **Spring Data JPA Auditing**: Captures *metadata for the current state* (overwriting previous modification stamps).
@@ -234,7 +236,36 @@ public class User extends AuditableBaseEntity {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Auditing & Temporal Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        EnversShadow["Envers Shadow _AUD Tables"]
+        AuditorAwareBean["AuditorAware<String> Security Context Bridge"]
+        SQLRestriction6["@SQLRestriction Annotations for Soft Deletes"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        TemporalTables["Native SQL:2011 Temporal Versioning"]
+        OTelAuditBridge["Automated OTel Trace/Span Context Auditing"]
+        StatelessEnvers["High-Throughput Stateless Audit Pipeline"]
+    end
+
+    SB3 ==>|Audit & Compliance Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Auditing Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Historical Versioning** | Relied on application-managed shadow `_AUD` tables via Envers triggers. | **Native Temporal Tables (SQL:2011)**: Integrates with database-native temporal table features (`AS OF SYSTEM TIME`). |
+| **Audit Context Enrichment** | Limited to username / principal extracted via `AuditorAware`. | **Distributed Context Auditing**: Automatically binds active W3C `traceId`, `spanId`, and client tenant into audit entities. |
+| **Soft Delete Annotations** | Hibernate 6 `@SQLDelete` and `@SQLRestriction`. | **Declarative `@SoftDelete` Annotation**: Built-in first-class soft delete annotation in Hibernate 7 / Jakarta Persistence 3.2. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Spring Data JPA: Auditing](https://docs.spring.io/spring-data/jpa/reference/auditing.html) — Configuring `AuditingEntityListener` and `AuditorAware`.
 - [Hibernate Envers User Guide](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#envers) — Revision tables, metadata, and `AuditReader` queries.
@@ -242,7 +273,7 @@ public class User extends AuditableBaseEntity {
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the key difference between Spring Data JPA Auditing and Hibernate Envers?"
     **Answer**: Spring Data JPA Auditing only maintains the current modification timestamps and actor, while Hibernate Envers captures full immutable revision deltas in shadow audit tables for every update.

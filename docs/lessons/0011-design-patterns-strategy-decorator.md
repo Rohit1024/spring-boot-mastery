@@ -142,7 +142,7 @@ public class PaymentContextService {
 The **Decorator Pattern** allows behavior to be added to an individual object dynamically without affecting other instances or altering the base class.
 
 ``` mermaid
-flowchart LR
+flowchart TD
     Client["🎮 OrderController"] --> Dec["🛡️ CachedOrderServiceDecorator<br/><i>(@Primary - Checks Redis Cache)</i>"]
     Dec -->|Cache Miss| Core["⚙️ DefaultOrderService<br/><i>(Executes heavy DB queries)</i>"]
 ```
@@ -226,15 +226,66 @@ public class CachedOrderServiceDecorator implements OrderService {
 
 ---
 
-## 4. Primary Sources & Further Reading
+## 4. Spring Boot 3 vs Spring Boot 4: Design Pattern Evolution
 
-- [Design Patterns: Elements of Reusable Object-Oriented Software (Gang of Four)](https://en.wikipedia.org/wiki/Design_Patterns) — Foundational design pattern principles.
-- [Spring Framework IoC: Collection & Map Injection](https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired.html) — Spring's automatic map and list autowiring mechanics.
-- [Refactoring Guru: Strategy Pattern](https://refactoring.guru/design-patterns/strategy) — Strategy pattern architecture and UML.
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        MapStrategy["Map<String, Strategy> IoC Map Injection"]
+        DecoratorProxies["Manual Decorator Classes / AOP CGLIB"]
+        OpenHierarchy["Open Interface Hierarchies"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        SealedStrategy["Java 21+ Sealed Interfaces & Exhaustive Switch"]
+        FunctionalBeans["Functional Bean Registration for Dynamic Strategies"]
+        ClassFileDecorator["Class-File API Clean Decorators"]
+    end
+
+    SB3 ==>|Language Feature Convergence| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Pattern Implementation | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Strategy Pattern** | Relied primarily on Spring IoC `Map<String, T>` autowiring and string keys. | **Sealed Interface Hierarchies + Pattern Matching**: Exhaustive, type-safe compile-time strategy selection. |
+| **Decorator Pattern** | `@Primary` wrapper beans or CGLIB AOP dynamic proxies. | **Virtual Thread-Friendly Decorators**: Zero-proxy ScopedValue and functional decorators. |
+| **Factory Pattern** | Heavy use of `FactoryBean<T>` with reflection. | **Declarative Factory Methods**: Native AOT compiled functional bean registrations. |
+
+```java
+// Spring Boot 4 / Java 21+ Type-Safe Strategy Dispatch using Sealed Interfaces
+public sealed interface PaymentMethod permits CreditCard, PayPal, Crypto {}
+
+public record CreditCard(String cardNumber) implements PaymentMethod {}
+public record PayPal(String email) implements PaymentMethod {}
+public record Crypto(String walletAddress) implements PaymentMethod {}
+
+@Service
+public class ModernPaymentProcessor {
+
+    public String process(PaymentMethod method, BigDecimal amount) {
+        // Compiler guarantees exhaustiveness - no default case or map lookup needed!
+        return switch (method) {
+            case CreditCard cc -> "Charged CC: " + cc.cardNumber();
+            case PayPal pp     -> "Charged PayPal: " + pp.email();
+            case Crypto c      -> "Transferred Crypto to: " + c.walletAddress();
+        };
+    }
+}
+```
 
 ---
 
-## 5. Knowledge Check & Retrieval Practice
+## 5. Primary Sources & Further Reading
+
+- [Design Patterns: Elements of Reusable Object-Oriented Software (Gang of Four)](https://en.wikipedia.org/wiki/Design_Patterns) — Foundational design pattern principles.
+- [Spring Framework IoC: Collection & Map Injection](https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired.html) — Spring's automatic map and list autowiring mechanics.
+- [Java 21 Pattern Matching for switch](https://docs.oracle.com/en/java/javase/21/language/pattern-matching-switch.html) — Official documentation for pattern matching in switch.
+
+---
+
+## 6. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: How does Spring's IoC container resolve `public PaymentService(Map<String, PaymentStrategy> map)`?"
     **Answer**: Spring automatically locates all beans implementing `PaymentStrategy` in the `ApplicationContext` and puts them in the map where the key is the Spring bean name and the value is the bean instance.

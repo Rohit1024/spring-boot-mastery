@@ -29,6 +29,8 @@ flowchart TD
     subgraph SignatureFormula["Cryptographic Signature Generation (HMAC-SHA256)"]
         Calc["HMACSHA256(<br/>&nbsp;&nbsp;base64UrlEncode(Header) + '.' + base64UrlEncode(Payload),<br/>&nbsp;&nbsp;256-bit-secret-key<br/>)"]
     end
+
+    JWT ~~~ SignatureFormula
 ```
 
 ### Standard Claims vs Custom Claims
@@ -340,7 +342,36 @@ sequenceDiagram
 
 ---
 
-## 5. Primary Sources & Further Reading
+## 5. Spring Boot 3 vs Spring Boot 4: JWT & Resource Server Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (Security 6)"]
+        ManualFilter["Custom OncePerRequestFilter with JJWT Parser"]
+        ManualContext["Manual SecurityContextHolder.setAuthentication()"]
+        SeparateRedisRevoke["Custom Redis Template Blacklist Filter"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Security 7)"]
+        DeclarativeResourceServer["Declarative oauth2ResourceServer().jwt()"]
+        NativeJwksRotation["Zero-Boilerplate JWKS & Key Rotation"]
+        ScopedAuthToken["ScopedValue-Bound Principal Context"]
+    end
+
+    SB3 ==>|Filterless Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| JWT Security Feature | Spring Boot 3.x (Security 6) | Spring Boot 4.x (Security 7) |
+| :--- | :--- | :--- |
+| **Filter Pipeline Overhead** | Hand-rolled `JwtAuthenticationFilter` manually extracting tokens and managing exception dispatch. | **Declarative Resource Server Standard**: Uses built-in reactive/stateless JWT decoders with zero custom filter boilerplate. |
+| **Asymmetric Key Rotation (JWKS)** | Required custom Nimbus / JJWT cache refresh logic or manual cron timers. | **Native JWKS Auto-Cache & Rotation**: Native support for OpenID Connect JSON Web Key Sets with automatic rollover. |
+| **Authentication Token Footprint** | ThreadLocal `UsernamePasswordAuthenticationToken` instances. | **Scoped JWT Principals**: Immutable token context propagated cleanly across Virtual Threads without leaks. |
+
+---
+
+## 6. Primary Sources & Further Reading
 
 - [RFC 7519: JSON Web Token (JWT) Specification](https://datatracker.ietf.org/doc/html/rfc7519) — Claims, encoding, and signature format standards.
 - [JJWT (Java JWT) Library Documentation](https://github.com/jwtk/jjwt) — Modern Java fluent API for HMAC and RSA signing.
@@ -348,7 +379,7 @@ sequenceDiagram
 
 ---
 
-## 6. Knowledge Check & Retrieval Practice
+## 7. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why must the secret key used for HMAC-SHA256 (`HS256`) be at least 256 bits (32 bytes) long?"
     **Answer**: HMAC-SHA256 requires a key length equal to or greater than its output block size (256 bits) to prevent brute-force dictionary attacks against the digital signature.

@@ -17,7 +17,7 @@ Fast cryptographic hashes (e.g., MD5, SHA-1, SHA-256) were designed for message 
 Password hashing algorithms must be **slow, salted, and computationally expensive**:
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph FastHash["❌ Fast Hashes (MD5 / SHA-256)"]
         P1["Raw Password"] --> SHA["SHA-256 Engine"]
         SHA --> H1["Fast Hash<br/><i>(10,000,000,000 / sec on GPU)</i>"]
@@ -28,6 +28,8 @@ flowchart LR
         Salt --> Engine["Adaptive Cost Engine<br/><i>(Work Factor / Memory Hardness)</i>"]
         Engine --> H2["Slow Hash<br/><i>(~100-300ms per attempt)</i>"]
     end
+
+    FastHash ~~~ AdaptiveHash
 ```
 
 ### Comparison of Modern Password Encoders
@@ -228,7 +230,36 @@ sequenceDiagram
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Password & Identity Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (Security 6)"]
+        DefaultBCrypt["BCrypt Default in PasswordEncoderFactories"]
+        ManualArgonConfig["Manual Argon2PasswordEncoder Bean Wiring"]
+        ThirdPartyWebAuthn["Third-Party WebAuthn Libraries for Passkeys"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Security 7)"]
+        ArgonDefault["Argon2id Optimized Default Parameter Sets"]
+        NativePasskeys["Native Passkey / WebAuthn Starter (FIDO2)"]
+        ScopedSession["Loom-Safe Stateless Session Replicators"]
+    end
+
+    SB3 ==>|Passwordless Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Identity & Storage Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Default Password Algorithm** | `PasswordEncoderFactories` defaulted to `{bcrypt}` rounds=10. | **Argon2id Memory-Hard Default**: Default work parameters scaled for modern CPU/RAM baselines. |
+| **Passkey / FIDO2 Support** | Required manual integration with external libraries (e.g. Yubico `webauthn-server-core`). | **Native WebAuthn Auto-Configuration**: Native support for biometric / hardware security key logins. |
+| **Session Fixation Engine** | Standard `HttpSession.changeSessionId()` via Servlet 3.1. | **Virtual-Thread Optimized Session Tokens**: Lightweight memory footprint under millions of concurrent connections. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) — Work factors, salt sizes, and memory parameters.
 - [Spring Security Password Storage Documentation](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — `DelegatingPasswordEncoder` and migration patterns.
@@ -236,7 +267,7 @@ sequenceDiagram
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why is SHA-256 unsuitable for storing user passwords in modern web applications?"
     **Answer**: SHA-256 is designed to be extremely fast for data integrity, enabling modern GPUs and ASICs to compute billions of hashes per second and rapidly crack passwords via brute-force and rainbow tables.

@@ -15,7 +15,7 @@ In this lesson, we explore **Spring Profiles**, configuration loading precedence
 A single hard-coded configuration cannot serve all environments:
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph Env_Dev["Developer Laptop ('dev')"]
         D1["H2 In-Memory DB"]
         D2["Mock Email Client"]
@@ -33,6 +33,8 @@ flowchart LR
         P2["AWS SES Real Email"]
         P3["JSON Logstash Logs"]
     end
+
+    Env_Dev ~~~ Env_Stage ~~~ Env_Prod
 ```
 
 ---
@@ -199,7 +201,54 @@ app:
 
 ---
 
-## 7. Primary Source & Further Reading
+## 7. Spring Boot 3 vs Spring Boot 4: Configuration & Environment Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        ClassProps["POJO @ConfigurationProperties with Getters/Setters"]
+        K8sPolling["External Spring Cloud Kubernetes Polling"]
+        ManualImport["spring.config.import syntax"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        RecordProps["Record @ConfigurationProperties (Immutable Default)"]
+        NativeK8sReload["Built-In Kubernetes Volume Watch & Hot-Reload"]
+        ValidatedRecords["Jakarta Validation 3.1 on Record Fields"]
+    end
+
+    SB3 ==>|Cloud-Native Streamlining| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Configuration Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **`@ConfigurationProperties`** | Typically mutable POJOs or constructor-bound records requiring `@ConstructorBinding`. | **Immutable Java Records by Default**: Fully integrated without requiring `@ConstructorBinding`. |
+| **Kubernetes ConfigMap Live Reload** | Required `spring-cloud-starter-kubernetes-client-config` or Actuator refresh bus. | **Native Container Volume Watching**: Built-in hot reloading on mounted config changes. |
+| **Profile Activation Strictness** | Unknown profile strings fail silently or fallback to default. | **Strict Profile Checking**: Configurable compile/startup warnings for misspelled profile names. |
+
+```java
+// Spring Boot 4: Clean Immutable Record Configuration Properties
+package com.example.config;
+
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+@ConfigurationProperties(prefix = "app.payment")
+@Validated
+public record PaymentGatewayProperties(
+    @NotBlank String apiKey,
+    @Min(1000) int timeoutMillis,
+    boolean sandboxMode
+) {}
+```
+
+---
+
+## 8. Primary Source & Further Reading
 
 - [Spring Boot Reference: Profiles](https://docs.spring.io/spring-boot/reference/features/profiles.html) — Official documentation on profiles and activation.
 - [Spring Boot Reference: Externalized Configuration](https://docs.spring.io/spring-boot/reference/features/external-config.html) — Complete 17-level property resolution hierarchy.
@@ -207,7 +256,7 @@ app:
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 9. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Which source takes precedence if the same property is set in `application-prod.yml` and an OS Environment Variable?"
     **Answer**: OS Environment Variables take precedence over profile-specific configuration files, allowing container overrides at runtime.

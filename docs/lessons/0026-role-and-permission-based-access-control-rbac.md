@@ -45,6 +45,8 @@ flowchart TD
     R_ADMIN --> P3
     R_ADMIN --> P4
     R_ADMIN --> P5
+
+    Users ~~~ Roles ~~~ Authorities
 ```
 
 ### Prefix Convention in Spring Security
@@ -219,7 +221,36 @@ public class OrderController {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Method Authorization Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (Security 6)"]
+        SpELStrings["String-Based SpEL in @PreAuthorize"]
+        ManualHierarchyBean["Manual RoleHierarchyImpl Bean Configuration"]
+        RuntimeAOP["Runtime CGLIB Method Security Interceptors"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Security 7)"]
+        TypeSafeAuth["Type-Safe Java 21 Pattern-Matched Rules"]
+        DeclarativeHierarchy["application.yml Role Hierarchy Declarations"]
+        AOTCompiledSpEL["AOT Pre-Compiled SpEL AST Evaluators"]
+    end
+
+    SB3 ==>|Authorization Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Authorization Feature | Spring Boot 3.x (Security 6) | Spring Boot 4.x (Security 7) |
+| :--- | :--- | :--- |
+| **Role Hierarchy Configuration** | Required declaring a `RoleHierarchyImpl` bean with formatted string rules (`ROLE_ADMIN > ROLE_STAFF \n ROLE_STAFF > ROLE_USER`). | **Declarative Hierarchy Properties**: Configurable directly via `spring.security.role-hierarchy.rules` in YAML. |
+| **SpEL Expression Performance** | Parsed and evaluated dynamically at method invocation via reflection. | **AOT Pre-Compiled SpEL**: Pre-compiled into direct Java bytecode expressions during build. |
+| **Method Security Interceptor** | `AuthorizationManagerBeforeMethodInterceptor` using AOP proxies. | **Class-File API Bytecode Weaving**: Native zero-overhead method security invocation. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Spring Security 6 Method Security Documentation](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html) — Architecture of before/after method interceptors.
 - [Spring Expression Language (SpEL) Security Expressions](https://docs.spring.io/spring-security/reference/servlet/authorization/expression-based.html) — Built-in variables (`authentication`, `principal`, `hasRole`, `hasAuthority`).
@@ -227,7 +258,7 @@ public class OrderController {
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the fundamental difference between `hasRole('MANAGER')` and `hasAuthority('MANAGER')` in SpEL expressions?"
     **Answer**: `hasRole('MANAGER')` automatically looks for a `GrantedAuthority` with the `ROLE_` prefix (`ROLE_MANAGER`), whereas `hasAuthority('MANAGER')` checks for the literal string `MANAGER` without prefixing.

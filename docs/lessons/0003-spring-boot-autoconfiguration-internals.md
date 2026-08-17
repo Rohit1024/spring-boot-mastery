@@ -185,14 +185,46 @@ Negative matches:
 
 ---
 
-## 7. Primary Source & Further Reading
+## 7. Spring Boot 3 vs Spring Boot 4: Auto-Configuration Evolution
+
+Spring Boot 4 optimizes auto-configuration discovery for instant startup times and native images:
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        ImportsFile["AutoConfiguration.imports (Runtime File Read)"]
+        ReflectionCond["Runtime Reflection Condition Checks"]
+        AllInOne["Monolithic Starter Packages"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        AOTIndex["AOT Generated AutoConfig Index"]
+        StaticCond["Compile-Time Condition Pruning"]
+        ModularStarters["Fine-Grained Modular Starters"]
+    end
+
+    SB3 ==>|Build-Time Acceleration| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Auto-Configuration Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Registration Mechanism** | `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports` | **AOT Pre-Compiled Auto-Configuration Index**: Scanned and verified at compile-time. |
+| **Condition Evaluation** | Evaluated dynamically at JVM boot using reflection. | **Hybrid Static/Dynamic Evaluation**: Unmatched starters are pruned before classloading. |
+| **Legacy `spring.factories`** | Deprecated for auto-configuration (still allowed for initializers). | **Fully Removed**: Hard error if legacy `spring.factories` auto-config entries are found. |
+| **Starter Modularity** | Starters bundle broad transitives (e.g. all of Jackson + Tomcat). | **Modularized Component Starters** (e.g. `spring-boot-starter-web-minimal`, virtual thread native). |
+
+---
+
+## 8. Primary Source & Further Reading
 
 - [Spring Boot Reference: Creating Your Own Auto-Configuration](https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html) — Official guide on conditional loading.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 9. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the primary purpose of `@ConditionalOnMissingBean` in Spring Boot's internal starters?"
     **Answer**: It registers default framework beans while allowing developers to provide their own custom bean overrides seamlessly.

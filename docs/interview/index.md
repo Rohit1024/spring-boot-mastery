@@ -64,7 +64,22 @@ Curated, high-signal technical and architectural interview questions for Senior 
 
 ---
 
+## 📦 Packaging, Containerization (Jib), Multi-Cloud Registries & GraalVM Native
+- **Fat JAR vs Layered JAR**: Why does deploying a monolithic Fat JAR inside a Docker container destroy Docker layer caching? Explain how `jarmode=layertools` extracts the archive into four discrete layers (`dependencies`, `spring-boot-loader`, `snapshot-dependencies`, `application`).
+- **Google Jib Architecture**: How does Google Jib construct OCI-compliant container images without a Docker daemon or Dockerfile? What are the security benefits in Kubernetes-based CI/CD pipelines?
+- **Jib Layer Caching Performance**: How does Jib arrange build outputs so that a one-line Java code change only invalidates and pushes a ~200KB classes layer instead of the entire application footprint?
+- **Multi-Cloud Credential Helpers**: How does Jib authenticate with Google Cloud Artifact Registry (`docker-credential-gcr`), AWS ECR (`docker-credential-ecr-login`), and Azure ACR (`docker-credential-acr-env`) without storing static secrets in build files?
+- **Container Memory Ergonomics**: Why is `-XX:MaxRAMPercentage=75.0` strongly preferred over fixed `-Xmx` values when running Java containers in Kubernetes?
+- **GraalVM Closed-World Assumption**: What is the Closed-World Assumption in GraalVM Ahead-Of-Time (AOT) compilation? Why does dead-code elimination break un-hinted runtime reflection and dynamic proxies?
+- **Spring AOT Processing Engine**: How does Spring Boot 3+ evaluate bean definitions and `@Conditional` annotations at build time to generate static initializers and reflection reachability metadata?
+- **Custom `RuntimeHintsRegistrar`**: When and how do you implement `RuntimeHintsRegistrar` or `@RegisterReflectionForBinding` to register third-party DTOs and resources for GraalVM native compilation?
+- **GraalVM + Jib Hybrid Containerization**: Explain how to package a compiled GraalVM native machine executable into a microscopic (~45MB) `gcr.io/distroless/base-debian12` container using Jib's `extraDirectories` and entrypoint configuration.
+- **Troubleshooting Native Container Failures**: Why does running a dynamically linked GraalVM native binary on a `distroless/static-debian12` base image trigger `exec user process caused: no such file or directory`, and how do you resolve it?
+
+---
+
 ## ⚡ Distributed Systems & Microservices
 - **SAGA vs 2PC**: Why is Two-Phase Commit anti-pattern in microservices, and how does SAGA choreography handle rollbacks via compensating transactions?
 - **Transactional Outbox**: How do you guarantee zero-loss message publishing between PostgreSQL and Apache Kafka?
 - **Rate Limiting**: Contrast Token Bucket vs Sliding Window Log implementation using Redis Lua scripts.
+

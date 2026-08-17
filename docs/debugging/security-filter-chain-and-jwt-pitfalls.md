@@ -182,4 +182,4 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 | ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Actuator Exposure & MDC Leaks**](actuator-security-and-logging-leaks.md) | [**All Debugging Guides**](index.md) | *(Module 7 Kafka Debugging Coming Soon)* |
+| [⬅️ **Troubleshooting Actuator Exposure & MDC Leaks**](actuator-security-and-logging-leaks.md) | [**All Debugging Guides**](index.md) | [➡️ **Jib Auth & GraalVM Native Troubleshooting**](jib-cloud-auth-and-graalvm-native-pitfalls.md) |

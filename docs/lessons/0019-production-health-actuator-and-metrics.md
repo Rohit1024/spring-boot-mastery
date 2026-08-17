@@ -258,7 +258,36 @@ business_checkout_latency_seconds_count{application="order-service",environment=
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Spring Boot 3 vs Spring Boot 4: Observability & Metrics Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        PrometheusPull["Prometheus Scrape Endpoint (/actuator/prometheus)"]
+        Micrometer11["Micrometer 1.1x Facade"]
+        PlatformThreadMetrics["jvm.threads.live (Platform Threads)"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        OTLPPush["Native OpenTelemetry Protocol (OTLP) Push Exporter"]
+        LoomMetrics["jvm.threads.virtual.* (Loom Concurrency Telemetry)"]
+        HTTP3Actuator["Dedicated HTTP/3 Management Listener"]
+    end
+
+    SB3 ==>|Telemetry Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Observability Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Telemetry Standard** | Prometheus pull model via `/actuator/prometheus` scraper. | **OpenTelemetry (OTLP) Push Native**: Direct streaming of metrics, traces, and logs over gRPC/HTTP to OTel collectors. |
+| **Virtual Thread Metrics** | Basic thread counts; virtual threads are un-named and un-tracked by default. | **Native Loom Gauges**: Auto-instruments pinned virtual threads, carrier thread saturation, and fork rates. |
+| **Actuator Isolation** | Standard secondary HTTP port binding (`management.server.port=8081`). | **Multi-Protocol Management Endpoint**: Direct HTTP/3 / gRPC management port bindings. |
+
+---
+
+## 8. Primary Sources & Further Reading
 
 - [Spring Boot Actuator Reference](https://docs.spring.io/spring-boot/reference/actuator/index.html) — Endpoints, metrics, and security.
 - [Micrometer Core Documentation](https://micrometer.io/docs/concepts) — Concepts of Counters, Timers, Gauges, and percentiles.
@@ -266,7 +295,7 @@ business_checkout_latency_seconds_count{application="order-service",environment=
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 9. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the fundamental operational difference between Kubernetes Liveness and Readiness probes?"
     **Answer**: Liveness probes trigger pod restarts when the internal JVM state is unrecoverable, while Readiness probes temporarily remove pods from traffic routing when dependencies are unavailable.

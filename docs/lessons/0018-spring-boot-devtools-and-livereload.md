@@ -15,7 +15,7 @@ Fast feedback loops are the hallmark of high-performing engineering teams. Resta
 In standard Spring Boot deployments, restarting the application forces the JVM to load thousands of external classes (Spring Core, Hibernate, Jackson, Netty, database drivers) from disk into the JVM metaspace.
 
 ``` mermaid
-flowchart LR
+flowchart TD
     ColdStart["❄️ Full Cold Restart<br/>(10 - 30 seconds)"] --> Reindex["Scan & Load 5,000+ External JAR Classes"]
     Reindex --> AppContext["Initialize ApplicationContext & Beans"]
 ```
@@ -144,15 +144,44 @@ spring.devtools.livereload.enabled=true
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Spring Boot 3 vs Spring Boot 4: Inner-Loop Tooling Evolution
 
-- [Spring Boot Reference Guide: Developer Tools](https://docs.spring.io/spring-boot/reference/using/devtools.html) — Authoritative documentation on DevTools classloaders and triggers.
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        RestartCL["Two-ClassLoader Restart Mechanism"]
+        DevToolsJar["spring-boot-devtools Dependency"]
+        EarlyServiceConn["Early @ServiceConnection (Boot 3.1+)"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        ClassFileHotSwap["Class-File API Instant Method Hot-Swap"]
+        NativeDevCompose["Native Dev Compose & Testcontainers Runtime"]
+        AOTDevMode["Instant AOT Local Preview Mode"]
+    end
+
+    SB3 ==>|Inner-Loop Acceleration| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Developer Tooling Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Hot-Reload Architecture** | Ephemeral `RestartClassLoader` rebuilding the entire application context in ~500ms. | **Class-File API Bytecode Hot-Patching**: Swaps method bodies in-place without triggering full Spring Context teardown. |
+| **Containerized Local Dev** | Optional integration via `spring-boot-docker-compose`. | **First-Class Dev Environment Management**: Automatic container bootstrapping and port auto-wiring standard. |
+| **AOT Development Preview** | Required building native image binary to test AOT compliance. | **In-JVM AOT Simulation Mode**: Tests ahead-of-time bean registrations instantly inside local JVM. |
+
+---
+
+## 8. Primary Sources & Further Reading
+
+- [Spring Boot DevTools Official Reference](https://docs.spring.io/spring-boot/reference/using/devtools.html) — Classloader architecture, property overrides, and remote debugging.
 - [Spring Boot DevTools LiveReload Docs](https://docs.spring.io/spring-boot/reference/using/devtools.html#using.devtools.livereload) — Embedded WebSocket LiveReload setup.
 - [Baeldung: Spring Boot DevTools Explained](https://www.baeldung.com/spring-boot-devtools) — Deep dive into automatic properties and classloader mechanics.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 9. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why does Spring Boot DevTools restart the application in ~500ms compared to a 15s cold boot?"
     **Answer**: It uses two ClassLoaders; third-party dependency JARs remain frozen in the Base ClassLoader, while only workspace application classes are recreated in the ephemeral Restart ClassLoader.

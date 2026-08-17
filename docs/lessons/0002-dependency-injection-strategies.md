@@ -91,7 +91,7 @@ public class UserService {
 When an interface has multiple implementation beans in the `ApplicationContext`, Spring needs explicit instructions on which bean to inject.
 
 ``` mermaid
-flowchart LR
+flowchart TD
     OS["OrderService"] -->|Needs| PG["«interface» PaymentGateway"]
     PG -.->|implements| S["StripeGateway<br/>@Qualifier(&quot;stripeGateway&quot;)"]
     PG -.->|implements| P["PayPalGateway<br/>@Primary"]
@@ -208,14 +208,69 @@ flowchart TD
 
 ---
 
-## 5. Primary Source & Further Reading
+## 5. Spring Boot 3 vs Spring Boot 4: Dependency Injection Evolution
+
+The DI container evolves significantly in **Spring Boot 4 / Spring Framework 7**:
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (Spring 6)"]
+        ClassDI["Standard Class Constructor DI"]
+        SpringLang["org.springframework.lang.@Nullable"]
+        TLInject["ThreadLocal Request/Session Injections"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Spring 7)"]
+        RecordDI["Java Record Beans as First-Class Components"]
+        JSpecifyDI["Standard JSpecify Null-Safety Enforcement"]
+        ScopedValDI["Java 21+ ScopedValue Context Injection"]
+    end
+
+    SB3 ==>|Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Record Components as Beans** | Supported, but required manual component annotations or configuration classes. | **First-Class Component Records**: Clean immutable record beans with canonical constructor DI. |
+| **Optional Dependency Null-Safety** | `@Autowired(required = false)` or `Optional<T>` wrapping. | **JSpecify `@Nullable` Parameter Type**: Enforces compile-time and container-level null-safety. |
+| **Thread Context Propagation** | Backed by `ThreadLocal` proxies (heavy footprint under Loom). | **`ScopedValue` Context Injection**: High-performance, immutable context sharing across Virtual Threads. |
+
+```java
+// Spring Boot 4 / Spring 7: Immutable Record Bean with JSpecify Constructor DI
+package com.example.service;
+
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
+import org.springframework.stereotype.Service;
+
+@Service
+public record OrderProcessingService(
+    @NonNull PaymentGateway paymentGateway,
+    @NonNull InventoryClient inventoryClient,
+    @Nullable FraudDetector fraudDetector // Optional: injected as null without throwing NoSuchBeanDefinitionException
+) {
+    public void processOrder(Long orderId) {
+        if (fraudDetector != null) {
+            fraudDetector.verify(orderId);
+        }
+        paymentGateway.charge(orderId);
+        inventoryClient.reserve(orderId);
+    }
+}
+```
+
+---
+
+## 6. Primary Source & Further Reading
 
 - [Spring Framework Reference: Dependencies & Injection Mechanics](https://docs.spring.io/spring-framework/reference/core/beans/dependencies.html) — Official documentation on dependency resolution.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 6. Knowledge Check & Retrieval Practice
+## 7. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why does constructor injection guarantee fail-fast behavior compared to field injection?"
     **Answer**: Constructor injection prevents creating an incomplete object, failing immediately during initial instantiation if any dependency is absent.

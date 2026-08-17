@@ -28,6 +28,8 @@ flowchart TD
     App -->|"@EnableJpaRepositories (primary)"| DS1
     App -->|"@EnableJpaRepositories (secondary)"| DS2
     App -->|"@EnableMongoRepositories"| MongoDS
+
+    JPA_RDBMS ~~~ Mongo_NoSQL
 ```
 
 ---
@@ -269,7 +271,36 @@ public interface AuditEventRepository extends MongoRepository<AuditEventDocument
 
 ---
 
-## 5. Primary Sources & Further Reading
+## 5. Spring Boot 3 vs Spring Boot 4: Multi-Database & Vector Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        ManualDataSources["Manual EMF & TxManager Boilerplate Beans"]
+        RoutingThreadLocal["ThreadLocal Read/Write Routing"]
+        TraditionalNoSQL["Standard Document & Key-Value NoSQL"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        DeclarativeMultiDB["Declarative Multi-Tenant & Multi-Source Config"]
+        ScopedValRouting["ScopedValue Replica Lookup Engine"]
+        NativeVectorStarters["Native AI Vector Store Starters (pgvector / Mongo Vector)"]
+    end
+
+    SB3 ==>|Polyglot Cloud Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Architecture Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Multi-DataSource Wiring** | Required ~60 lines of boilerplate `@Configuration` with explicit `EntityManagerFactoryBuilder`. | **Declarative Multi-DataSource Starters**: Simple profile and prefix-based automatic repository package binding. |
+| **Read/Write Replica Routing** | Backed by `ThreadLocal` query inspect in `TransactionSynchronizationManager`. | **Loom-Native Scoped Routing**: High-throughput routing without thread pinning under Virtual Threads. |
+| **Vector Database Integration** | Required third-party clients or manual JDBC SQL for embedding stores. | **First-Class Vector Repositories**: Integrated similarity search (`similaritySearch()`) via `spring-boot-starter-vector-pgvector`. |
+
+---
+
+## 6. Primary Sources & Further Reading
 
 - [Spring Boot Reference: Two DataSources](https://docs.spring.io/spring-boot/reference/data/sql.html#data.sql.datasource.two-datasources) — Multi-datasource configuration guidelines.
 - [Spring Data MongoDB Reference](https://docs.spring.io/spring-data/mongodb/reference/) — Complete documentation for MongoDB repositories and templates.
@@ -277,7 +308,7 @@ public interface AuditEventRepository extends MongoRepository<AuditEventDocument
 
 ---
 
-## 6. Knowledge Check & Retrieval Practice
+## 7. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: Why does Spring Boot require explicit `EntityManagerFactory` and `TransactionManager` beans when configuring two DataSources?"
     **Answer**: Multiple DataSources cause Spring Boot's automatic single-datasource autoconfiguration to back off; explicit beans assign each repository package to its corresponding database and transaction manager.

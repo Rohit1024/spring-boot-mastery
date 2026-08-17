@@ -17,7 +17,7 @@ In this lesson, you will integrate `springdoc-openapi`, annotate endpoints and D
 SpringDoc inspects Spring MVC's `RequestMappingHandlerMapping`, Java reflection metadata, and Jakarta Bean Validation annotations (`@NotNull`, `@Size`, `@Pattern`) at runtime to dynamically construct an OpenAPI 3.0 specification in JSON/YAML:
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph SpringApp["🚀 Spring Boot 3 Application"]
         Controllers["@RestController Endpoints"]
         DTOs["DTO Records + @Schema + @Valid"]
@@ -260,7 +260,36 @@ public class ApiGroupingConfig {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Spring Boot 3 vs Spring Boot 4: OpenAPI & Documentation Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        OAS30["OpenAPI 3.0 Specification"]
+        ManualSchema["Verbose @Schema Annotations on Fields"]
+        SpringDoc2["SpringDoc OpenAPI 2.x Starters"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        OAS31["OpenAPI 3.1 & JSON Schema 2020-12 Native"]
+        AutoRecordSchema["Zero-Boilerplate Record & JSpecify Schema Inference"]
+        AOTOpenAPI["AOT Pre-Generated Static OpenAPI Docs"]
+    end
+
+    SB3 ==>|API Contract Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Documentation Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **OpenAPI Specification** | OpenAPI 3.0.x with limited JSON Schema compatibility. | **OpenAPI 3.1.x**: 100% dialect alignment with JSON Schema 2020-12. |
+| **Record & Nullability Extraction** | Required manual `@Schema(nullable = true)` on optional DTO fields. | **Automatic JSpecify & Record Inference**: Infers nullability and types directly from Java records. |
+| **Startup Generation Overhead** | Swagger JSON generated at runtime on first `/v3/api-docs` request via reflection. | **AOT Pre-Compiled OpenAPI Spec**: Generated during build for instantaneous serving in production. |
+
+---
+
+## 8. Primary Sources & Further Reading
 
 - [SpringDoc Official Documentation](https://springdoc.org/) — Authoritative guide for Spring Boot 3.x integration and configuration.
 - [OpenAPI Specification v3.1.0](https://spec.openapis.org/oas/v3.1.0) — The official OpenAPI standard.
@@ -268,7 +297,7 @@ public class ApiGroupingConfig {
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 9. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: How does SpringDoc dynamically populate field validation constraints in Swagger UI?"
     **Answer**: SpringDoc automatically reflects on Jakarta Bean Validation annotations (`@NotNull`, `@Size`, `@Positive`) on DTO fields and translates them directly into OpenAPI schema constraints.

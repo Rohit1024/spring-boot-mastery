@@ -82,6 +82,8 @@ flowchart TD
         S2["Enables validation on @PathVariable & @RequestParam"]
         S3["Supports Validation Groups (Create vs Update)"]
     end
+
+    Jakarta ~~~ Spring
 ```
 
 ### Using Validation Groups (Create vs Update Scenarios)
@@ -166,7 +168,7 @@ public class OrderItemDto {
 When built-in annotations aren't enough (e.g., verifying allowed phone formats, enum values, or tax IDs), create a custom constraint annotation and validator.
 
 ``` mermaid
-flowchart LR
+flowchart TD
     Annotation["1. @ValidPhoneNumber<br/><i>(Constraint Annotation)</i>"] -->|validatedBy| Validator["2. PhoneNumberValidator<br/><i>(implements ConstraintValidator)</i>"]
     Validator -->|Validates field value| Result{"isValid() ?"}
     Result -->|true| Pass["✅ Valid"]
@@ -225,15 +227,44 @@ public record RegisterCustomerRequest(
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Validation Engine Evolution
 
-- [Hibernate Validator Official Reference Guide](https://docs.jboss.org/hibernate/validator/8.0/reference/en-US/html_single/) — Jakarta Validation reference implementation documentation.
-- [Spring Framework Validation Documentation](https://docs.spring.io/spring-framework/reference/core/validation.html) — Spring's integration with Bean Validation.
-- [Jakarta Bean Validation 3.0 Specification](https://jakarta.ee/specifications/bean-validation/3.0/) — Standard specification.
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        JV30["Jakarta Validation 3.0"]
+        ExplicitValid["Explicit @Valid on Record Fields"]
+        SeparateNullChecks["@NotNull Separated from Type System"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        JV31["Jakarta Validation 3.1"]
+        AutoRecordCascade["Automatic Record Component Validation"]
+        JSpecifyIntegration["JSpecify NonNull Integration"]
+    end
+
+    SB3 ==>|Validation Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Validation Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Validation Standard** | Jakarta Bean Validation 3.0 (Hibernate Validator 8). | **Jakarta Bean Validation 3.1 (Hibernate Validator 9)**. |
+| **Java Record Integration** | Required explicit `@Valid` annotation on record components for cascades. | **Native Record Cascade**: Deep validation of record components and sealed hierarchies automatically. |
+| **Null-Safety Bridge** | Required redundant `@NotNull` alongside non-null type systems. | **JSpecify Type Inference**: Framework validates non-null invariants directly from JSpecify type annotations. |
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Primary Sources & Further Reading
+
+- [Hibernate Validator Official Reference Guide](https://docs.jboss.org/hibernate/validator/8.0/reference/en-US/html_single/) — Jakarta Validation reference implementation documentation.
+- [Spring Framework Validation Documentation](https://docs.spring.io/spring-framework/reference/core/validation.html) — Spring's integration with Bean Validation.
+- [Jakarta Bean Validation 3.1 Specification](https://jakarta.ee/specifications/bean-validation/3.1/) — Standard specification.
+
+---
+
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What happens if you omit `@Valid` on a nested `List<OrderItemDto>` field inside a parent `OrderRequestDto`?"
     **Answer**: Hibernate Validator will only check the `@NotNull` and `@Size` on the list itself, completely skipping validation on the internal `OrderItemDto` objects.

@@ -15,7 +15,7 @@ In this lesson, we master **Spring MVC REST controllers**, request parameter bin
 A RESTful API organizes operations around **Resources** identified by standardized URI paths (nouns, plural, hierarchical), acted upon using standard **HTTP Verbs**:
 
 ``` mermaid
-flowchart LR
+flowchart TD
     Client["📱 Client Application"] 
     
     subgraph REST_Operations["HTTP Verbs on Resource: /api/v1/products"]
@@ -182,7 +182,56 @@ public class ProductController {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: REST API & Client Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x"]
+        RestTemplate["RestTemplate (Maintenance Mode)"]
+        ManualClients["Manual WebClient / RestClient Setup"]
+        ClassDTOs["Class-Based DTO Envelopes"]
+    end
+
+    subgraph SB4["Spring Boot 4.x"]
+        DeclarativeHTTP["Declarative @HttpExchange Interfaces"]
+        AutoRestClient["Auto-Configured RestClient Builders"]
+        RecordFirst["Record-First DTO Serialization"]
+    end
+
+    SB3 ==>|Client Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| REST API Feature | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Synchronous HTTP Client** | `RestTemplate` (legacy) / `RestClient` (introduced in 3.2). | **`RestClient` as the Official Standard**: `RestTemplate` deprecated for new architectures. |
+| **Declarative Clients** | Required Spring Cloud OpenFeign or manual `HttpServiceProxyFactory`. | **Native Declarative `@HttpExchange` Starters**: Direct interface proxies generated out-of-the-box. |
+| **Payload Representation** | Standard classes with Jackson ObjectMapper. | **Java Record Payloads**: Zero-reflection Jackson 3 / Jakarta JSON Binding serialization. |
+
+```java
+// Spring Boot 4 Declarative HTTP Client Interface
+package com.example.client;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.service.annotation.GetExchange;
+import org.springframework.web.service.annotation.HttpExchange;
+
+@HttpExchange("/api/v1/users")
+public interface UserClient {
+
+    @GetExchange("/{id}")
+    UserResponse getUserById(@PathVariable("id") Long id);
+
+    @GetExchange
+    List<UserResponse> listUsers(@RequestParam("role") String role);
+}
+```
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Spring Framework Reference: REST Controllers](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller.html) — Controller mappings, parameters, and return types.
 - [RESTful Web Services Architectural Principles (Roy Fielding)](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) — The original dissertation defining REST constraints.
@@ -190,7 +239,7 @@ public class ProductController {
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the semantic difference between the `@Controller` and `@RestController` annotations?"
     **Answer**: `@RestController` combines `@Controller` and `@ResponseBody`, ensuring all method return values are automatically serialized into the HTTP response body as JSON.

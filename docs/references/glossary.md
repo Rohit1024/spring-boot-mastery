@@ -127,7 +127,40 @@ An identity authentication layer built directly on top of OAuth 2.0 that provide
 **PKCE (Proof Key for Code Exchange)**:
 A cryptographic extension (RFC 7636) to the OAuth 2.0 Authorization Code flow that prevents authorization code injection and interception attacks.
 
+## Packaging, Jib, Containerization & GraalVM Native
+
+**Fat JAR (Uber JAR)**:
+An executable archive containing both the compiled application classes and all packed third-party dependency JARs, loaded at runtime via Spring Boot's `JarLauncher`.
+
+**Layered JAR (`layertools`)**:
+A Spring Boot packaging format that separates an executable JAR into four distinct layers (`dependencies`, `spring-boot-loader`, `snapshot-dependencies`, `application`) to maximize Docker layer cache hits.
+
+**Google Jib**:
+A daemonless container packaging tool for Java that builds OCI and Docker-compliant container images directly from Maven or Gradle without requiring a Docker daemon or Dockerfile.
+
+**OCI (Open Container Initiative)**:
+An open governance structure defining vendor-neutral industry standards for container image formats, runtimes, and distribution specifications.
+
+**Distroless Base Image**:
+A hardened, minimal container base image provided by Google that contains only the application and its runtime dependencies (e.g. `glibc`, SSL certs) without a shell, package manager, or standard Linux utilities.
+
+**GraalVM Ahead-Of-Time (AOT) Compilation**:
+A compiler technology that translates Java bytecode into standalone machine code binaries ahead of runtime, eliminating JVM startup and warm-up latency.
+
+**Closed-World Assumption**:
+The static analysis principle in GraalVM AOT compilation requiring that all classes, methods, and fields reachable by the program at runtime be analyzed during build time, stripping any unreferenced code.
+
+**SubstrateVM**:
+The lightweight runtime embedded directly into GraalVM native binaries providing thread management, garbage collection, and memory allocation without a full JDK.
+
+**Reachability Metadata**:
+Configuration files (`reflect-config.json`, `resource-config.json`) and hints provided to GraalVM to inform the compiler about dynamic reflection, proxies, and JNI calls.
+
+**Credential Helper**:
+A standalone executable (e.g. `docker-credential-gcr`, `docker-credential-ecr-login`) that dynamically generates rotating authentication tokens for cloud container registries.
+
 ## Distributed Systems & Messaging
+
 
 
 **Idempotency**:

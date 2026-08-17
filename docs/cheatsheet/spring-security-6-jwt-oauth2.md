@@ -128,4 +128,4 @@ spring:
 
 | ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Observability & Logging Cheatsheet**](spring-observability-devtools.md) | [**All Cheatsheets**](index.md) | *(Module 6 Testing Cheatsheet Coming Soon)* |
+| [⬅️ **Spring Observability & Logging Cheatsheet**](spring-observability-devtools.md) | [**All Cheatsheets**](index.md) | [➡️ **Packaging, Jib & Native Cheatsheet**](spring-boot-jib-docker-native.md) |

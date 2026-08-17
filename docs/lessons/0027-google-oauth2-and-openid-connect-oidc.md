@@ -18,7 +18,7 @@ Understanding the distinction between OAuth 2.0 and OIDC is essential:
 - **OpenID Connect (Identity Layer)**: An identity layer on top of OAuth 2.0. In addition to the access token, the IdP returns an **`id_token`** (a signed JWT containing verified identity claims like `sub`, `email`, `name`, `picture`).
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph OAuth2["OAuth 2.0 (Authorization)"]
         AT["🔑 access_token<br/><i>(Opaque or JWT)</i><br/>Used for API requests"]
     end
@@ -247,7 +247,36 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: OAuth2 & OIDC Identity Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (OAuth2 Client)"]
+        ManualTokenBridge["Manual SuccessHandler JWT URL Redirect"]
+        FrontChannelLogout["Front-Channel Browser Redirect Logout"]
+        ExplicitProviders["Discrete Provider YAML Blocks"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Identity Federation)"]
+        NativeSpaBridge["Built-in Native SPA Token Bridge"]
+        BackChannelLogout["OIDC Back-Channel Logout 1.0 Standard"]
+        PasskeyFederation["Unified Social & Passkey Federation Engine"]
+    end
+
+    SB3 ==>|Identity Federation Modernization| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| OAuth2 & OIDC Capability | Spring Boot 3.x (Security 6) | Spring Boot 4.x (Security 7) |
+| :--- | :--- | :--- |
+| **SPA Token Exchange** | Required custom `OAuth2AuthenticationSuccessHandler` redirecting with query tokens. | **Native SPA Token Bridge**: Auto-provisions and returns secure HttpOnly tokens to configured origins. |
+| **OIDC Single Sign-Out** | Limited to front-channel HTTP 302 browser redirects. | **OIDC Back-Channel Logout 1.0**: IdP sends server-to-server logout tokens to invalidate sessions instantly across fleet. |
+| **Identity Provider Federation** | Strict separation between standard OAuth2 login and local password accounts. | **Unified Social + WebAuthn Identity**: Single declarative interface merging Google, GitHub, and Passkeys. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Spring Security 6 OAuth 2.0 Client Documentation](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/index.html) — Client registrations, authorization code requests, and token exchange.
 - [RFC 7636: Proof Key for Code Exchange (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636) — Preventing authorization code interception attacks.
@@ -255,7 +284,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the key functional difference between OAuth 2.0 and OpenID Connect (OIDC 1.0)?"
     **Answer**: OAuth 2.0 is a delegated authorization framework that issues access tokens for API calls, whereas OIDC 1.0 is an authentication layer built on top of OAuth 2.0 that provides identity tokens (`id_token`) and user profile claims.
@@ -272,6 +301,6 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
 | ⬅️ Previous | 📋 Catalog | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **0026: Role & Permission Access Control**](0026-role-and-permission-based-access-control-rbac.md) | [**All Lessons**](index.md) | [➡️ **0028: Unit Testing with JUnit 5**](../lessons/index.md) |
+| [⬅️ **0026: Role & Permission Access Control**](0026-role-and-permission-based-access-control-rbac.md) | [**All Lessons**](index.md) | [➡️ **0028: Packaging Paradigms (JAR & Docker)**](0028-packaging-paradigms-jar-docker-layering.md) |
 
 🎉 **Congratulations on completing Module 5: Spring Security 6, OAuth2 & Identity!**

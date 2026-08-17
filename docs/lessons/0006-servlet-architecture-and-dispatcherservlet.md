@@ -15,7 +15,7 @@ In this lesson, we demystify the transition from raw **Java Servlets (`HttpServl
 In classic Java Enterprise applications (Java EE / Jakarta EE), the **Servlet Container** (such as Apache Tomcat or Eclipse Jetty) listens on a network port (e.g., `8080`), accepts TCP connections, parses raw HTTP text streams, and maps them to registered `HttpServlet` instances.
 
 ``` mermaid
-flowchart LR
+flowchart TD
     Client["🌐 HTTP Client<br/>(Browser / Curl)"] -->|HTTP Request| Tomcat["📦 Servlet Container<br/>(Embedded Tomcat)"]
     Tomcat -->|web.xml routing| S1["OrderServlet<br/><i>/orders/*</i>"]
     Tomcat -->|web.xml routing| S2["UserServlet<br/><i>/users/*</i>"]
@@ -115,7 +115,7 @@ sequenceDiagram
 Understanding where your logic should execute in the request pipeline is essential for writing clean web applications:
 
 ``` mermaid
-flowchart LR
+flowchart TD
     subgraph Container["Servlet Container Level"]
         F["🛡️ Servlet Filter<br/>(e.g., OncePerRequestFilter)"]
     end
@@ -129,6 +129,8 @@ flowchart LR
     end
 
     F --> I --> A
+
+    Container ~~~ SpringMVC ~~~ CoreSpring
 ```
 
 | Dimension | Servlet Filter (`Filter`) | Spring Interceptor (`HandlerInterceptor`) | AOP Aspect (`@Aspect`) |
@@ -232,7 +234,37 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Spring Boot 3 vs Spring Boot 4: Servlet Pipeline & Web Engine Evolution
+
+``` mermaid
+flowchart TD
+    subgraph SB3["Spring Boot 3.x (Jakarta EE 10)"]
+        Tomcat10["Tomcat 10.1 / Servlet 6.0"]
+        PoolThreads["Platform Worker Thread Pool (200 threads)"]
+        OptInLoom["Opt-in Virtual Threads via Property"]
+    end
+
+    subgraph SB4["Spring Boot 4.x (Jakarta EE 11)"]
+        Tomcat11["Tomcat 11 / Servlet 6.1"]
+        DefaultLoom["Virtual Threads by Default (Unbounded I/O)"]
+        HTTP3["Native HTTP/3 & QUIC Support"]
+    end
+
+    SB3 ==>|Concurrency Revolution| SB4
+```
+
+### Key Differences & Configuration Comparison
+
+| Web Engine Capability | Spring Boot 3.x | Spring Boot 4.x |
+| :--- | :--- | :--- |
+| **Servlet Specification** | Jakarta Servlet 6.0 (Jakarta EE 10). | **Jakarta Servlet 6.1 (Jakarta EE 11)** with enhanced non-blocking buffer transfers. |
+| **Default Concurrency Model** | Traditional 200-worker Platform Thread Pool (`server.tomcat.threads.max=200`). | **Virtual Threads Enabled by Default**: Each request runs on a lightweight Virtual Thread. |
+| **HTTP Protocols** | HTTP/1.1 and HTTP/2 (TLS required). | **HTTP/3 & QUIC Native Support** configurable directly via `server.http3.enabled=true`. |
+| **DispatcherServlet Dispatch** | Standard async Servlet 3.0 `AsyncContext`. | **Cooperative Loom Dispatch**: Direct synchronous-style non-blocking execution without reactive callbacks. |
+
+---
+
+## 7. Primary Sources & Further Reading
 
 - [Spring Framework Reference: Web MVC Architecture](https://docs.spring.io/spring-framework/reference/web/webmvc.html) — The official deep dive into `DispatcherServlet` and handler execution.
 - [Jakarta Servlet Specification](https://jakarta.ee/specifications/servlet/) — Standard defining the Servlet container lifecycle and filter chains.
@@ -240,7 +272,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 8. Knowledge Check & Retrieval Practice
 
 ??? question "Question 1: What is the primary role of the `DispatcherServlet` in Spring MVC?"
     **Answer**: It acts as the Front Controller, centralizing request routing, adapter invocation, argument binding, and response serialization across all endpoints.
