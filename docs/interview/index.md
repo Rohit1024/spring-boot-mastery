@@ -48,6 +48,21 @@ Curated, high-signal technical and architectural interview questions for Senior 
 - **Spring Boot DevTools Classloaders**: Explain the Two-ClassLoader architecture (Base vs Restart) and how it achieves sub-second local restarts.
 - **OpenAPI / Swagger UI Security**: How do you configure SpringDoc to require and inject a JWT Bearer token across protected REST API endpoints?
 
+---
+
+## 🔒 Spring Security 6, JWT, OAuth2 & Identity
+- **Filter Chain Delegation**: Walk through the lifecycle of an incoming HTTP request starting at Tomcat's `DelegatingFilterProxy` through `FilterChainProxy`, `SecurityFilterChain`, `AuthenticationManager`, and `AuthorizationFilter`.
+- **Spring Security 6 Breaking Changes**: Why was `WebSecurityConfigurerAdapter` removed, and how does modern component-based security configure `SecurityFilterChain` beans using lambda DSLs?
+- **Password Hashing Algorithms**: Why are MD5 and SHA-256 considered catastrophic vulnerabilities for password storage, and how do BCrypt and Argon2id implement adaptive cost factors and memory-hardness against GPU/ASIC cracking?
+- **`DelegatingPasswordEncoder` Prefixing**: How does Spring Security use prefixes like `{bcrypt}` and `{argon2}` to support seamless zero-downtime password hashing migrations?
+- **Session Fixation Defense**: Explain how an attacker conducts a session fixation attack and how `migrateSession()` mitigates this during authentication.
+- **JWT Architecture & Statelessness**: Break down the structure of a JWT (Header, Payload, Signature). Why is HMAC-SHA256 symmetric while RS256 is asymmetric, and how do you implement Access Token + Refresh Token rotation?
+- **JWT Filter Exception Handling**: Why does `@RestControllerAdvice` fail to intercept `ExpiredJwtException` thrown inside `JwtAuthenticationFilter`, and how does delegating to `HandlerExceptionResolver` resolve this?
+- **Roles vs Authorities & Prefixing**: Contrast `hasRole('ADMIN')` with `hasAuthority('ADMIN')` in Spring Security. Why does omitting the `ROLE_` prefix cause silent 403 Forbidden errors?
+- **Method Security Mechanics**: How does `@EnableMethodSecurity` use Spring AOP CGLIB proxies to evaluate `@PreAuthorize` and `@PostAuthorize` expressions before/after method invocation?
+- **OAuth 2.0 vs OpenID Connect (OIDC)**: Contrast delegated authorization (`access_token`) with authentication identity (`id_token`). Walk through the Authorization Code Flow with PKCE and explain how a backend bridges social login with stateless JWT issuance for SPA clients.
+
+---
 
 ## ⚡ Distributed Systems & Microservices
 - **SAGA vs 2PC**: Why is Two-Phase Commit anti-pattern in microservices, and how does SAGA choreography handle rollbacks via compensating transactions?

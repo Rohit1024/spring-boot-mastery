@@ -92,6 +92,41 @@ An SLF4J mechanism backed by `ThreadLocal` storage that allows injecting context
 **OpenAPI 3 (OAS3)**:
 A vendor-neutral specification standard for describing RESTful APIs in JSON/YAML, visualized interactively through tools like Swagger UI.
 
+## Spring Security 6, JWT & OAuth2
+
+**SecurityFilterChain**:
+An ordered pipeline of Spring Security filters that intercept incoming HTTP requests to enforce authentication, CSRF, and authorization rules.
+
+**SecurityContextHolder**:
+A framework utility providing access to the current `SecurityContext` (storing the authenticated `Authentication` principal), typically backed by `ThreadLocal` storage.
+
+**Principal**:
+The currently authenticated user, client, or identity within an application.
+
+**GrantedAuthority**:
+An individual permission (e.g. `order:write`) or role (e.g. `ROLE_ADMIN`) granted to an authenticated principal.
+
+**DelegatingPasswordEncoder**:
+A Spring Security password hashing facade that supports algorithm prefixes (e.g. `{argon2}`, `{bcrypt}`) for seamless zero-downtime hash upgrades.
+
+**Argon2id**:
+A memory-hard, GPU/ASIC-resistant cryptographic password hashing algorithm recommended by OWASP and winner of the Password Hashing Competition.
+
+**JWT (JSON Web Token)**:
+An open standard (RFC 7519) defining a compact, URL-safe method for securely transmitting claims between parties as a digitally signed JSON object.
+
+**Method Security**:
+Spring Security's mechanism for enforcing access control at the Java method level using `@PreAuthorize`, `@PostAuthorize`, and SpEL expressions.
+
+**OAuth 2.0**:
+An industry-standard delegated authorization framework enabling third-party applications to obtain limited access to an HTTP service on behalf of a user.
+
+**OpenID Connect (OIDC 1.0)**:
+An identity authentication layer built directly on top of OAuth 2.0 that provides standardized ID tokens (`id_token`) and user profile claims.
+
+**PKCE (Proof Key for Code Exchange)**:
+A cryptographic extension (RFC 7636) to the OAuth 2.0 Authorization Code flow that prevents authorization code injection and interception attacks.
+
 ## Distributed Systems & Messaging
 
 

@@ -153,4 +153,4 @@ public class MdcTaskDecorator implements TaskDecorator {
 
 | ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **Transaction Rollback & Proxy Pitfalls**](transaction-rollback-and-proxy-pitfalls.md) | [**All Debugging Guides**](index.md) | *(Module 5 Security Debugging Coming Soon)* |
+| [⬅️ **Transaction Rollback & Proxy Pitfalls**](transaction-rollback-and-proxy-pitfalls.md) | [**All Debugging Guides**](index.md) | [➡️ **Security Filter Chain & JWT Pitfalls**](security-filter-chain-and-jwt-pitfalls.md) |

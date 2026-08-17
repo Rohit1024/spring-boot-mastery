@@ -48,11 +48,11 @@ All concepts from your comprehensive roadmap are organized into 9 structured, pr
 ---
 
 ## 🔒 Module 5: Spring Security 6, OAuth2 & Identity
-- [ ] **0023: Spring Security 6 Architecture: Filter Chains, AuthenticationManager & SecurityContext**
-- [ ] **0024: Password Hashing (BCrypt, Argon2) & User Session Management**
-- [ ] **0025: Stateless Authentication with JWT (JSON Web Tokens): Issuing, Validating & Filter Interception**
-- [ ] **0026: Role-Based & Permission-Based Access Control (RBAC) with Method Security (`@PreAuthorize`)**
-- [ ] **0027: Third-Party Authentication with Google OAuth2 & OpenID Connect (OIDC)**
+- [x] [**0023: Spring Security 6 Architecture: Filter Chains, AuthenticationManager & SecurityContext**](0023-spring-security-6-architecture-filter-chains.md)
+- [x] [**0024: Password Hashing (BCrypt, Argon2) & User Session Management**](0024-password-hashing-bcrypt-argon2-sessions.md)
+- [x] [**0025: Stateless Authentication with JWT (JSON Web Tokens): Issuing, Validating & Filter Interception**](0025-stateless-jwt-authentication-filter.md)
+- [x] [**0026: Role-Based & Permission-Based Access Control (RBAC) with Method Security (`@PreAuthorize`)**](0026-role-and-permission-based-access-control-rbac.md)
+- [x] [**0027: Third-Party Authentication with Google OAuth2 & OpenID Connect (OIDC)**](0027-google-oauth2-and-openid-connect-oidc.md)
 
 ---
 

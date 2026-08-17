@@ -222,6 +222,6 @@ sequenceDiagram
 
 | ⬅️ Previous | 📋 Catalog | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **0021: Structured Logging & MDC**](0021-structured-logging-logback-mdc.md) | [**All Lessons**](index.md) | [➡️ **0023: Spring Security 6 Architecture**](../lessons/index.md) |
+| [⬅️ **0021: Structured Logging & MDC**](0021-structured-logging-logback-mdc.md) | [**All Lessons**](index.md) | [➡️ **0023: Spring Security 6 Architecture**](0023-spring-security-6-architecture-filter-chains.md) |
 
 🎉 **Congratulations on completing Module 4: Observability, Tooling & API Docs!**

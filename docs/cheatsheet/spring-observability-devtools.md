@@ -137,4 +137,4 @@ curl -X POST http://localhost:8080/actuator/loggers/com.example.demo \
 
 | ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Data JPA & Hibernate Cheatsheet**](spring-data-jpa-hibernate.md) | [**All Cheatsheets**](index.md) | *(Module 5 Security Cheatsheet Coming Soon)* |
+| [⬅️ **Spring Data JPA & Hibernate Cheatsheet**](spring-data-jpa-hibernate.md) | [**All Cheatsheets**](index.md) | [➡️ **Spring Security 6 & JWT Cheatsheet**](spring-security-6-jwt-oauth2.md) |
