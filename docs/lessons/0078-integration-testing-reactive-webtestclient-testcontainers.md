@@ -2,7 +2,7 @@
 icon: lucide/test-tube-2
 ---
 
-# 0078: Integration Testing Reactive APIs with `WebTestClient` & Testcontainers
+# 0078: Integration testing reactive APIs with WebTestClient and Testcontainers
 
 Testing reactive applications presents unique challenges. Because `Mono` and `Flux` execute asynchronously on Netty event loops, traditional assertions fail unless the test explicitly subscribes to the stream. Calling `.block()` in unit tests defeats the reactive model and can cause deadlocks.
 
@@ -12,7 +12,7 @@ In this lesson, you will master testing reactive streams with `StepVerifier`, te
 
 ---
 
-## 1. Reactive Testing Architecture
+## 1. Reactive testing architecture
 
 ``` mermaid
 flowchart TD
@@ -38,7 +38,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -70,7 +70,7 @@ flowchart TD
 
 ---
 
-## 3. Unit Testing Streams with `StepVerifier`
+## 3. Unit testing streams with `StepVerifier`
 
 `StepVerifier` verifies the exact sequence of items and terminal signals emitted by a Publisher:
 
@@ -124,7 +124,7 @@ class ProductServiceTest {
 
 ---
 
-## 4. Testing WebFlux Endpoints with `WebTestClient`
+## 4. Testing WebFlux endpoints with `WebTestClient`
 
 `WebTestClient` is the reactive counterpart to `MockMvc`, providing non-blocking request execution and fluent JSON path assertions:
 
@@ -198,7 +198,7 @@ class ProductControllerTest {
 
 ---
 
-## 5. End-to-End Testing with R2DBC Testcontainers
+## 5. End-to-end testing with R2DBC Testcontainers
 
 ```java
 package com.example.integration;
@@ -248,7 +248,7 @@ class ReactivePersistenceIntegrationTest {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -258,7 +258,7 @@ class ReactivePersistenceIntegrationTest {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
 - [Testing Reactive Streams with StepVerifier](https://projectreactor.io/docs/core/release/reference/#testing).
 - [Spring WebFlux WebTestClient Documentation](https://docs.spring.io/spring-framework/reference/testing/webtestclient.html).
@@ -266,7 +266,7 @@ class ReactivePersistenceIntegrationTest {
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is calling `.block()` in reactive unit tests considered an anti-pattern?"
     **Answer**: It violates the non-blocking execution model, can trigger deadlocks when executed on event loop threads, and fails to verify asynchronous signals properly.
@@ -279,10 +279,10 @@ class ReactivePersistenceIntegrationTest {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0077: Reactive Backpressure: Bounded flatMap & Buffers**](0077-reactive-backpressure-flatmap-buffer-strategies.md) | [**All Lessons**](index.md) | [➡️ **0079: Spring AI: LLM Chat Clients & Prompts**](0079-spring-ai-llm-chatclient-prompts.md) |
+| [**0077: Reactive Backpressure: Bounded flatMap & Buffers**](0077-reactive-backpressure-flatmap-buffer-strategies.md) | [**All Lessons**](index.md) | [ **0079: Spring AI: LLM Chat Clients & Prompts**](0079-spring-ai-llm-chatclient-prompts.md) |
 
 🎉 **Lesson 0078 completed! Proceed to Lesson 0079 to start exploring Spring AI, LLM ChatClients, and prompt engineering.**

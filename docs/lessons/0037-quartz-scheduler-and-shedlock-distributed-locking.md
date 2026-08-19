@@ -2,17 +2,17 @@
 icon: lucide/calendar-clock
 ---
 
-# 0037: Enterprise Task Scheduling with Quartz & Distributed Locking with ShedLock
+# 0037: Task scheduling with Quartz and distributed locking with ShedLock
 
 In modern cloud-native architectures, Spring Boot services are scaled horizontally across multiple Kubernetes Pods or cloud instances. When using Spring's built-in `@Scheduled(cron = "...")` annotation, **every single running instance executes the scheduled task concurrently**.
 
-In critical business workflows—such as generating daily billing invoices or sending payment reminders—concurrent execution results in catastrophic race conditions, duplicate database writes, and customers being billed multiple times.
+In critical business workflows, such as generating daily billing invoices or sending payment reminders, concurrent execution results in catastrophic race conditions, duplicate database writes, and customers being billed multiple times.
 
 In this lesson, you will master distributed execution safety: implementing distributed locking with **ShedLock**, architecting clustered job orchestration with **Quartz Scheduler**, and integrating enterprise schedulers with **Spring Batch**.
 
 ---
 
-## 1. The Multi-Instance Scheduling Collision Problem
+## 1. The multi-instance scheduling collision problem
 
 ``` mermaid
 flowchart TD
@@ -46,11 +46,11 @@ flowchart TD
 
 ---
 
-## 2. Distributed Locking with ShedLock
+## 2. Distributed locking with ShedLock
 
 **ShedLock** ensures that your `@Scheduled` tasks execute **at most once** across your entire distributed server fleet by acquiring a shared database row or Redis key lock.
 
-### Step 1: Database Lock Table Schema (PostgreSQL)
+### Step 1: Database lock table schema (PostgreSQL)
 ```sql
 CREATE TABLE shedlock (
     name VARCHAR(64) NOT NULL PRIMARY KEY,
@@ -60,7 +60,7 @@ CREATE TABLE shedlock (
 );
 ```
 
-### Step 2: Configure `LockProvider` Bean
+### Step 2: Configure `LockProvider` bean
 ```java
 package com.example.scheduler.config;
 
@@ -91,7 +91,7 @@ public class ShedLockConfig {
 }
 ```
 
-### Step 3: Annotating Scheduled Tasks
+### Step 3: Annotating scheduled tasks
 ```java
 package com.example.scheduler.tasks;
 
@@ -122,11 +122,11 @@ public class NightlyBillingScheduler {
 
 ---
 
-## 3. Clustered Enterprise Scheduling with Quartz
+## 3. Clustered enterprise scheduling with Quartz
 
 While ShedLock coordinates simple `@Scheduled` methods, **Quartz Scheduler** provides full enterprise job management: dynamic runtime schedule creation, stateful jobs, cluster failover, and detailed missed-fire handling.
 
-### Quartz Domain Hierarchy:
+### Quartz domain hierarchy
 
 ``` mermaid
 flowchart TD
@@ -151,7 +151,7 @@ flowchart TD
 
 ---
 
-## 4. Quartz Spring Boot Configuration (`application.yml`)
+## 4. Quartz Spring Boot configuration (`applicationyml`)
 
 ```yaml
 spring:
@@ -167,7 +167,7 @@ spring:
       org.quartz.jobStore.misfireThreshold: 60000
 ```
 
-### Implementing a Quartz Job Bridging to Spring Batch:
+### Implementing a Quartz job bridging to Spring batch
 
 ```java
 package com.example.scheduler.quartz;
@@ -220,7 +220,7 @@ public class BatchJobLauncherQuartzJob extends QuartzJobBean {
 
 ---
 
-## 5. Wiring Quartz `JobDetail` and `Trigger` Beans
+## 5. Wiring Quartz `JobDetail` and `Trigger` beans
 
 ```java
 package com.example.scheduler.config;
@@ -257,7 +257,7 @@ public class QuartzScheduleConfig {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Scheduling Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Scheduling evolution
 
 ``` mermaid
 flowchart TD
@@ -276,7 +276,7 @@ flowchart TD
     SB3 ==>|Cloud Orchestration & Loom Schedulers| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Scheduling Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -286,15 +286,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [ShedLock GitHub Repository & Documentation](https://github.com/lukas-krecan/ShedLock) — Multi-node distributed lock providers and timing parameters.
-- [Quartz Enterprise Job Scheduler Documentation](http://www.quartz-scheduler.org/documentation/) — Clustered configuration and misfire policies.
-- [Spring Boot Task Execution and Scheduling](https://docs.spring.io/spring-boot/reference/features/task-execution-and-scheduling.html) — Configuring task executors and schedulers.
+- [ShedLock GitHub Repository & Documentation](https://github.com/lukas-krecan/ShedLock), Multi-node distributed lock providers and timing parameters.
+- [Quartz Enterprise Job Scheduler Documentation](http://www.quartz-scheduler.org/documentation/), Clustered configuration and misfire policies.
+- [Spring Boot Task Execution and Scheduling](https://docs.spring.io/spring-boot/reference/features/task-execution-and-scheduling.html), Configuring task executors and schedulers.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the risk of using `@Scheduled` without ShedLock in a horizontally scaled microservice deployment?"
     **Answer**: All service replicas/pods will execute the scheduled task simultaneously at the trigger timestamp, resulting in concurrent race conditions, duplicate database writes, and resource exhaustion.
@@ -307,10 +307,10 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0036: Multi-Threaded Steps & Partitioning**](0036-multithreaded-steps-and-partitioning.md) | [**All Lessons**](index.md) | [➡️ **0038: Spring for GraphQL**](0038-spring-graphql-schema-queries-mutations.md) |
+| [**0036: Multi-Threaded Steps & Partitioning**](0036-multithreaded-steps-and-partitioning.md) | [**All Lessons**](index.md) | [ **0038: Spring for GraphQL**](0038-spring-graphql-schema-queries-mutations.md) |
 
 🎉 **Congratulations on completing Module 7: Batch Processing & Scheduling!**

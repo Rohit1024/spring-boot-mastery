@@ -2,7 +2,7 @@
 icon: lucide/cloud
 ---
 
-# 0071: Cloud CI/CD: AWS CodePipeline, Buildspec & Elastic Beanstalk
+# 0071: Cloud CI/CD: AWS CodePipeline, Buildspec, and Elastic Beanstalk
 
 Manual server deployments via SSH and FTP are dangerous, unrepeatable, and prone to human error. In high-performing engineering organizations, every code commit pushed to a repository triggers an automated **Continuous Integration and Continuous Deployment (CI/CD)** pipeline.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring multi-stage CI/CD pipelines, authori
 
 ---
 
-## 1. Cloud CI/CD Pipeline Architecture
+## 1. Cloud CI/CD pipeline architecture
 
 ``` mermaid
 flowchart TD
@@ -59,7 +59,7 @@ flowchart TD
 
 ---
 
-## 2. Production AWS CodeBuild Manifest (`buildspec.yml`)
+## 2. Production AWS codebuild manifest (`buildspecyml`)
 
 The `buildspec.yml` file defines the commands and environment settings executed by AWS CodeBuild during the pipeline run:
 
@@ -114,7 +114,7 @@ artifacts:
 
 ---
 
-## 3. AWS Elastic Beanstalk Container Configuration (`Dockerrun.aws.json`)
+## 3. AWS elastic Beanstalk container configuration (`dockerrunawsjson`)
 
 For deploying containerized Spring Boot applications to AWS Elastic Beanstalk:
 
@@ -136,20 +136,20 @@ For deploying containerized Spring Boot applications to AWS Elastic Beanstalk:
 
 ---
 
-## 4. Zero-Downtime Deployment Strategies
+## 4. Zero-downtime deployment strategies
 
 When deploying updates to production, choose the right traffic shifting strategy:
 
 | Deployment Strategy | Mechanism | Downtime | Rollback Speed | Resource Cost |
 | :--- | :--- | :--- | :--- | :--- |
-| **All-at-Once** | Updates all instances simultaneously. | 🔴 30–60s downtime during restart. | Slow | Low (No extra servers). |
+| **All-at-Once** | Updates all instances simultaneously. | 🔴 30-60s downtime during restart. | Slow | Low (No extra servers). |
 | **Rolling** | Updates instances in small batches (e.g. 2 at a time). | 🟢 Zero downtime, but temporary reduced capacity. | Moderate | Low (Uses existing instances). |
 | **Rolling with Additional Batch** | Spins up a new batch of servers first before updating existing instances. | 🟢 Zero downtime, 100% capacity preserved throughout. | Fast | Moderate (Temporary extra servers). |
 | **Blue/Green** | Spins up a duplicate production environment (Green), tests it, and swaps DNS/Load Balancer. | 🟢 Zero downtime, lowest risk. | Instant (< 1s swap back) | High (2x infrastructure cost during rollout). |
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -159,15 +159,15 @@ When deploying updates to production, choose the right traffic shifting strategy
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
 - [AWS CodePipeline User Guide](https://docs.aws.amazon.com/codepipeline/latest/userguide/welcome.html).
 - [AWS CodeBuild buildspec.yml Reference](https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html).
-- [Continuous Delivery: Reliable Software Releases — Jez Humble & David Farley](https://continuousdelivery.com/).
+- [Continuous Delivery: Reliable Software Releases, Jez Humble & David Farley](https://continuousdelivery.com/).
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the primary benefit of a Continuous Deployment (CD) pipeline?"
     **Answer**: It eliminates error-prone manual deployments by automatically building, testing, and safely deploying validated code changes to production environments.
@@ -180,10 +180,10 @@ When deploying updates to production, choose the right traffic shifting strategy
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0070: Kubernetes Orchestration: Pods & Deployments**](0070-kubernetes-orchestration-pods-services.md) | [**All Lessons**](index.md) | [➡️ **0072: Blocking vs Non-Blocking I/O: The Reactive Paradigm**](0072-blocking-vs-nonblocking-reactive-paradigm.md) |
+| [**0070: Kubernetes Orchestration: Pods & Deployments**](0070-kubernetes-orchestration-pods-services.md) | [**All Lessons**](index.md) | [ **0072: Blocking vs Non-Blocking I/O: The Reactive Paradigm**](0072-blocking-vs-nonblocking-reactive-paradigm.md) |
 
 🎉 **Congratulations on completing Module 13: Microservices, Cloud & Distributed Patterns!**

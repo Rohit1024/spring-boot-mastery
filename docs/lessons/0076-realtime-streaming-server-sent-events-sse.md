@@ -2,17 +2,17 @@
 icon: lucide/radio
 ---
 
-# 0076: Real-Time Streaming with Server-Sent Events (SSE)
+# 0076: Real-time streaming with Server-Sent Events (SSE)
 
 Traditional HTTP request-response cycles require clients to constantly poll servers for updates. While WebSockets provide full-duplex communication, they require custom protocol handshakes and custom reconnection handling.
 
-**Server-Sent Events (SSE)** is an HTTP/1.1 and HTTP/2 standard (`text/event-stream`) for **unidirectional, server-to-client real-time streaming**. SSE operates over standard HTTP, works seamlessly through corporate firewalls and proxies, and features native automatic browser reconnection via the HTML5 `EventSource` API.
+**Server-Sent Events (SSE)** is an HTTP/1.1 and HTTP/2 standard (`text/event-stream`) for **unidirectional, server-to-client real-time streaming**. SSE operates over standard HTTP, works seamlessly through corporate firewalls and proxies, and includes native automatic browser reconnection via the HTML5 `EventSource` API.
 
 In this lesson, you will master streaming `Flux<ServerSentEvent<T>>` in Spring WebFlux, crafting custom event names and retry intervals, keeping connections alive through heartbeats, and consuming streams in JavaScript.
 
 ---
 
-## 1. Server-Sent Events (SSE) Streaming Pipeline
+## 1. Server-sent events (SSE) streaming pipeline
 
 ``` mermaid
 flowchart TD
@@ -45,7 +45,7 @@ flowchart TD
 
 ---
 
-## 2. Real-Time Communication Protocols Compared
+## 2. Real-time communication protocols compared
 
 | Feature | Server-Sent Events (SSE) | WebSockets | HTTP Short/Long Polling |
 | :--- | :--- | :--- | :--- |
@@ -57,7 +57,7 @@ flowchart TD
 
 ---
 
-## 3. Spring WebFlux SSE Controller Implementation
+## 3. Spring WebFlux SSE controller implementation
 
 ```java
 package com.example.controller;
@@ -117,7 +117,7 @@ public class StockStreamingController {
 
 ---
 
-## 4. Raw Wire Protocol Format
+## 4. Raw wire protocol format
 
 The HTTP wire format produced by WebFlux adheres to the W3C EventSource standard:
 
@@ -141,7 +141,7 @@ data: {"symbol":"AAPL","price":189.62,"timestamp":"2026-08-17T14:30:05Z"}
 
 ---
 
-## 5. Client Consumption with HTML5 JavaScript
+## 5. Client consumption with html5 javascript
 
 ```javascript
 // Connect to the WebFlux SSE endpoint
@@ -162,7 +162,7 @@ eventSource.onerror = (err) => {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -172,7 +172,7 @@ eventSource.onerror = (err) => {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
 - [W3C Server-Sent Events Specification](https://html.spec.whatwg.org/multipage/server-sent-events.html).
 - [Spring WebFlux Server-Sent Events Documentation](https://docs.spring.io/spring-framework/reference/web/webflux/controller.html#webflux-mvc-sse).
@@ -180,7 +180,7 @@ eventSource.onerror = (err) => {
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the primary advantage of Server-Sent Events over WebSockets for one-way notifications?"
     **Answer**: SSE runs over standard HTTP without custom protocol upgrades, traverses firewalls natively, and includes built-in browser automatic reconnection.
@@ -193,10 +193,10 @@ eventSource.onerror = (err) => {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0075: Non-Blocking Persistence with R2DBC & Reactive Redis**](0075-nonblocking-persistence-r2dbc-reactive-redis.md) | [**All Lessons**](index.md) | [➡️ **0077: Reactive Backpressure: Bounded flatMap & Buffers**](0077-reactive-backpressure-flatmap-buffer-strategies.md) |
+| [**0075: Non-Blocking Persistence with R2DBC & Reactive Redis**](0075-nonblocking-persistence-r2dbc-reactive-redis.md) | [**All Lessons**](index.md) | [ **0077: Reactive Backpressure: Bounded flatMap & Buffers**](0077-reactive-backpressure-flatmap-buffer-strategies.md) |
 
 🎉 **Lesson 0076 completed! Proceed to Lesson 0077 to master reactive backpressure, bounded `flatMap`, and rate buffers.**

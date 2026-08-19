@@ -2,7 +2,7 @@
 icon: lucide/refresh-cw
 ---
 
-# 0064: Distributed Transactions: SAGA Pattern with Kafka Choreography
+# 0064: Distributed transactions: Saga pattern with Kafka choreography
 
 In a monolithic application, maintaining data consistency is straightforward: wrap operations inside `@Transactional` and let the relational database commit or roll back via ACID guarantees. In a microservices architecture with a **database-per-service** model, a single business workflow (such as customer checkout) spans Order, Inventory, Payment, and Shipping services across separate databases.
 
@@ -14,7 +14,7 @@ In this lesson, you will master SAGA Choreography using Apache Kafka event strea
 
 ---
 
-## 1. SAGA Choreography Execution Flow
+## 1. Saga choreography execution flow
 
 ``` mermaid
 flowchart TD
@@ -44,20 +44,20 @@ flowchart TD
 
 ---
 
-## 2. Choreography vs Orchestration
+## 2. Choreography vs orchestration
 
 | Dimension | SAGA Choreography (Event-Driven) | SAGA Orchestration (Command-Driven) |
 | :--- | :--- | :--- |
 | **Coordination Model** | Decentralized: Services listen to Kafka events and react autonomously. | Centralized: A dedicated Orchestrator service commands participants. |
 | **Coupling** | Loosely coupled through integration event schemas. | Participants coupled to the Orchestrator's command contract. |
-| **Complexity** | Simple for 2–4 services; harder to trace as participants grow. | Easy to inspect and monitor central workflow state; higher initial setup. |
+| **Complexity** | Simple for 2-4 services; harder to trace as participants grow. | Easy to inspect and monitor central workflow state; higher initial setup. |
 | **Failure Point** | No single coordinator bottleneck. | Orchestrator service must be highly available. |
 
 ---
 
-## 3. Spring Boot Kafka Choreography Implementation
+## 3. Spring Boot Kafka choreography implementation
 
-### Step 1: Order Service (Initiating SAGA & Listening for Results)
+### Step 1: Order service (initiating Saga listening for results)
 
 ```java
 package com.example.orderservice.service;
@@ -109,7 +109,7 @@ public class OrderSagaManager {
 
 ---
 
-### Step 2: Inventory Service (Forward Action & Compensation Listener)
+### Step 2: Inventory service (forward action compensation listener)
 
 ```java
 package com.example.inventoryservice.service;
@@ -163,7 +163,7 @@ public class InventorySagaListener {
 
 ---
 
-## 4. Key Rules for Reliable SAGA Systems
+## 4. Key rules for reliable Saga systems
 
 > [!IMPORTANT]
 > 1. **Compensating Transactions Must Never Fail**: If a compensating action fails due to transient database issues, it must retry indefinitely until succeeded or route to an alert queue.
@@ -172,7 +172,7 @@ public class InventorySagaListener {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -182,15 +182,15 @@ public class InventorySagaListener {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Microservices Patterns: SAGA Pattern — Chris Richardson](https://microservices.io/patterns/data/saga.html).
-- [Designing Data-Intensive Applications — Martin Kleppmann](https://dataintensive.net/) — Distributed consistency models and atomic commit protocols.
+- [Microservices Patterns: SAGA Pattern, Chris Richardson](https://microservices.io/patterns/data/saga.html).
+- [Designing Data-Intensive Applications, Martin Kleppmann](https://dataintensive.net/), Distributed consistency models and atomic commit protocols.
 - [Enterprise Integration Patterns: Compensating Transaction](https://www.enterpriseintegrationpatterns.com/).
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why is Two-Phase Commit (2PC) discouraged in modern microservices?"
     **Answer**: 2PC holds blocking cross-network database locks that increase latency, reduce availability, create single points of failure, and tightly couple independent service databases.
@@ -203,10 +203,10 @@ public class InventorySagaListener {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0063: Fault Tolerance with Resilience4j**](0063-fault-tolerance-resilience4j.md) | [**All Lessons**](index.md) | [➡️ **0065: Guaranteed Message Delivery: Transactional Outbox Pattern**](0065-transactional-outbox-pattern-postgres-kafka.md) |
+| [**0063: Fault Tolerance with Resilience4j**](0063-fault-tolerance-resilience4j.md) | [**All Lessons**](index.md) | [ **0065: Guaranteed Message Delivery: Transactional Outbox Pattern**](0065-transactional-outbox-pattern-postgres-kafka.md) |
 
 🎉 **Lesson 0064 completed! Proceed to Lesson 0065 to master guaranteed zero-loss event publishing with the Transactional Outbox Pattern.**

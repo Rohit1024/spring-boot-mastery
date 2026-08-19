@@ -2,19 +2,19 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting REST API Exceptions: Validation, Deserialization & Media Types
+# Troubleshooting REST API exceptions: Validation, deserialization, and media types
 
-When developing and operating RESTful services in Spring Boot, API consumers frequently encounter client-side (`4xx`) and unexpected server-side (`500`) failures.
+When developing and operating RESTful services in Spring Boot, API consumers encounter client-side (`4xx`) and server-side (`500`) failures.
 
-This diagnostic playbook covers root-cause analyses, sequence traces, and concrete resolutions for the 4 most common REST API exceptions in Spring Boot 3.x.
+Here are the root causes, sequence traces, and resolutions for the 4 most common REST API exceptions in Spring Boot 3.x.
 
 ---
 
-## 1. Quick Diagnostic Decision Tree
+## 1. Quick diagnostic decision tree
 
 ``` mermaid
 flowchart TD
-    Start["🚨 API Request Failed"] --> CheckStatus{"What is the HTTP Status Code?"}
+    Start["API Request Failed"] --> CheckStatus{"What is the HTTP Status Code?"}
     
     CheckStatus -->|400 Bad Request| Check400{"Inspect Error Payload"}
     Check400 -->|MethodArgumentNotValidException| FixVal["Fix: Field failed @Valid constraint.<br/>Inspect invalidFields map in ProblemDetail."]
@@ -29,12 +29,12 @@ flowchart TD
 
 ---
 
-## 2. Issue 1: `MethodArgumentNotValidException` (Validation Failures)
+## 2. Issue 1: `MethodArgumentNotValidException` (Validation failures)
 
-### The Symptom:
+### Symptoms
 Client receives `400 Bad Request`, but the response is either a generic message or contains an unparsed raw Java exception string.
 
-### The Root Cause:
+### Root cause
 A request body failed one or more Jakarta Bean Validation constraints (`@NotBlank`, `@Min`, `@Pattern`) triggered by `@Valid`.
 
 ``` mermaid
@@ -49,7 +49,7 @@ sequenceDiagram
     GlobalExceptionHandler-->>Client: 400 Bad Request (RFC 9457 with invalidFields)
 ```
 
-### The Resolution:
+### Resolution
 Capture `BindingResult.getFieldErrors()` in your global `@RestControllerAdvice` and format it into a structured map:
 
 ```java
@@ -75,18 +75,18 @@ protected ResponseEntity<Object> handleMethodArgumentNotValid(
 
 ---
 
-## 3. Issue 2: `HttpMessageNotReadableException` (JSON Deserialization Mismatch)
+## 3. Issue 2: `HttpMessageNotReadableException` (JSON deserialization mismatch)
 
-### The Symptom:
+### Symptoms
 Client receives `400 Bad Request` with:
 `JSON parse error: Cannot deserialize value of type java.lang.Integer from String "premium"`
 
-### The Root Cause:
-1. Client passed a String where an Integer, Long, or Boolean was expected.
-2. An invalid Enum string was passed that does not match any constant in the target Java `enum`.
+### Root cause
+1. Client passed a string where an integer, long, or boolean was expected.
+2. An invalid enum string was passed that does not match any constant in the target Java `enum`.
 3. Malformed JSON syntax (trailing comma, unquoted key, unclosed brace).
 
-### The Resolution:
+### Resolution
 1. Use Jackson `@JsonFormat` or custom deserializers for complex formats:
 ```java
 public record SubscriptionRequest(
@@ -110,31 +110,31 @@ spring:
 
 ## 4. Issue 3: `HttpMediaTypeNotSupportedException` (415)
 
-### The Symptom:
+### Symptoms
 Client sends `POST /api/v1/orders` with a valid JSON body, but gets:
 `HTTP 415 Unsupported Media Type: Content-Type 'text/plain;charset=UTF-8' is not supported`
 
-### The Root Cause:
-The HTTP client (e.g. Curl, Axios, Postman) omitted the `Content-Type: application/json` header, causing Tomcat to default to `text/plain` or `application/x-www-form-urlencoded`.
+### Root cause
+The HTTP client omitted the `Content-Type: application/json` header, causing Tomcat to default to `text/plain` or `application/x-www-form-urlencoded`.
 
-### The Resolution:
-1. **Client Fix**: Explicitly pass header `Content-Type: application/json`.
-2. **Controller Safeguard**: Specify `consumes` and `produces` headers on `@PostMapping`:
+### Resolution
+1. **Client fix**: Explicitly pass header `Content-Type: application/json`.
+2. **Controller safeguard**: Specify `consumes` and `produces` headers on `@PostMapping`:
 ```java
 @PostMapping(
     consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE
 )
 public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest req) {
-    ...
+    // Controller logic
 }
 ```
 
 ---
 
-## 5. Issue 4: Cross-Origin Resource Sharing (CORS) Failures
+## 5. Issue 4: Cross-Origin Resource Sharing (CORS) failures
 
-### The Symptom:
+### Symptoms
 Browser console displays:
 `Access to XMLHttpRequest at 'http://localhost:8080/api/v1/data' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.`
 
@@ -144,10 +144,10 @@ sequenceDiagram
     Browser->>Backend: HTTP OPTIONS /api/v1/data (Preflight)
     Note over Browser,Backend: Origin: http://localhost:3000<br/>Access-Control-Request-Method: POST
     Backend-->>Browser: HTTP 403 Forbidden (Missing CORS headers)
-    Note over Browser: Browser blocks actual POST request!
+    Note over Browser: Browser blocks actual POST request.
 ```
 
-### The Resolution:
+### Resolution
 Configure a global `CorsConfigurationSource` or register via `WebMvcConfigurer`:
 
 ```java
@@ -168,9 +168,8 @@ public class CorsConfig implements WebMvcConfigurer {
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Circular Dependencies & BeanCreationException**](circular-dependencies.md) | [**All Debugging Guides**](index.md) | [➡️ **Hibernate N+1 & LazyInitializationException**](jpa-n-plus-one-and-lazy-init.md) |
-
+| [**Circular dependencies and BeanCreationException**](circular-dependencies.md) | [**All debugging guides**](index.md) | [**Hibernate N+1 and LazyInitializationException**](jpa-n-plus-one-and-lazy-init.md) |

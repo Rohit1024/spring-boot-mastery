@@ -2,7 +2,7 @@
 icon: lucide/check-circle-2
 ---
 
-# 0048: Unit Testing with JUnit 5 & AssertJ
+# 0048: Unit testing with JUnit 5 and AssertJ
 
 High-velocity engineering teams rely on fast, deterministic unit tests to catch regressions before code ever touches a staging environment. If tests are slow, flaky, or difficult to read, developer productivity collapses.
 
@@ -12,7 +12,7 @@ In this lesson, you will master writing unit tests using JUnit 5 annotations, ex
 
 ---
 
-## 1. JUnit 5 Test Execution Lifecycle
+## 1. JUnit 5 test execution lifecycle
 
 ``` mermaid
 flowchart TD
@@ -39,7 +39,7 @@ flowchart TD
 
 ---
 
-## 2. Core JUnit 5 Annotations & Structure
+## 2. Core JUnit 5 annotations structure
 
 A production unit test isolates pure business logic without spinning up Spring's heavyweight `ApplicationContext`:
 
@@ -80,11 +80,11 @@ class OrderPricingCalculatorTest {
 
 ---
 
-## 3. Parameterized Testing with `@ParameterizedTest`
+## 3. Parameterized testing with `@ParameterizedTest`
 
 Instead of duplicating test methods for different input combinations, use parameterized tests:
 
-### 1. `@ValueSource` & `@CsvSource`
+### 1. `@ValueSource` `@CsvSource`
 ```java
 @ParameterizedTest(name = "Tier {0} on ${1} should yield final price ${2}")
 @CsvSource({
@@ -99,7 +99,7 @@ void shouldCalculateTierDiscounts(CustomerTier tier, BigDecimal subtotal, BigDec
 }
 ```
 
-### 2. Complex Objects via `@MethodSource`
+### 2. Complex objects via `@MethodSource`
 ```java
 static Stream<Arguments> provideInvalidOrders() {
     return Stream.of(
@@ -119,11 +119,11 @@ void shouldRejectInvalidSubtotals(BigDecimal invalidSubtotal, String expectedErr
 
 ---
 
-## 4. Fluent Assertions with AssertJ
+## 4. Fluent assertions with AssertJ
 
 AssertJ transforms error diagnostics by providing descriptive, chained assertions:
 
-### 1. Collection & Object Property Extraction
+### 1. Collection object property extraction
 ```java
 List<OrderItem> items = order.getItems();
 
@@ -138,7 +138,7 @@ assertThat(items)
         );
 ```
 
-### 2. Deep Object Comparison (`usingRecursiveComparison`)
+### 2. Deep object comparison (`usingrecursivecomparison`)
 ```java
 Customer actual = customerService.findById(1L);
 Customer expected = new Customer(1L, "Alice", "alice@example.com");
@@ -152,7 +152,7 @@ assertThat(actual)
 
 ---
 
-## 5. Hierarchical Context with `@Nested`
+## 5. Hierarchical context with `@Nested`
 
 Group related test scenarios logically using `@Nested` test classes to model Behavior-Driven Development (BDD) specifications:
 
@@ -189,7 +189,7 @@ class BankAccountTest {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Testing & AssertJ Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Testing AssertJ evolution
 
 ``` mermaid
 flowchart TD
@@ -208,7 +208,7 @@ flowchart TD
     SB3 ==>|Virtual Thread Test Engines & Pattern Matching Assertions| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Testing Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -218,15 +218,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/) — Complete specification for Jupiter extensions, lifecycle, and parallel execution.
-- [AssertJ Core Documentation](https://assertj.github.io/doc/) — Fluent assertions for collections, maps, dates, and recursive comparisons.
-- [Martin Fowler: Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html) — Balancing unit, integration, and UI testing layers.
+- [JUnit 5 User Guide](https://junit.org/junit5/docs/current/user-guide/), Complete specification for Jupiter extensions, lifecycle, and parallel execution.
+- [AssertJ Core Documentation](https://assertj.github.io/doc/), Fluent assertions for collections, maps, dates, and recursive comparisons.
+- [Martin Fowler: Practical Test Pyramid](https://martinfowler.com/articles/practical-test-pyramid.html), Balancing unit, integration, and UI testing layers.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is AssertJ's `assertThat(actual).isEqualTo(expected)` superior to JUnit's `assertEquals(expected, actual)`?"
     **Answer**: AssertJ enforces a consistent `(actual)` input format, provides auto-completion via IDE method chaining, and generates highly detailed diagnostic error messages showing exact field-level diffs.
@@ -239,8 +239,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0047: OpenTelemetry & OTLP Collectors**](0047-opentelemetry-otel-tracing-and-otlp-collectors.md) | [**All Lessons**](index.md) | [➡️ **0049: Mocking Dependencies with Mockito**](0049-mocking-dependencies-with-mockito.md) |
+| [**0047: OpenTelemetry & OTLP Collectors**](0047-opentelemetry-otel-tracing-and-otlp-collectors.md) | [**All Lessons**](index.md) | [ **0049: Mocking Dependencies with Mockito**](0049-mocking-dependencies-with-mockito.md) |

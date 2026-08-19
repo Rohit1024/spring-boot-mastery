@@ -2,7 +2,7 @@
 icon: lucide/lock
 ---
 
-# 0025: Stateless Authentication with JWT (JSON Web Tokens): Issuing, Validating & Filter Interception
+# 0025: Stateless authentication with JWT: Issuing, validating, and filter interception
 
 In distributed microservices and modern single-page applications (SPAs), maintaining stateful server sessions (`JSESSIONID`) requires sticky sessions or shared distributed session caches (e.g., Redis). 
 
@@ -10,7 +10,7 @@ In distributed microservices and modern single-page applications (SPAs), maintai
 
 ---
 
-## 1. Anatomy of a JSON Web Token (JWT)
+## 1. Anatomy of a JSON web token (JWT)
 
 A JWT (RFC 7519) is a compact, URL-safe string composed of three Base64URL-encoded segments separated by periods (`.`):
 
@@ -33,7 +33,7 @@ flowchart TD
     JWT ~~~ SignatureFormula
 ```
 
-### Standard Claims vs Custom Claims
+### Standard claims vs custom claims
 - **Standard Claims (Registered)**:
   - `sub` (Subject): Unique user ID or username.
   - `iat` (Issued At): Unix timestamp when issued.
@@ -44,7 +44,7 @@ flowchart TD
 
 ---
 
-## 2. Stateless JWT Request Interception Flow
+## 2. Stateless JWT request interception flow
 
 ``` mermaid
 sequenceDiagram
@@ -76,9 +76,9 @@ sequenceDiagram
 
 ---
 
-## 3. Production JWT Implementation with JJWT 0.12+
+## 3. Production JWT implementation with jjwt 012
 
-### Dependencies (`pom.xml`)
+### Dependencies (`pomxml`)
 ```xml
 <dependency>
     <groupId>io.jsonwebtoken</groupId>
@@ -99,7 +99,7 @@ sequenceDiagram
 </dependency>
 ```
 
-### 1. `JwtService.java` (Token Utility)
+### 1. `JwtService.java` (token utility)
 ```java
 package com.example.security.jwt;
 
@@ -180,7 +180,7 @@ public class JwtService {
 }
 ```
 
-### 2. `JwtAuthenticationFilter.java` (`OncePerRequestFilter`)
+### 2. `JwtAuthenticationFilter.java` (`onceperrequestfilter`)
 ```java
 package com.example.security.jwt;
 
@@ -257,7 +257,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 }
 ```
 
-### 3. Integrating the Filter in `SecurityConfig.java`
+### 3. Integrating the filter in `SecurityConfig.java`
 ```java
 package com.example.security.config;
 
@@ -305,7 +305,7 @@ public class SecurityConfig {
 
 ---
 
-## 4. Access Token + Refresh Token Rotation Strategy
+## 4. Access token refresh token rotation strategy
 
 Because JWTs are stateless, you cannot "delete" a valid JWT once issued until it expires. To balance security and user experience:
 
@@ -342,7 +342,7 @@ sequenceDiagram
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: JWT & Resource Server Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: JWT resource server evolution
 
 ``` mermaid
 flowchart TD
@@ -361,7 +361,7 @@ flowchart TD
     SB3 ==>|Filterless Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | JWT Security Feature | Spring Boot 3.x (Security 6) | Spring Boot 4.x (Security 7) |
 | :--- | :--- | :--- |
@@ -371,15 +371,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [RFC 7519: JSON Web Token (JWT) Specification](https://datatracker.ietf.org/doc/html/rfc7519) — Claims, encoding, and signature format standards.
-- [JJWT (Java JWT) Library Documentation](https://github.com/jwtk/jjwt) — Modern Java fluent API for HMAC and RSA signing.
-- [OWASP REST Security Cheat Sheet: JWT](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html) — Secure key length, algorithm hardening, and replay mitigation.
+- [RFC 7519: JSON Web Token (JWT) Specification](https://datatracker.ietf.org/doc/html/rfc7519), Claims, encoding, and signature format standards.
+- [JJWT (Java JWT) Library Documentation](https://github.com/jwtk/jjwt), Modern Java fluent API for HMAC and RSA signing.
+- [OWASP REST Security Cheat Sheet: JWT](https://cheatsheetseries.owasp.org/cheatsheets/JSON_Web_Token_for_Java_Cheat_Sheet.html), Secure key length, algorithm hardening, and replay mitigation.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why must the secret key used for HMAC-SHA256 (`HS256`) be at least 256 bits (32 bytes) long?"
     **Answer**: HMAC-SHA256 requires a key length equal to or greater than its output block size (256 bits) to prevent brute-force dictionary attacks against the digital signature.
@@ -392,8 +392,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0024: Password Hashing & Sessions**](0024-password-hashing-bcrypt-argon2-sessions.md) | [**All Lessons**](index.md) | [➡️ **0026: Role & Permission Access Control**](0026-role-and-permission-based-access-control-rbac.md) |
+| [**0024: Password Hashing & Sessions**](0024-password-hashing-bcrypt-argon2-sessions.md) | [**All Lessons**](index.md) | [ **0026: Role & Permission Access Control**](0026-role-and-permission-based-access-control-rbac.md) |

@@ -2,17 +2,17 @@
 icon: lucide/database
 ---
 
-# 0012: JDBC vs Hibernate ORM Internals: SessionFactory, Entity Lifecycle & Dirty Checking
+# 0012: JDBC vs Hibernate ORM internals: SessionFactory, entity lifecycle, and dirty checking
 
 In enterprise Java applications, database persistence is at the heart of nearly every business transaction. But how did we evolve from tedious, low-level JDBC boilerplate to the powerful abstractions of **JPA (Jakarta Persistence API)** and **Hibernate ORM**?
 
-In this lesson, you will dissect Hibernate under the hood — exploring the **Persistence Context**, the **4 Entity Lifecycle States**, the internal mechanics of **Dirty Checking**, and how the **First-Level Cache** optimizes database I/O.
+In this lesson, you will dissect Hibernate under the hood, exploring the **Persistence Context**, the **4 Entity Lifecycle States**, the internal mechanics of **Dirty Checking**, and how the **First-Level Cache** optimizes database I/O.
 
 ---
 
-## 1. The Persistence Evolution: From Raw JDBC to Hibernate
+## 1. The persistence evolution: From raw JDBC to Hibernate
 
-### Raw JDBC Boilerplate vs. Object-Relational Mapping (ORM)
+### Raw JDBC boilerplate vs. object-relational mapping (ORM)
 
 With raw JDBC, developers must manually manage database connections, construct SQL strings, set positional query parameters, handle checked `SQLException`s, and map relational `ResultSet` rows into Java object graphs:
 
@@ -36,7 +36,7 @@ try (Connection conn = dataSource.getConnection();
 }
 ```
 
-**Hibernate ORM** solves the **Object-Relational Impedance Mismatch** — bridging the paradigm divide between relational databases (tables, foreign keys, set theory) and object-oriented programming (classes, references, encapsulation, inheritance).
+**Hibernate ORM** solves the **Object-Relational Impedance Mismatch**, bridging the paradigm divide between relational databases (tables, foreign keys, set theory) and object-oriented programming (classes, references, encapsulation, inheritance).
 
 ``` mermaid
 flowchart TD
@@ -63,9 +63,9 @@ flowchart TD
 
 ---
 
-## 2. JPA vs Hibernate: Specification vs Implementation
+## 2. JPA vs Hibernate: Specification vs implementation
 
-It is crucial to understand the architectural distinction between JPA and Hibernate:
+It is key to understand the architectural distinction between JPA and Hibernate:
 
 - **JPA (Jakarta Persistence API)**: A vendor-neutral specification (interfaces, annotations, lifecycle definitions) governed by the Eclipse Foundation. Key interfaces: `EntityManagerFactory`, `EntityManager`, `EntityTransaction`.
 - **Hibernate ORM**: The de-facto reference implementation of the JPA specification. Hibernate implements `EntityManager` via its internal `SessionImpl`, and `EntityManagerFactory` via `SessionFactoryImpl`.
@@ -89,7 +89,7 @@ classDiagram
 
 ---
 
-## 3. The 4 Entity Lifecycle States
+## 3. The 4 entity lifecycle states
 
 Every entity managed by JPA exists in one of four distinct states at any given moment:
 
@@ -109,7 +109,7 @@ stateDiagram-v2
     REMOVED --> [*] : DB DELETE Executed
 ```
 
-### Deep Dive into Each State:
+### Deep dive into each state
 
 | State | In Memory? | Has DB Identifier (`@Id`)? | Tracked by Persistence Context? | Automatic Dirty Checking? |
 | :--- | :---: | :---: | :---: | :---: |
@@ -125,20 +125,20 @@ stateDiagram-v2
 
 ---
 
-## 4. The Persistence Context & First-Level Cache
+## 4. The persistence context first-level cache
 
 The **Persistence Context** is an in-memory cache and staging environment that acts as a buffer between your application code and the database.
 
-### Core Responsibilities:
+### Core responsibilities
 1. **First-Level Cache (L1 Cache)**: Guarantees **Repeatable Reads** within the same transaction. If you query `find(User.class, 1L)` three times within the same transaction, Hibernate executes only **one** SQL `SELECT`. The subsequent queries return the cached reference directly.
 2. **Identity Map**: Guarantees that `userA == userB` when both represent the same database primary key within the same session.
 3. **Write-Behind (ActionQueue)**: Hibernate batches and reorders SQL statements (`INSERT`, `UPDATE`, `DELETE`) to optimize execution order and minimize foreign key constraint violations during flush.
 
 ---
 
-## 5. How Dirty Checking Works Under the Hood
+## 5. How dirty checking works under the hood
 
-One of Hibernate's most powerful features is **automatic dirty checking**. You do **not** need to call `repository.save()` when modifying a managed entity inside a `@Transactional` boundary!
+Hibernate provides **automatic dirty checking**. You do **not** need to call `repository.save()` when modifying a managed entity inside a `@Transactional` boundary!
 
 ``` mermaid
 sequenceDiagram
@@ -163,7 +163,7 @@ sequenceDiagram
     PC-->>Service: Transaction Committed Successfully
 ```
 
-### Snapshot Comparison Internals
+### Snapshot comparison internals
 
 When an entity enters the `MANAGED` state (loaded from DB or persisted):
 1. Hibernate creates the Java object for your business logic.
@@ -173,9 +173,9 @@ When an entity enters the `MANAGED` state (loaded from DB or persisted):
 
 ---
 
-## 6. Code Demonstration: Entity Lifecycle & Dirty Checking
+## 6. Code demonstration: Entity lifecycle dirty checking
 
-### Entity Definition
+### Entity definition
 
 ```java
 package com.example.demo.domain;
@@ -213,7 +213,7 @@ public class Account {
 }
 ```
 
-### Service Demonstrating Dirty Checking & State Transitions
+### Service demonstrating dirty checking state transitions
 
 ```java
 package com.example.demo.service;
@@ -265,7 +265,7 @@ public class AccountService {
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4: Persistence Engine Evolution
+## 7. Spring Boot 3 vs Spring Boot 4: Persistence engine evolution
 
 ``` mermaid
 flowchart TD
@@ -284,7 +284,7 @@ flowchart TD
     SB3 ==>|ORM Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Persistence Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -295,15 +295,15 @@ flowchart TD
 
 ---
 
-## 8. Primary Sources & Further Reading
+## 8. Primary sources and further reading
 
-- [Jakarta Persistence Specification 3.2](https://jakarta.ee/specifications/persistence/3.2/) — Official specification for Entity lifecycle, states, and EntityManager.
-- [Hibernate ORM User Guide: Persistence Context & Flushing](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#flushing) — Deep dive into dirty checking and the ActionQueue.
-- [Vlad Mihalcea: The JPA and Hibernate Entity Lifecycle](https://vladmihalcea.com/jpa-hibernate-entity-lifecycle/) — In-depth architectural breakdown of entity state transitions.
+- [Jakarta Persistence Specification 3.2](https://jakarta.ee/specifications/persistence/3.2/), Official specification for Entity lifecycle, states, and EntityManager.
+- [Hibernate ORM User Guide: Persistence Context & Flushing](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#flushing), Deep dive into dirty checking and the ActionQueue.
+- [Vlad Mihalcea: The JPA and Hibernate Entity Lifecycle](https://vladmihalcea.com/jpa-hibernate-entity-lifecycle/), In-depth architectural breakdown of entity state transitions.
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: What happens if you modify a field on an entity in the `MANAGED` state without calling `save()`?"
     **Answer**: Hibernate's dirty checking mechanism compares the modified entity against the initial snapshot at transaction flush/commit and automatically issues the SQL `UPDATE` statement.
@@ -316,8 +316,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0011: Design Patterns: Strategy & Decorator**](0011-design-patterns-strategy-decorator.md) | [**All Lessons**](index.md) | [➡️ **0013: Spring Data JPA: Repositories & Queries**](0013-spring-data-jpa-repositories-and-queries.md) |
+| [**0011: Design Patterns: Strategy & Decorator**](0011-design-patterns-strategy-decorator.md) | [**All Lessons**](index.md) | [ **0013: Spring Data JPA: Repositories & Queries**](0013-spring-data-jpa-repositories-and-queries.md) |

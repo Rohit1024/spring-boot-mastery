@@ -2,7 +2,7 @@
 icon: lucide/compass
 ---
 
-# 0059: Service Registry & Discovery with Spring Cloud Netflix Eureka
+# 0059: Service registry and discovery with Spring Cloud Netflix Eureka
 
 In static architectures, servers have fixed IP addresses configured in properties files. In modern cloud and containerized environments, instances auto-scale, crash, restart, and receive dynamic, ephemeral IP addresses continuously. Hardcoding hostnames or IPs leads to fragile networks and broken routing.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring a Spring Cloud Eureka Server, regist
 
 ---
 
-## 1. Service Discovery Architecture
+## 1. Service discovery architecture
 
 ``` mermaid
 flowchart TD
@@ -44,9 +44,9 @@ flowchart TD
 
 ---
 
-## 2. Setting Up Eureka Server (`eureka-server`)
+## 2. Setting up Eureka server (`eureka-server`)
 
-### Dependencies (`pom.xml`)
+### Dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -55,7 +55,7 @@ flowchart TD
 </dependency>
 ```
 
-### Application Bootstrap
+### Application bootstrap
 
 ```java
 package com.example.eurekaserver;
@@ -73,7 +73,7 @@ public class EurekaServerApplication {
 }
 ```
 
-### Server Configuration (`application.yml`)
+### Server configuration (`applicationyml`)
 
 ```yaml
 server:
@@ -98,9 +98,9 @@ eureka:
 
 ---
 
-## 3. Registering Microservices as Eureka Clients
+## 3. Registering microservices as Eureka clients
 
-### Dependencies (`pom.xml`)
+### Dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -113,7 +113,7 @@ eureka:
 </dependency>
 ```
 
-### Client Configuration (`application.yml`)
+### Client configuration (`applicationyml`)
 
 ```yaml
 server:
@@ -139,7 +139,7 @@ eureka:
 
 ---
 
-## 4. Eureka Self-Preservation Mode
+## 4. Eureka self-preservation mode
 
 > [!IMPORTANT]
 > **What is Self-Preservation Mode?**
@@ -150,7 +150,7 @@ eureka:
 
 ---
 
-## 5. Eureka vs Kubernetes Native DNS Discovery
+## 5. Eureka vs Kubernetes native dns discovery
 
 In cloud-native architectures, teams often contrast Spring Cloud Eureka with Kubernetes-native Service Discovery:
 
@@ -164,7 +164,7 @@ In cloud-native architectures, teams often contrast Spring Cloud Eureka with Kub
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -174,15 +174,15 @@ In cloud-native architectures, teams often contrast Spring Cloud Eureka with Kub
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Cloud Netflix Official Documentation](https://docs.spring.io/spring-cloud-netflix/reference/) — Eureka Server and Client configuration.
-- [Netflix Eureka GitHub Wiki](https://github.com/Netflix/eureka/wiki) — Self-preservation algorithms and peer replication protocol.
+- [Spring Cloud Netflix Official Documentation](https://docs.spring.io/spring-cloud-netflix/reference/), Eureka Server and Client configuration.
+- [Netflix Eureka GitHub Wiki](https://github.com/Netflix/eureka/wiki), Self-preservation algorithms and peer replication protocol.
 - [Spring Cloud Commons Service Discovery](https://docs.spring.io/spring-cloud-commons/reference/spring-cloud-commons/discovery-client.html).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the primary role of a Service Registry in a microservices ecosystem?"
     **Answer**: To dynamically track and provide the changing IP addresses and ports of running microservice instances so callers do not rely on hardcoded network locations.
@@ -195,10 +195,10 @@ In cloud-native architectures, teams often contrast Spring Cloud Eureka with Kub
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0058: Inter-Service Communication: Feign, WebClient & RestTemplate**](0058-interservice-communication-feign-webclient.md) | [**All Lessons**](index.md) | [➡️ **0060: API Gateway Routing & Security with Spring Cloud Gateway**](0060-api-gateway-routing-security-spring-cloud.md) |
+| [**0058: Inter-Service Communication: Feign, WebClient & RestTemplate**](0058-interservice-communication-feign-webclient.md) | [**All Lessons**](index.md) | [ **0060: API Gateway Routing & Security with Spring Cloud Gateway**](0060-api-gateway-routing-security-spring-cloud.md) |
 
 🎉 **Lesson 0059 completed! Proceed to Lesson 0060 to master edge routing, cross-cutting filters, and rate limiting with Spring Cloud Gateway.**

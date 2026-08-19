@@ -289,7 +289,7 @@ A caching pattern where the application queries the in-memory cache first, falls
 A critical failure mode occurring when a heavily queried cache key expires simultaneously, causing thousands of concurrent requests to experience a cache miss and overwhelm the primary database with identical queries.
 
 **Cache Penetration**:
-A failure scenario where queries for non-existent keys bypass the caching layer entirely and continuously hit the database; mitigated by caching empty/null values with short TTLs or utilizing Bloom filters.
+A failure scenario where queries for non-existent keys bypass the caching layer entirely and continuously hit the database; mitigated by caching empty/null values with short TTLs or using Bloom filters.
 
 **Cache Avalanche**:
 A cascading outage where large volumes of cached keys share identical TTL durations and expire at the exact same moment, flooding the database with massive batch misses; mitigated by adding random TTL jitter.
@@ -336,7 +336,7 @@ An architectural pattern where each microservice owns and encapsulates its priva
 A declarative HTTP client library developed by Netflix and maintained in Spring Cloud that synthesizes HTTP request dispatchers from annotated Java interfaces.
 
 **Service Registry (Eureka)**:
-A dynamic phonebook service where microservice instances register their hostnames, IP addresses, and ports upon startup to facilitate client-side load balancing.
+A dynamic phonebook service where microservice instances register their hostnames, IP addresses, and ports upon startup to help client-side load balancing.
 
 **Self-Preservation Mode**:
 A protection mechanism in Eureka Server that halts instance eviction when heartbeat failure rates spike unexpectedly, preventing healthy instances from being purged during network partitions.

@@ -2,9 +2,9 @@
 icon: lucide/radio
 ---
 
-# 0041: Full-Duplex Real-Time Messaging with WebSockets & STOMP
+# 0041: Real-time messaging with WebSockets and STOMP
 
-While Server-Sent Events (SSE) provide a lightweight mechanism for **one-way server-to-client** streaming, interactive applications—such as live trading desks, collaborative document editors, multi-player gaming, and live support chat—demand **full-duplex, bidirectional communication** with sub-millisecond latency.
+While Server-Sent Events (SSE) provide a lightweight mechanism for **one-way server-to-client** streaming, interactive applications, such as live trading desks, collaborative document editors, multi-player gaming, and live support chat, demand **full-duplex, bidirectional communication** with sub-millisecond latency.
 
 Raw WebSockets establish a bidirectional TCP connection but lack higher-level application semantics (like message headers, subscriptions, or destination routing). Spring solves this by layering **STOMP (Simple Text Oriented Messaging Protocol)** on top of WebSockets.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring Spring's WebSocket message broker, h
 
 ---
 
-## 1. Protocol Comparison: Polling vs SSE vs WebSockets
+## 1. Protocol comparison: Polling vs SSE vs WebSockets
 
 ``` mermaid
 flowchart TD
@@ -39,7 +39,7 @@ flowchart TD
 
 ---
 
-## 2. Configuring the WebSocket Message Broker
+## 2. Configuring the WebSocket message broker
 
 Enable WebSocket broker capabilities and register STOMP endpoints:
 
@@ -81,7 +81,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 ---
 
-## 3. Handling Messages: `@MessageMapping` & `@SendTo`
+## 3. Handling messages: `@MessageMapping` `@SendTo`
 
 When clients send messages to `/app/chat.sendMessage`, the controller method intercepts, enriches, and broadcasts the payload to all clients subscribed to `/topic/public`:
 
@@ -134,7 +134,7 @@ public class ChatController {
 
 ---
 
-## 4. Sending Private Targeted Messages (`SimpMessagingTemplate`)
+## 4. Sending private targeted messages (`simpmessagingtemplate`)
 
 To send private notifications or alerts directly to a single authenticated user (e.g. `user123`):
 
@@ -170,7 +170,7 @@ public class UserNotificationService {
 
 ---
 
-## 5. Scaling Across Multiple Servers: External STOMP Broker Relay
+## 5. Scaling across multiple servers: External STOMP broker relay
 
 In production with multiple clustered Spring Boot pods, the in-memory simple broker **cannot route messages to clients connected to different pods**.
 
@@ -199,7 +199,7 @@ flowchart TD
     PodB <==>|TCP STOMP Relay| RabbitSTOMP
 ```
 
-### Configuring RabbitMQ STOMP Relay:
+### Configuring rabbitmq STOMP relay
 ```java
 @Override
 public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -218,7 +218,7 @@ public void configureMessageBroker(MessageBrokerRegistry registry) {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: WebSocket Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: WebSocket evolution
 
 ``` mermaid
 flowchart TD
@@ -237,7 +237,7 @@ flowchart TD
     SB3 ==>|Massive Concurrency & HTTP/3 Transport| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | WebSocket Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -247,15 +247,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Framework Reference: WebSocket & STOMP Messaging](https://docs.spring.io/spring-framework/reference/web/websocket.html) — Comprehensive architecture and configuration guide.
-- [STOMP Protocol Specification v1.2](https://stomp.github.io/stomp-specification-1.2.html) — Frame structures, commands, and headers.
-- [RabbitMQ STOMP Plugin Guide](https://www.rabbitmq.com/docs/stomp) — Setting up clustered external broker relays.
+- [Spring Framework Reference: WebSocket & STOMP Messaging](https://docs.spring.io/spring-framework/reference/web/websocket.html), Comprehensive architecture and configuration guide.
+- [STOMP Protocol Specification v1.2](https://stomp.github.io/stomp-specification-1.2.html), Frame structures, commands, and headers.
+- [RabbitMQ STOMP Plugin Guide](https://www.rabbitmq.com/docs/stomp), Setting up clustered external broker relays.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is STOMP preferred over raw WebSockets in enterprise Spring Boot applications?"
     **Answer**: Raw WebSockets only provide a raw byte/text stream; STOMP adds a standardized messaging protocol with headers, destination routing (`/topic`, `/queue`), and subscription semantics.
@@ -268,10 +268,10 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0040: Spring gRPC & Protocol Buffers**](0040-spring-grpc-and-protocol-buffers-microservices.md) | [**All Lessons**](index.md) | [➡️ **0042: Spring Modulith Modular Monoliths**](0042-spring-modulith-modular-monoliths-ddd.md) |
+| [**0040: Spring gRPC & Protocol Buffers**](0040-spring-grpc-and-protocol-buffers-microservices.md) | [**All Lessons**](index.md) | [ **0042: Spring Modulith Modular Monoliths**](0042-spring-modulith-modular-monoliths-ddd.md) |
 
 🎉 **Congratulations on completing Module 8: Alternative API Protocols (GraphQL, gRPC & WebSockets)!**

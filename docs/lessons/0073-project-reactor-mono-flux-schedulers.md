@@ -2,7 +2,7 @@
 icon: lucide/workflow
 ---
 
-# 0073: Project Reactor Fundamentals: Mono, Flux, Schedulers & Pipelines
+# 0073: Project Reactor fundamentals: Mono, Flux, Schedulers, and pipelines
 
 Spring WebFlux is built on **Project Reactor**, a 4th-generation Reactive library based on the Reactive Streams specification. In Reactor, data flows through functional, declarative processing pipelines.
 
@@ -13,7 +13,7 @@ In this lesson, you will master the two primary reactive types (`Mono` and `Flux
 
 ---
 
-## 1. Core Reactive Publishers: `Mono` vs `Flux`
+## 1. Core reactive publishers: `Mono` vs `Flux`
 
 ``` mermaid
 flowchart TD
@@ -38,7 +38,7 @@ flowchart TD
 
 ---
 
-## 2. Transforming Reactive Streams: `map` vs `flatMap`
+## 2. Transforming reactive streams: `map` vs `flatMap`
 
 | Operator | Signature | Behavior | Use Case |
 | :--- | :--- | :--- | :--- |
@@ -59,7 +59,7 @@ Flux<PaymentStatus> paymentStatuses = Flux.fromIterable(orderList)
 
 ---
 
-## 3. Combining Streams: `zip`, `merge` & `switchIfEmpty`
+## 3. Combining streams: `zip`, `merge` `switchIfEmpty`
 
 ```java
 // 1. Zip: Combining results from two independent services concurrently
@@ -79,7 +79,7 @@ Mono<Product> productMono = redisReactiveCache.getProduct(productId)
 
 ---
 
-## 4. Error Handling in Reactive Pipelines
+## 4. Error handling in reactive pipelines
 
 In reactive streams, exceptions are first-class terminal signals propagated via `onError`. Reactor provides functional recovery operators:
 
@@ -107,7 +107,7 @@ public Mono<OrderResponse> processOrder(OrderRequest request) {
 
 ---
 
-## 5. Thread Scheduling: `subscribeOn` vs `publishOn`
+## 5. Thread scheduling: `subscribeOn` vs `publishOn`
 
 Reactor decouples execution from specific thread pools using `Schedulers`:
 - **`Schedulers.parallel()`**: Optimized for CPU-intensive computation (pool sized to CPU cores).
@@ -138,7 +138,7 @@ public Mono<byte[]> readLegacyFile(String path) {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -148,15 +148,15 @@ public Mono<byte[]> readLegacyFile(String path) {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Project Reactor Official Reference Guide](https://projectreactor.io/docs/core/release/reference/) — Mono, Flux, and Operators.
+- [Project Reactor Official Reference Guide](https://projectreactor.io/docs/core/release/reference/), Mono, Flux, and Operators.
 - [Flight of the Flux: A Guide to Reactive Operators](https://spring.io/blog/2019/12/13/flight-of-the-flux-1-assembly-vs-subscription).
 - [Reactive Streams Java API Reference](https://www.reactive-streams.org/).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the semantic difference between `Mono<T>` and `Flux<T>`?"
     **Answer**: `Mono<T>` emits 0 or 1 element (or error), while `Flux<T>` emits an asynchronous sequence of 0 to N elements (or an unbounded stream).
@@ -169,10 +169,10 @@ public Mono<byte[]> readLegacyFile(String path) {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0072: Blocking vs Non-Blocking I/O: The Reactive Paradigm**](0072-blocking-vs-nonblocking-reactive-paradigm.md) | [**All Lessons**](index.md) | [➡️ **0074: Building Reactive REST APIs with Spring WebFlux**](0074-building-reactive-rest-apis-spring-webflux.md) |
+| [**0072: Blocking vs Non-Blocking I/O: The Reactive Paradigm**](0072-blocking-vs-nonblocking-reactive-paradigm.md) | [**All Lessons**](index.md) | [ **0074: Building Reactive REST APIs with Spring WebFlux**](0074-building-reactive-rest-apis-spring-webflux.md) |
 
 🎉 **Lesson 0073 completed! Proceed to Lesson 0074 to build production-grade reactive REST controllers and functional endpoints with WebFlux.**

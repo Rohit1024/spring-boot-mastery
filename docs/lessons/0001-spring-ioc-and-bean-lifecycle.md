@@ -2,13 +2,13 @@
 icon: lucide/box
 ---
 
-# 0001: Spring IoC Container, Bean Scopes & Lifecycle
+# 0001: Spring IoC container, bean scopes, and lifecycle
 
-Welcome to your first lesson in mastering the Spring Framework. In this lesson, we demystify the beating heart of Spring: the **Inversion of Control (IoC) Container**, how **Spring Beans** are instantiated and managed, and the precise **Bean Lifecycle** phases.
+The Spring Framework revolves around the **Inversion of Control (IoC) container**. The container handles how **Spring beans** are instantiated, configured, and managed through their lifecycle phases.
 
 ---
 
-## 1. Why IoC Container? (The Problem It Solves)
+## 1. Why IoC container? (the problem it solves)
 
 In standard Object-Oriented programming, if Class `OrderService` needs `PaymentGateway` and `NotificationService`, it creates them directly using `new`:
 
@@ -20,11 +20,11 @@ public class OrderService {
 }
 ```
 
-### The Problems:
+### The problems
 1. **Tight Coupling**: You cannot easily swap `StripePaymentGateway` with `MockPaymentGateway` during testing.
 2. **Scattered Configuration**: Every class decides how to construct its own dependencies, leading to duplicate configuration and unmanaged resource lifecycles.
 
-### The Solution: Inversion of Control (IoC)
+### The solution: Inversion of control (IoC)
 With IoC, **you do not create objects; the Container creates and injects them.** Control over the object lifecycle is inverted from your application code to the framework.
 
 ``` mermaid
@@ -36,11 +36,11 @@ flowchart TD
 
 ---
 
-## 2. Spring IoC Containers: `BeanFactory` vs `ApplicationContext`
+## 2. Spring IoC containers: `BeanFactory` vs `ApplicationContext`
 
 Spring provides two container interfaces:
 
-| Container Interface | Loading Strategy | Enterprise Features (AOP, Events, i18n) | Recommended Use |
+| Container Interface | Loading Strategy | Enterprise capabilities (AOP, events, i18n) | Recommended Use |
 | :--- | :--- | :--- | :--- |
 | **`BeanFactory`** | Lazy (loads beans on `getBean()`) | Basic DI only | Resource-constrained legacy devices |
 | **`ApplicationContext`** | Eager (loads singletons at startup) | Full enterprise suite (AOP, Events, Env, Web) | **Always use in modern Spring Boot apps** |
@@ -49,13 +49,13 @@ Common `ApplicationContext` implementations include `AnnotationConfigApplication
 
 ---
 
-## 3. Registering Spring Beans
+## 3. Registering Spring beans
 
 A **Spring Bean** is simply a Java object instantiated, assembled, and managed by the Spring IoC container.
 
 You can declare beans in two primary ways:
 
-### Option A: Stereotype Annotations (Component Scanning)
+### Option A: Stereotype annotations (component scanning)
 Mark classes with `@Component` (or specialized stereotypes: `@Service`, `@Repository`, `@Controller`):
 
 ```java
@@ -70,7 +70,7 @@ public class OrderService {
 }
 ```
 
-### Option B: Java Configuration Class (`@Configuration` + `@Bean`)
+### Option B: Java configuration class (`@configuration` `@Bean`)
 Best when configuring third-party libraries where you cannot edit source code:
 
 ```java
@@ -87,7 +87,7 @@ public class ThirdPartyConfig {
 
 ---
 
-## 4. Bean Scopes
+## 4. Bean scopes
 
 Bean scope determines how many instances of a bean are created and when:
 
@@ -104,7 +104,7 @@ stateDiagram-v2
 
 ---
 
-## 5. The Complete Spring Bean Lifecycle
+## 5. The complete Spring bean lifecycle
 
 Understanding the lifecycle sequence is critical for initializing database connections, background workers, or teardown tasks.
 
@@ -129,7 +129,7 @@ sequenceDiagram
     C->>B: 11. Custom destroyMethod
 ```
 
-### Lifecycle Hook Code Example
+### Lifecycle hook code example
 
 ```java
 package com.example.service;
@@ -166,7 +166,7 @@ public class CacheWarmupService {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: IoC & Bean Lifecycle Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: IoC bean lifecycle evolution
 
 As the Spring ecosystem advances from Spring Boot 3.x (Spring Framework 6) to **Spring Boot 4.x (Spring Framework 7)**, the core IoC container undergoes major architectural upgrades:
 
@@ -189,7 +189,7 @@ flowchart TD
     SB3 ==>|Generational Evolution| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Architectural Capability | Spring Boot 3.x (Spring Framework 6) | Spring Boot 4.x (Spring Framework 7) |
 | :--- | :--- | :--- |
@@ -220,15 +220,15 @@ public class PaymentProcessingService {
 
 ---
 
-## 7. Primary Source & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Core Technologies: The IoC Container](https://docs.spring.io/spring-framework/reference/core/beans.html) — Read Section 1.1 to 1.6 for official architecture specifications.
-- [Spring Framework 7 / Boot 4 Roadmap](https://github.com/spring-projects/spring-framework/wiki) — Ahead-of-time engine, JSpecify adoption, and Java 21+ baselines.
+- [Spring Core Technologies: The IoC Container](https://docs.spring.io/spring-framework/reference/core/beans.html), Read Section 1.1 to 1.6 for official architecture specifications.
+- [Spring Framework 7 / Boot 4 Roadmap](https://github.com/spring-projects/spring-framework/wiki), Ahead-of-time engine, JSpecify adoption, and Java 21+ baselines.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 Test your understanding of the concepts covered in this lesson.
 
@@ -243,10 +243,9 @@ Test your understanding of the concepts covered in this lesson.
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| *(Start of Curriculum)* | [**All Lessons**](index.md) | [**0002: Dependency Injection Strategies** ➡️](0002-dependency-injection-strategies.md) |
+| *(Start of Curriculum)* | [**All Lessons**](index.md) | [**0002: Dependency Injection Strategies**](0002-dependency-injection-strategies.md) |
 
-💬 *Have questions on IoC, Bean scopes, or lifecycle hooks? Ask anytime!*

@@ -2,7 +2,7 @@
 icon: lucide/refresh-cw
 ---
 
-# 0034: Chunk-Oriented Processing: Readers, Processors & Writers
+# 0034: Chunk-oriented processing: Readers, processors, and writers
 
 When processing millions of records from a CSV file, relational database, or message queue, loading the entire dataset into memory causes fatal JVM `OutOfMemoryError` crashes. Conversely, committing a database transaction for every individual record creates extreme disk I/O bottlenecks.
 
@@ -12,7 +12,7 @@ In this lesson, you will master the chunk processing lifecycle, implement `ItemR
 
 ---
 
-## 1. The Chunk-Oriented Processing Lifecycle
+## 1. The chunk-oriented processing lifecycle
 
 Chunk processing structures work into a three-stage loop within a single transaction boundary:
 
@@ -31,7 +31,7 @@ flowchart TD
     end
 ```
 
-### The Reader / Processor / Writer Contract:
+### The reader / processor / writer contract
 
 | Interface | Method Signature | Behavior |
 | :--- | :--- | :--- |
@@ -41,7 +41,7 @@ flowchart TD
 
 ---
 
-## 2. Reading CSV Data: `FlatFileItemReader`
+## 2. Reading csv data: `FlatFileItemReader`
 
 Let's build a reader that parses a CSV file (`customers.csv`) directly into immutable Java Records:
 
@@ -60,7 +60,7 @@ public record CustomerCsvRecord(
 ) {}
 ```
 
-### Reader Bean Configuration:
+### Reader bean configuration
 ```java
 @Bean
 public FlatFileItemReader<CustomerCsvRecord> customerCsvReader() {
@@ -78,7 +78,7 @@ public FlatFileItemReader<CustomerCsvRecord> customerCsvReader() {
 
 ---
 
-## 3. Data Transformation & Filtering: `ItemProcessor`
+## 3. Data transformation filtering: `ItemProcessor`
 
 An `ItemProcessor` handles business validations and conversions. If an item fails validation, returning `null` filters it out cleanly:
 
@@ -115,7 +115,7 @@ public class CustomerValidationProcessor implements ItemProcessor<CustomerCsvRec
 
 ---
 
-## 4. Persisting Data: `JpaItemWriter`
+## 4. Persisting data: `JpaItemWriter`
 
 Using `JpaItemWriter` persists the entire chunk in a single batch `EntityManager.merge()` operation:
 
@@ -130,7 +130,7 @@ public JpaItemWriter<CustomerEntity> customerJpaWriter(EntityManagerFactory enti
 
 ---
 
-## 5. Wiring the Complete Chunk Step
+## 5. Wiring the complete chunk step
 
 Assemble the Reader, Processor, and Writer into a chunk step with a commit interval of 250 items:
 
@@ -183,7 +183,7 @@ public class CustomerIngestionJobConfig {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Chunk Processing Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Chunk processing evolution
 
 ``` mermaid
 flowchart TD
@@ -202,7 +202,7 @@ flowchart TD
     SB3 ==>|Chunk Performance Optimization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Chunk Processing Aspect | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -212,15 +212,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Batch Reference Guide: Chunk-Oriented Processing](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing.html) — Transaction boundaries, commit intervals, and item streams.
-- [Spring Batch Item Readers and Writers](https://docs.spring.io/spring-batch/reference/readers-and-writers.html) — Guide to FlatFile, JDBC, JPA, Kafka, and Mongo implementations.
-- [Vlad Mihalcea: High-Performance Batch Processing with Hibernate](https://vladmihalcea.com/how-to-batch-insert-and-update-statements-with-hibernate/) — JDBC batch sizing and memory tuning.
+- [Spring Batch Reference Guide: Chunk-Oriented Processing](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing.html), Transaction boundaries, commit intervals, and item streams.
+- [Spring Batch Item Readers and Writers](https://docs.spring.io/spring-batch/reference/readers-and-writers.html), Guide to FlatFile, JDBC, JPA, Kafka, and Mongo implementations.
+- [Vlad Mihalcea: High-Performance Batch Processing with Hibernate](https://vladmihalcea.com/how-to-batch-insert-and-update-statements-with-hibernate/), JDBC batch sizing and memory tuning.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What does an `ItemReader` return when it reaches the end of the input dataset?"
     **Answer**: It returns `null`, which signals to the Spring Batch chunk execution framework that data reading is complete and the step can finish after processing remaining items.
@@ -233,8 +233,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0033: Spring Batch Core Architecture**](0033-spring-batch-architecture-jobrepository.md) | [**All Lessons**](index.md) | [➡️ **0035: Fault Tolerance (Skip & Retry)**](0035-fault-tolerance-skip-retry-policies.md) |
+| [**0033: Spring Batch Core Architecture**](0033-spring-batch-architecture-jobrepository.md) | [**All Lessons**](index.md) | [ **0035: Fault Tolerance (Skip & Retry)**](0035-fault-tolerance-skip-retry-policies.md) |

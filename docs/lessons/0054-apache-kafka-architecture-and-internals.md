@@ -2,7 +2,7 @@
 icon: lucide/network
 ---
 
-# 0054: Apache Kafka Architecture: Topics, Partitions & Consumer Groups
+# 0054: Apache Kafka architecture: Topics, partitions, and consumer groups
 
 Traditional message queues (like RabbitMQ or ActiveMQ) track individual message consumption in memory and delete messages once acknowledged. Under high-throughput streaming workloads (millions of events per second), this model creates CPU bottlenecks and lacks replayability.
 
@@ -12,7 +12,7 @@ In this lesson, you will master the internal architecture of Kafka topics, parti
 
 ---
 
-## 1. Apache Kafka Core Architecture
+## 1. Apache Kafka core architecture
 
 ``` mermaid
 flowchart TD
@@ -63,15 +63,15 @@ flowchart TD
 
 ---
 
-## 2. Topics, Partitions & Disk Storage Mechanics
+## 2. Topics, partitions disk storage mechanics
 
-### Partitions as the Unit of Scalability
+### Partitions as the unit of scalability
 - A **Topic** is a logical category of messages.
 - A topic is split into one or more **Partitions**. Partitions are distributed across physical Kafka brokers.
 - **Strict Ordering Guarantee**: Kafka guarantees total message ordering **only within a single partition**, never across multiple partitions of the same topic.
 - **Key Hashing**: When a message has a key, Kafka routes it via `murmur2(key) % num_partitions`. All events sharing the same key (e.g., `userId = 101`) always land in the same partition in sequential order.
 
-### Physical Disk Layout (Segment Files)
+### Physical disk layout (segment files)
 Kafka stores partitions as a series of immutable segment files on the broker filesystem (`/data/kafka/order-events-0/`):
 
 ```text
@@ -88,7 +88,7 @@ leader-epoch-checkpoint        <- Tracks leader failover boundaries
 
 ---
 
-## 3. Consumer Groups & Partition Assignment
+## 3. Consumer groups partition assignment
 
 A **Consumer Group** is a collection of consumer instances collaborating to consume a topic:
 
@@ -98,7 +98,7 @@ A **Consumer Group** is a collection of consumer instances collaborating to cons
 | **Consumers < Partitions** (2 consumers, 4 partitions) | Active consumers assigned multiple partitions (e.g. Cons 1 has P0+P1, Cons 2 has P2+P3). | Full consumption, higher load per consumer. |
 | **Consumers > Partitions** (5 consumers, 3 partitions) | Surplus consumers (2 instances) remain **idle** as hot standbys. | Waste of compute; cannot exceed partition count. |
 
-### Consumer Rebalancing Protocols
+### Consumer rebalancing protocols
 
 ``` mermaid
 flowchart TD
@@ -119,7 +119,7 @@ flowchart TD
 
 ---
 
-## 4. Offsets, High Watermark & Replication
+## 4. Offsets, high watermark replication
 
 - **LEO (Log End Offset)**: The offset of the next record to be written to a partition leader.
 - **HW (High Watermark)**: The offset of the latest record replicated across all **In-Sync Replicas (ISR)**. Consumers can only read messages up to the High Watermark to prevent dirty reads.
@@ -137,7 +137,7 @@ Partition 0 Commit Log:
 
 ---
 
-## 5. KRaft (Kafka Raft) vs ZooKeeper
+## 5. Kraft (Kafka raft) vs zookeeper
 
 Prior to Kafka 3.x, Kafka relied on external Apache ZooKeeper clusters to manage broker metadata, leader elections, and topic schemas.
 
@@ -148,7 +148,7 @@ Starting with Kafka 3.3+ and mandated in Kafka 4.0+, **KRaft (Kafka Raft Metadat
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -158,15 +158,15 @@ Starting with Kafka 3.3+ and mandated in Kafka 4.0+, **KRaft (Kafka Raft Metadat
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Apache Kafka Documentation](https://kafka.apache.org/documentation/) — Core architecture, storage internals, and protocol specification.
-- [Kafka: The Definitive Guide (O'Reilly)](https://www.oreilly.com/library/view/kafka-the-definitive/9781492043072/) — Authoritative text on partitions, ISR, and consumer groups.
+- [Apache Kafka Documentation](https://kafka.apache.org/documentation/), Core architecture, storage internals, and protocol specification.
+- [Kafka: The Definitive Guide (O'Reilly)](https://www.oreilly.com/library/view/kafka-the-definitive/9781492043072/), Authoritative text on partitions, ISR, and consumer groups.
 - [KIP-848: The Next Generation Consumer Rebalance Protocol](https://cwiki.apache.org/confluence/display/KAFKA/KIP-848%3A+The+Next+Generation+Consumer+Rebalance+Protocol).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why does Kafka guarantee message ordering only within a single partition rather than across the whole topic?"
     **Answer**: To enable horizontal scaling; maintaining a single global sequence across distributed brokers would introduce centralized lock contention and eliminate parallel throughput.
@@ -179,10 +179,10 @@ Starting with Kafka 3.3+ and mandated in Kafka 4.0+, **KRaft (Kafka Raft Metadat
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0053: Redis Pub/Sub Messaging for Real-Time Event Fanout**](0053-redis-pub-sub-messaging.md) | [**All Lessons**](index.md) | [➡️ **0055: Kafka Producer & Consumer with Spring Kafka & DLQ**](0055-kafka-producer-consumer-spring-dlq.md) |
+| [**0053: Redis Pub/Sub Messaging for Real-Time Event Fanout**](0053-redis-pub-sub-messaging.md) | [**All Lessons**](index.md) | [ **0055: Kafka Producer & Consumer with Spring Kafka & DLQ**](0055-kafka-producer-consumer-spring-dlq.md) |
 
 🎉 **Lesson 0054 completed! Proceed to Lesson 0055 to build resilient Spring Boot Kafka producers, consumers, error handlers, and Dead Letter Queues.**

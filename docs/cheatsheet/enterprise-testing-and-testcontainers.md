@@ -2,15 +2,15 @@
 icon: lucide/flask-conical
 ---
 
-# Enterprise Testing & Testcontainers Cheatsheet
+# Enterprise testing and Testcontainers cheatsheet
 
-A rapid reference guide for JUnit 5 lifecycle annotations, AssertJ fluent assertions, Mockito stubbing/verification, Spring Boot `@WebMvcTest` slices, and Testcontainers database integration.
+Reference for JUnit 5 lifecycle annotations, AssertJ assertions, Mockito verification, Spring Boot `@WebMvcTest` slices, and Testcontainers database tests.
 
 ---
 
-## 1. JUnit 5 & AssertJ Quick Reference
+## 1. JUnit 5 and AssertJ quick reference
 
-### Parameterized Tests:
+### Parameterized tests
 ```java
 @ParameterizedTest
 @CsvSource({
@@ -22,9 +22,9 @@ void testDiscounts(CustomerTier tier, BigDecimal subtotal, BigDecimal expected) 
 }
 ```
 
-### Fluent AssertJ Assertions:
+### Fluent AssertJ assertions
 ```java
-// Collections & Extraction:
+// Collections and extraction:
 assertThat(orders)
         .hasSize(2)
         .extracting(Order::getId, Order::getStatus)
@@ -38,7 +38,7 @@ assertThatThrownBy(() -> account.withdraw(999.0))
 
 ---
 
-## 2. Mockito Stubbing & Verification
+## 2. Mockito stubbing and verification
 
 ```java
 @ExtendWith(MockitoExtension.class)
@@ -63,14 +63,14 @@ class OrderServiceTest {
 
 ---
 
-## 3. Spring Boot Web Slicing (`@WebMvcTest`)
+## 3. Spring Boot web slicing with `@WebMvcTest`
 
 ```java
 @WebMvcTest(OrderRestController.class)
 class OrderRestControllerTest {
     @Autowired private MockMvc mockMvc;
     @Autowired private ObjectMapper objectMapper;
-    @MockitoBean private OrderService orderService; // Spring Boot 3.4+ / 4.x
+    @MockitoBean private OrderService orderService; // Spring Boot 3.4+ and 4.x
 
     @Test
     void shouldCreateOrder() throws Exception {
@@ -110,8 +110,8 @@ class OrderRepositoryTest {
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Prometheus, Grafana & OTel Cheatsheet**](prometheus-grafana-opentelemetry.md) | [**All Cheatsheets**](index.md) | [➡️ **Redis Caching & Kafka Cheatsheet**](redis-caching-and-kafka-messaging.md) |
+| [**Prometheus, Grafana, and OpenTelemetry cheatsheet**](prometheus-grafana-opentelemetry.md) | [**All cheatsheets**](index.md) | [**Redis caching and Kafka cheatsheet**](redis-caching-and-kafka-messaging.md) |

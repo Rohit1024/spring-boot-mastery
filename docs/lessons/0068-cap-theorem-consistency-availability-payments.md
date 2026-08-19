@@ -2,7 +2,7 @@
 icon: lucide/triangle
 ---
 
-# 0068: CAP Theorem in Action: Consistency vs Availability in Payment Systems
+# 0068: CAP theorem in action: Consistency vs availability in payment systems
 
 In distributed architecture, network failures, hardware crashes, and cross-datacenter packet drops are physical certainties.
 
@@ -17,7 +17,7 @@ In this lesson, you will master the CAP and PACELC theorems, analyze CP vs AP tr
 
 ---
 
-## 1. CAP & PACELC Trade-Off Decision Tree
+## 1. CAP pacelc trade-off decision tree
 
 ``` mermaid
 flowchart TD
@@ -53,7 +53,7 @@ flowchart TD
 
 ---
 
-## 2. CP vs AP Real-World Systems Comparison
+## 2. Cp vs ap real-world systems comparison
 
 | Attribute | CP Architecture (Consistency Focus) | AP Architecture (Availability Focus) |
 | :--- | :--- | :--- |
@@ -64,7 +64,7 @@ flowchart TD
 
 ---
 
-## 3. The PACELC Theorem Extension
+## 3. The pacelc theorem extension
 
 The **PACELC Theorem** extends CAP by explaining system behavior during normal (non-partitioned) operations:
 
@@ -77,7 +77,7 @@ Examples:
 
 ---
 
-## 4. Defending CP Systems: JPA Optimistic Locking (`@Version`)
+## 4. Defending cp systems: JPA optimistic locking (`@version`)
 
 In a CP payment system, two concurrent transactions must not deduct funds from the same account balance simultaneously. **Optimistic Locking** detects concurrent modifications at commit time without holding blocking database row locks:
 
@@ -123,7 +123,7 @@ public class BankAccount {
 }
 ```
 
-### Handling Concurrent Clashes with Spring Retry
+### Handling concurrent clashes with Spring retry
 
 ```java
 package com.example.service;
@@ -172,7 +172,7 @@ public class AccountTransferService {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -182,15 +182,15 @@ public class AccountTransferService {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Brewer's CAP Theorem — Eric Brewer (IEEE Computer)](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/) — 12 years later reflection.
-- [Designing Data-Intensive Applications — Martin Kleppmann](https://dataintensive.net/) — Chapter 8 (Trouble with Distributed Systems) and Chapter 9 (Consistency and Consensus).
-- [The PACELC Theorem — Daniel Abadi](https://cs-people.bu.edu/dan/PACELC.html).
+- [Brewer's CAP Theorem, Eric Brewer (IEEE Computer)](https://www.infoq.com/articles/cap-twelve-years-later-how-the-rules-have-changed/), 12 years later reflection.
+- [Designing Data-Intensive Applications, Martin Kleppmann](https://dataintensive.net/), Chapter 8 (Trouble with Distributed Systems) and Chapter 9 (Consistency and Consensus).
+- [The PACELC Theorem, Daniel Abadi](https://cs-people.bu.edu/dan/PACELC.html).
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why is it impossible to build a distributed system that guarantees Consistency, Availability, and Partition Tolerance simultaneously?"
     **Answer**: Because network partitions are unavoidable in physical networks; when a partition occurs, the system must choose between returning an error (sacrificing A) or returning stale data (sacrificing C).
@@ -203,10 +203,10 @@ public class AccountTransferService {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0067: Distributed Idempotency with Redis SETNX**](0067-distributed-idempotency-redis-setnx.md) | [**All Lessons**](index.md) | [➡️ **0069: Dockerfile Multi-Stage Builds & Docker Compose**](0069-dockerfile-multistage-builds-docker-compose.md) |
+| [**0067: Distributed Idempotency with Redis SETNX**](0067-distributed-idempotency-redis-setnx.md) | [**All Lessons**](index.md) | [ **0069: Dockerfile Multi-Stage Builds & Docker Compose**](0069-dockerfile-multistage-builds-docker-compose.md) |
 
 🎉 **Lesson 0068 completed! Proceed to Lesson 0069 to master containerizing production microservices with multi-stage Docker builds and Docker Compose.**

@@ -2,7 +2,7 @@
 icon: lucide/git-merge
 ---
 
-# 0039: GraphQL Batch Mapping, DataLoaders & Real-Time Subscriptions
+# 0039: GraphQL batch mapping, DataLoaders, and real-time subscriptions
 
 While GraphQL provides incredible frontend query flexibility, naive resolver implementations introduce catastrophic **N+1 database query waterfalls**. When resolving nested relations (e.g., retrieving the `Customer` and `Items` for 50 `Orders`), a naive field resolver executes **1 query for orders + 50 individual queries for customers**, stalling backend databases.
 
@@ -12,7 +12,7 @@ In this lesson, you will master resolving the GraphQL N+1 problem using **`@Batc
 
 ---
 
-## 1. The GraphQL N+1 Problem vs `@BatchMapping`
+## 1. The GraphQL n1 problem vs `@BatchMapping`
 
 ``` mermaid
 flowchart TD
@@ -88,7 +88,7 @@ public class OrderFieldBatchController {
 
 ---
 
-## 3. Asynchronous Batching with `DataLoader` & `BatchLoaderRegistry`
+## 3. Asynchronous batching with `DataLoader` `BatchLoaderRegistry`
 
 For cross-cutting or deeply nested multi-service scenarios, register a custom `DataLoader`:
 
@@ -123,7 +123,7 @@ public class DataLoaderConfig {
 
 ---
 
-## 4. Real-Time Subscriptions (`@SubscriptionMapping`)
+## 4. Real-time subscriptions (`@subscriptionmapping`)
 
 GraphQL Subscriptions allow clients to establish a persistent WebSocket connection and receive streaming push updates whenever backend events fire.
 
@@ -140,7 +140,7 @@ type OrderStatusPayload {
 }
 ```
 
-### Step 2: Enable WebSocket Transport in `application.yml`
+### Step 2: Enable WebSocket transport in `application.yml`
 ```yaml
 spring:
   graphql:
@@ -150,7 +150,7 @@ spring:
       keep-alive: 30s
 ```
 
-### Step 3: Subscription Controller with Project Reactor `Flux<T>`
+### Step 3: Subscription controller with project Reactor `Flux<T>`
 ```java
 package com.example.graphql.controller;
 
@@ -181,7 +181,7 @@ public class OrderSubscriptionController {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Batching & Streaming Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Batching streaming evolution
 
 ``` mermaid
 flowchart TD
@@ -200,7 +200,7 @@ flowchart TD
     SB3 ==>|Transport Modernization & Loom Streams| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -210,15 +210,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring for GraphQL: Batch Loading & BatchMapping](https://docs.spring.io/spring-graphql/reference/controllers.html#controllers.batch-mapping) — Solving N+1 queries.
-- [GraphQL Java DataLoader Guide](https://www.graphql-java.com/documentation/batching/) — Key caching and deferred execution.
-- [Spring for GraphQL Subscriptions over WebSocket](https://docs.spring.io/spring-graphql/reference/transports.html#server.transports.websocket) — Configuring real-time reactive streams.
+- [Spring for GraphQL: Batch Loading & BatchMapping](https://docs.spring.io/spring-graphql/reference/controllers.html#controllers.batch-mapping), Solving N+1 queries.
+- [GraphQL Java DataLoader Guide](https://www.graphql-java.com/documentation/batching/), Key caching and deferred execution.
+- [Spring for GraphQL Subscriptions over WebSocket](https://docs.spring.io/spring-graphql/reference/transports.html#server.transports.websocket), Configuring real-time reactive streams.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why does a naive `@SchemaMapping` method cause an N+1 query problem when querying lists of entities?"
     **Answer**: The GraphQL engine invokes the field resolver method once for every individual entity in the parent list, executing N separate database queries instead of a single bulk query.
@@ -231,8 +231,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0038: Spring for GraphQL**](0038-spring-graphql-schema-queries-mutations.md) | [**All Lessons**](index.md) | [➡️ **0040: Spring gRPC & Protocol Buffers**](0040-spring-grpc-and-protocol-buffers-microservices.md) |
+| [**0038: Spring for GraphQL**](0038-spring-graphql-schema-queries-mutations.md) | [**All Lessons**](index.md) | [ **0040: Spring gRPC & Protocol Buffers**](0040-spring-grpc-and-protocol-buffers-microservices.md) |

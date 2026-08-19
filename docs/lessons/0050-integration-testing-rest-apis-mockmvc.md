@@ -2,17 +2,17 @@
 icon: lucide/globe
 ---
 
-# 0050: Integration Testing REST APIs with `@SpringBootTest` & `MockMvc`
+# 0050: Integration testing REST APIs with @SpringBootTest and MockMvc
 
 Unit tests prove that individual Java classes work in isolation, but they cannot verify that HTTP serialization, `@Valid` bean constraint annotations, Spring Security filter chains, or `@RestControllerAdvice` exception handlers function correctly together.
 
-**Spring MVC Test** (`MockMvc`) enables high-speed integration testing of your web layer by simulating the complete `DispatcherServlet` HTTP request-response pipeline in memory—without spinning up a live network server or binding to a real TCP port.
+**Spring MVC Test** (`MockMvc`) enables high-speed integration testing of your web layer by simulating the complete `DispatcherServlet` HTTP request-response pipeline in memory, without spinning up a live network server or binding to a real TCP port.
 
 In this lesson, you will master testing REST API endpoints using `@WebMvcTest` slices, performing HTTP assertions with `MockMvc`, validating JSON payloads with `jsonPath()`, and isolating dependencies with `@MockitoBean`.
 
 ---
 
-## 1. `MockMvc` Sliced Execution Pipeline
+## 1. `MockMvc` sliced execution pipeline
 
 ``` mermaid
 flowchart TD
@@ -41,7 +41,7 @@ flowchart TD
 
 ---
 
-## 2. Fast Web Slicing with `@WebMvcTest`
+## 2. Fast web slicing with `@WebMvcTest`
 
 Instead of loading the entire `ApplicationContext` (which loads Hibernate, Datasources, and Schedulers), use `@WebMvcTest` to load only web infrastructure:
 
@@ -106,7 +106,7 @@ class OrderRestControllerTest {
 
 ---
 
-## 3. Testing Bean Validation & Error Handlers
+## 3. Testing bean validation error handlers
 
 Integration tests must verify that invalid requests are rejected with proper HTTP 400 Bad Request status codes and RFC 7807 `ProblemDetails` payloads:
 
@@ -138,7 +138,7 @@ void shouldRejectInvalidOrderPayload() throws Exception {
 
 | Feature | `@WebMvcTest` (Sliced Test) | `@SpringBootTest` (Full Integration) |
 | :--- | :--- | :--- |
-| **Startup Speed** | Ultra-Fast (~1–2 seconds). | Slower (~5–15 seconds). |
+| **Startup Speed** | Ultra-Fast (~1-2 seconds). | Slower (~5-15 seconds). |
 | **Context Scope** | Loads Controllers, Advice, Converters, Jackson. | Loads the full, entire `ApplicationContext`. |
 | **Database & JPA** | NOT loaded (requires `@MockitoBean` for services). | Real or embedded database initialized. |
 | **Network Port** | In-memory `MockMvc` (No TCP port bound). | Can bind to `webEnvironment = RANDOM_PORT`. |
@@ -146,11 +146,11 @@ void shouldRejectInvalidOrderPayload() throws Exception {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Web Testing Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Web testing evolution
 
 ``` mermaid
 flowchart TD
-    subgraph SB3["Spring Boot 3.0–3.3"]
+    subgraph SB3["Spring Boot 3.0-3.3"]
         MockBeanLegacy["@MockBean (Spring Boot Test package)"]
         MockMvcClassic["Classic MockMvc ResultMatchers"]
         ManualRestClientMock["MockRestServiceServer for RestClient"]
@@ -165,23 +165,23 @@ flowchart TD
     SB3 ==>|Core @MockitoBean & ProblemDetails 2.0 Integration| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
-| Web Testing Feature | Spring Boot 3.0–3.3 | Spring Boot 3.4+ & 4.x |
+| Web Testing Feature | Spring Boot 3.0-3.3 | Spring Boot 3.4+ & 4.x |
 | :--- | :--- | :--- |
 | **Bean Mocking** | Used `@MockBean` inside `@WebMvcTest`. | **`@MockitoBean`**: First-class core Spring Framework annotation replacing deprecated `@MockBean`. |
 | **Error Specification** | Default RFC 7807 `ProblemDetails` responses. | **RFC 9457 Standard**: Extended error properties automatically tested via `status().isProblemDetail()`. |
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring Boot Testing Reference Guide](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing) — `@WebMvcTest`, `@SpringBootTest`, and slice testing.
-- [Jayway JsonPath Documentation](https://github.com/json-path/JsonPath) — Advanced JSON syntax matching for REST assertions.
+- [Spring Boot Testing Reference Guide](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing), `@WebMvcTest`, `@SpringBootTest`, and slice testing.
+- [Jayway JsonPath Documentation](https://github.com/json-path/JsonPath), Advanced JSON syntax matching for REST assertions.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the primary advantage of using `@WebMvcTest` over `@SpringBootTest` when testing REST controllers?"
     **Answer**: `@WebMvcTest` only bootstraps the web layer (Controllers, filters, Jackson, validation) rather than the complete Spring context, executing in ~1 second compared to ~10+ seconds for a full context boot.
@@ -194,8 +194,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0049: Mocking with Mockito**](0049-mocking-dependencies-with-mockito.md) | [**All Lessons**](index.md) | [➡️ **0051: Database Testing with Testcontainers**](0051-database-integration-testing-testcontainers.md) |
+| [**0049: Mocking with Mockito**](0049-mocking-dependencies-with-mockito.md) | [**All Lessons**](index.md) | [ **0051: Database Testing with Testcontainers**](0051-database-integration-testing-testcontainers.md) |

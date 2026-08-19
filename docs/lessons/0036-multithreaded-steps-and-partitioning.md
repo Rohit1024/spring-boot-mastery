@@ -2,7 +2,7 @@
 icon: lucide/cpu
 ---
 
-# 0036: High-Scale Batch Processing: Multi-Threaded Steps & Partitioning
+# 0036: High-scale batch processing: Multithreaded steps and partitioning
 
 When a batch job must process tens of millions of records within a strict 30-minute maintenance window, executing steps on a single thread will inevitably breach production SLAs.
 
@@ -12,7 +12,7 @@ In this lesson, you will master thread-safety caveats with batch readers, config
 
 ---
 
-## 1. Batch Scaling Architectures Compared
+## 1. Batch scaling architectures compared
 
 ``` mermaid
 flowchart TD
@@ -38,7 +38,7 @@ flowchart TD
     MultiThreaded ~~~ Partitioned
 ```
 
-### Architectural Comparison:
+### Architectural comparison
 
 | Strategy | Thread-Safety Complexity | Restartability State | Best Use Case |
 | :--- | :--- | :--- | :--- |
@@ -49,17 +49,17 @@ flowchart TD
 
 ---
 
-## 2. Multi-Threaded Step Implementation & Thread-Safety
+## 2. Multi-threaded step implementation thread-safety
 
-### ⚠️ The Thread-Safety Trap
+### The thread-safety trap
 Standard `ItemReader` implementations (like `FlatFileItemReader` or `JdbcCursorItemReader`) maintain internal state (such as file cursor line numbers). If multiple threads call `.read()` concurrently without synchronization, race conditions will duplicate, skip, or corrupt records!
 
-### Solutions for Multi-Threaded Steps:
+### Solutions for multi-threaded steps
 1. Wrap stateful readers with `SynchronizedItemStreamReader`.
 2. Use inherently thread-safe paging readers (`JdbcPagingItemReader` or `JpaPagingItemReader`).
 3. Set `.saveState(false)` on the reader because execution order across threads is non-deterministic.
 
-### Multi-Threaded Step Configuration:
+### Multi-threaded step configuration
 ```java
 package com.example.batch.config;
 
@@ -94,7 +94,7 @@ public class MultiThreadedBatchConfig {
     @Bean
     public TaskExecutor batchVirtualThreadExecutor() {
         SimpleAsyncTaskExecutor executor = new SimpleAsyncTaskExecutor("batch-vt-");
-        executor.setVirtualThreads(true); // Leverage Java 21 Virtual Threads!
+        executor.setVirtualThreads(true); // Uses Java 21 virtual threads
         return executor;
     }
 
@@ -121,7 +121,7 @@ public class MultiThreadedBatchConfig {
 
 ---
 
-## 3. Step Partitioning (Master-Worker Architecture)
+## 3. Step partitioning (master-worker architecture)
 
 Partitioning divides a large dataset into discrete slices (e.g. by database ID ranges or file names). A **Master Step** delegates each slice to a **Worker Step** running on a dedicated thread with its own independent reader, processor, and writer:
 
@@ -140,7 +140,7 @@ flowchart TD
     W4 --> Checkpoint4["BATCH_STEP_EXECUTION (Worker 3: COMPLETED)"]
 ```
 
-### Implementing a Custom `ColumnRangePartitioner`:
+### Implementing a custom `ColumnRangePartitioner`
 ```java
 package com.example.batch.partitioner;
 
@@ -184,7 +184,7 @@ public class ColumnRangePartitioner implements Partitioner {
 
 ---
 
-## 4. Spring Boot 3 vs Spring Boot 4: High-Scale Batch Evolution
+## 4. Spring Boot 3 vs Spring Boot 4: High-scale batch evolution
 
 ``` mermaid
 flowchart TD
@@ -203,7 +203,7 @@ flowchart TD
     SB3 ==>|Massive Concurrency & Cloud-Native Scaling| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Scaling Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -213,15 +213,15 @@ flowchart TD
 
 ---
 
-## 5. Primary Sources & Further Reading
+## 5. Primary sources and further reading
 
-- [Spring Batch Scaling and Parallel Processing Guide](https://docs.spring.io/spring-batch/reference/scalability.html) — Official documentation on Multi-Threaded Steps and Partitioning.
-- [Project Loom & Spring Batch Virtual Thread Optimization](https://spring.io/blog) — High-throughput batch processing with virtual threads.
-- [Spring Batch Remote Chunking with Apache Kafka](https://github.com/spring-projects/spring-batch/tree/main/spring-batch-integration) — Multi-node worker integration patterns.
+- [Spring Batch Scaling and Parallel Processing Guide](https://docs.spring.io/spring-batch/reference/scalability.html), Official documentation on Multi-Threaded Steps and Partitioning.
+- [Project Loom & Spring Batch Virtual Thread Optimization](https://spring.io/blog), High-throughput batch processing with virtual threads.
+- [Spring Batch Remote Chunking with Apache Kafka](https://github.com/spring-projects/spring-batch/tree/main/spring-batch-integration), Multi-node worker integration patterns.
 
 ---
 
-## 6. Knowledge Check & Retrieval Practice
+## 6. Knowledge check and practice
 
 ??? question "Question 1: Why must stateful readers like `FlatFileItemReader` have `.setSaveState(false)` or be wrapped in `SynchronizedItemStreamReader` when used in Multi-Threaded Steps?"
     **Answer**: Because multiple worker threads concurrently call `.read()`; without synchronization, race conditions corrupt cursor positions, and stateful checkpoint offsets cannot be saved deterministically.
@@ -234,8 +234,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0035: Fault Tolerance (Skip & Retry)**](0035-fault-tolerance-skip-retry-policies.md) | [**All Lessons**](index.md) | [➡️ **0037: Quartz Scheduling & ShedLock**](0037-quartz-scheduler-and-shedlock-distributed-locking.md) |
+| [**0035: Fault Tolerance (Skip & Retry)**](0035-fault-tolerance-skip-retry-policies.md) | [**All Lessons**](index.md) | [ **0037: Quartz Scheduling & ShedLock**](0037-quartz-scheduler-and-shedlock-distributed-locking.md) |

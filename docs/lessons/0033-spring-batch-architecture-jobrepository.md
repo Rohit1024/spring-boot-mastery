@@ -2,9 +2,9 @@
 icon: lucide/layers
 ---
 
-# 0033: Spring Batch Core Architecture & JobRepository Persistence
+# 0033: Spring Batch architecture and JobRepository persistence
 
-In enterprise systems, business-critical workloads—such as overnight billing runs, bulk payroll disbursement, nightly inventory reconciliation, and data warehouse ETL—require processing millions of records reliably without human intervention.
+In enterprise systems, business-critical workloads, such as overnight billing runs, bulk payroll disbursement, nightly inventory reconciliation, and data warehouse ETL, require processing millions of records reliably without human intervention.
 
 **Spring Batch** is the industry-standard framework for enterprise batch processing, offering transactional execution, automated state checkpointing, restartability, and job history management.
 
@@ -12,7 +12,7 @@ In this lesson, you will master the Spring Batch 5 domain model, explore the rel
 
 ---
 
-## 1. Spring Batch Domain Architecture
+## 1. Spring batch domain architecture
 
 Spring Batch decomposes batch workloads into a strict hierarchical domain model:
 
@@ -48,7 +48,7 @@ flowchart TD
     StepPipeline -.->|Records Step Progress| JobRepo
 ```
 
-### Core Domain Concepts:
+### Core domain concepts
 
 | Component | Responsibility |
 | :--- | :--- |
@@ -62,7 +62,7 @@ flowchart TD
 
 ---
 
-## 2. The `JobRepository` Relational Database Schema
+## 2. The `JobRepository` relational database schema
 
 Spring Batch maintains complete auditability by persisting state across six core relational tables:
 
@@ -101,7 +101,7 @@ erDiagram
     }
 ```
 
-### Automatic Table Initialization (`application.yml`)
+### Automatic table initialization (`applicationyml`)
 In Spring Boot 3+, Spring Batch tables can be created automatically:
 
 ```yaml
@@ -115,7 +115,7 @@ spring:
 
 ---
 
-## 3. Configuring Jobs in Spring Batch 5
+## 3. Configuring jobs in Spring batch 5
 
 Spring Batch 5 (Spring Boot 3.x) removed legacy `@EnableBatchProcessing` boilerplate and deprecated factories (`JobBuilderFactory`, `StepBuilderFactory`). Configuration is now purely component-based:
 
@@ -168,7 +168,7 @@ public class BillingBatchConfig {
 
 ---
 
-## 4. Job Launching & Parameter Identity (`JobParameters`)
+## 4. Job launching parameter identity (`jobparameters`)
 
 When launching a job via `JobLauncher`, parameters determine whether Spring Batch creates a **new `JobInstance`** or attempts to **restart an existing failed `JobInstance`**:
 
@@ -186,7 +186,7 @@ flowchart TD
     CheckStatus -->|FAILED / STOPPED| ResumeInstance["✅ Resume: Create new JobExecution for existing Instance"]
 ```
 
-### Launching Programmatically via REST Controller:
+### Launching programmatically via REST controller
 ```java
 package com.example.batch.controller;
 
@@ -229,7 +229,7 @@ public class JobTriggerController {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Batch Architecture Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Batch architecture evolution
 
 ``` mermaid
 flowchart TD
@@ -248,7 +248,7 @@ flowchart TD
     SB3 ==>|Modernization & Loom Acceleration| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Batch Capability | Spring Boot 3.x (Batch 5) | Spring Boot 4.x (Batch 6) |
 | :--- | :--- | :--- |
@@ -258,15 +258,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring Batch 5 Official Reference Guide](https://docs.spring.io/spring-batch/reference/index.html) — Core architecture, builder changes, and step configuration.
-- [Spring Batch Database Schema Reference](https://docs.spring.io/spring-batch/reference/schema-appendix.html) — Detailed breakdown of all `BATCH_*` metadata tables.
-- [Michael Minella: The Definitive Guide to Spring Batch](https://www.apress.com/gp/book/9781484237236) — Authoritative enterprise design patterns.
+- [Spring Batch 5 Official Reference Guide](https://docs.spring.io/spring-batch/reference/index.html), Core architecture, builder changes, and step configuration.
+- [Spring Batch Database Schema Reference](https://docs.spring.io/spring-batch/reference/schema-appendix.html), Detailed breakdown of all `BATCH_*` metadata tables.
+- [Michael Minella: The Definitive Guide to Spring Batch](https://www.apress.com/gp/book/9781484237236), Authoritative enterprise design patterns.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the fundamental difference between a `JobInstance` and a `JobExecution` in Spring Batch?"
     **Answer**: A `JobInstance` represents the logical run of a job identified by unique parameters, while a `JobExecution` is a single physical execution attempt of that instance (which may fail and be retried).
@@ -274,13 +274,13 @@ flowchart TD
 ??? question "Question 2: Why will Spring Batch throw a `JobInstanceAlreadyCompleteException` if you run a job with identical identifying parameters twice?"
     **Answer**: By design, Spring Batch enforces idempotency; a completed `JobInstance` cannot be re-executed with the same identifying parameters to prevent duplicate processing of business transactions.
 
-??? question "Question 3: How does the `ExecutionContext` facilitate job restartability after a crash?"
+??? question "Question 3: How does the `ExecutionContext` help job restartability after a crash?"
     **Answer**: The `ExecutionContext` persists checkpoint states (such as the last read record offset) in the database, allowing steps to resume from the exact failure point without reprocessing earlier records.
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0032: Containerizing Native Images with Jib**](0032-containerizing-graalvm-native-images-with-jib.md) | [**All Lessons**](index.md) | [➡️ **0034: Chunk-Oriented Processing**](0034-chunk-oriented-processing-readers-writers.md) |
+| [**0032: Containerizing Native Images with Jib**](0032-containerizing-graalvm-native-images-with-jib.md) | [**All Lessons**](index.md) | [ **0034: Chunk-Oriented Processing**](0034-chunk-oriented-processing-readers-writers.md) |

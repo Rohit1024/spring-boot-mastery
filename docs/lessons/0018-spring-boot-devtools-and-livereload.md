@@ -2,7 +2,7 @@
 icon: lucide/zap
 ---
 
-# 0018: Supercharging Developer Productivity with Spring DevTools & LiveReload
+# 0018: Development workflow with Spring DevTools and LiveReload
 
 Fast feedback loops are the hallmark of high-performing engineering teams. Restarting a large Spring Boot application after every code edit wastes valuable developer time as the JVM re-indexes hundreds of third-party dependencies.
 
@@ -10,7 +10,7 @@ Fast feedback loops are the hallmark of high-performing engineering teams. Resta
 
 ---
 
-## 1. Why Full JVM Cold Restarts Are Slow
+## 1. Why full JVM cold restarts are slow
 
 In standard Spring Boot deployments, restarting the application forces the JVM to load thousands of external classes (Spring Core, Hibernate, Jackson, Netty, database drivers) from disk into the JVM metaspace.
 
@@ -39,13 +39,13 @@ flowchart TD
     Discard --> RestartCL
 ```
 
-### The Two-ClassLoader Advantage:
+### The two-classloader advantage
 1. **Base ClassLoader**: Loads all external libraries from dependencies (`pom.xml` / `build.gradle`). These never change during active coding and remain permanently in memory.
 2. **Restart ClassLoader**: Loads only the classes in your workspace (`target/classes` or `build/classes`). When a file changes, Spring Boot discards the small Restart ClassLoader and boots a new `ApplicationContext` in **under 500 milliseconds**.
 
 ---
 
-## 2. Adding DevTools to Your Project
+## 2. Adding DevTools to your project
 
 DevTools is strictly a development-time dependency and is automatically excluded when creating production fat JARs with `bootJar` or `spring-boot-maven-plugin`:
 
@@ -68,7 +68,7 @@ DevTools is strictly a development-time dependency and is automatically excluded
 
 ---
 
-## 3. Automatic Development Property Overrides
+## 3. Automatic development property overrides
 
 By default, production configurations enable aggressive template caching and connection pooling. DevTools automatically applies developer-friendly defaults:
 
@@ -82,7 +82,7 @@ By default, production configurations enable aggressive template caching and con
 
 ---
 
-## 4. LiveReload: Instant Browser Refresh
+## 4. LiveReload: Instant browser refresh
 
 DevTools includes an embedded **LiveReload server** running on port `35729`. When static assets (`src/main/resources/static/`, `public/`, `templates/`) are modified, DevTools pushes a WebSocket event to your browser:
 
@@ -106,11 +106,11 @@ sequenceDiagram
 
 ---
 
-## 5. Controlling Restart Triggers & File Watching
+## 5. Controlling restart triggers file watching
 
 By default, whenever any compiled class changes, a restart is triggered. In fast typing sessions, this can cause multiple rapid restarts.
 
-### Using a Trigger File
+### Using a trigger file
 You can configure DevTools to only restart when a specific trigger file is updated:
 
 ```properties
@@ -122,8 +122,8 @@ Now, Spring Boot will only restart when you touch `.reloadtrigger`:
 touch .reloadtrigger
 ```
 
-### Excluding Static Paths from Restart
-Static resources do not require a JVM restart — they only need a browser reload:
+### Excluding static paths from restart
+Static resources do not require a JVM restart, they only need a browser reload:
 
 ```properties
 spring.devtools.restart.exclude=static/**,public/**,templates/**
@@ -131,7 +131,7 @@ spring.devtools.restart.exclude=static/**,public/**,templates/**
 
 ---
 
-## 6. Global Developer Configuration (`~/.spring-boot-devtools.properties`)
+## 6. Global developer configuration (`~/spring-boot-devtoolsproperties`)
 
 To configure DevTools preferences across **all** Spring Boot projects on your workstation, create a file in your home directory (`~/.spring-boot-devtools.properties`):
 
@@ -144,7 +144,7 @@ spring.devtools.livereload.enabled=true
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4: Inner-Loop Tooling Evolution
+## 7. Spring Boot 3 vs Spring Boot 4: Inner-loop tooling evolution
 
 ``` mermaid
 flowchart TD
@@ -163,7 +163,7 @@ flowchart TD
     SB3 ==>|Inner-Loop Acceleration| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Developer Tooling Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -173,15 +173,15 @@ flowchart TD
 
 ---
 
-## 8. Primary Sources & Further Reading
+## 8. Primary sources and further reading
 
-- [Spring Boot DevTools Official Reference](https://docs.spring.io/spring-boot/reference/using/devtools.html) — Classloader architecture, property overrides, and remote debugging.
-- [Spring Boot DevTools LiveReload Docs](https://docs.spring.io/spring-boot/reference/using/devtools.html#using.devtools.livereload) — Embedded WebSocket LiveReload setup.
-- [Baeldung: Spring Boot DevTools Explained](https://www.baeldung.com/spring-boot-devtools) — Deep dive into automatic properties and classloader mechanics.
+- [Spring Boot DevTools Official Reference](https://docs.spring.io/spring-boot/reference/using/devtools.html), Classloader architecture, property overrides, and remote debugging.
+- [Spring Boot DevTools LiveReload Docs](https://docs.spring.io/spring-boot/reference/using/devtools.html#using.devtools.livereload), Embedded WebSocket LiveReload setup.
+- [Baeldung: Spring Boot DevTools Explained](https://www.baeldung.com/spring-boot-devtools), Deep dive into automatic properties and classloader mechanics.
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: Why does Spring Boot DevTools restart the application in ~500ms compared to a 15s cold boot?"
     **Answer**: It uses two ClassLoaders; third-party dependency JARs remain frozen in the Base ClassLoader, while only workspace application classes are recreated in the ephemeral Restart ClassLoader.
@@ -194,8 +194,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0017: Entity Auditing & Hibernate Envers**](0017-entity-auditing-and-spring-data-envers.md) | [**All Lessons**](index.md) | [➡️ **0019: Production Health & Actuator Metrics**](0019-production-health-actuator-and-metrics.md) |
+| [**0017: Entity Auditing & Hibernate Envers**](0017-entity-auditing-and-spring-data-envers.md) | [**All Lessons**](index.md) | [ **0019: Production Health & Actuator Metrics**](0019-production-health-actuator-and-metrics.md) |

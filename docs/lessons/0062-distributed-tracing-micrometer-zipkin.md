@@ -2,7 +2,7 @@
 icon: lucide/git-branch
 ---
 
-# 0062: Distributed Tracing with Micrometer Tracing & Zipkin
+# 0062: Distributed tracing with Micrometer Tracing and Zipkin
 
 In a microservices architecture, a single user request can trigger a cascading web of synchronous HTTP calls, asynchronous Kafka events, and database transactions across 8 distinct microservices. When a request suddenly takes 3.8 seconds to complete or fails with an intermittent 500 error, inspecting isolated log files across individual servers is practically impossible.
 
@@ -12,7 +12,7 @@ In this lesson, you will master the transition from legacy Spring Cloud Sleuth t
 
 ---
 
-## 1. Distributed Trace Waterfall Architecture
+## 1. Distributed trace waterfall architecture
 
 ``` mermaid
 flowchart TD
@@ -57,7 +57,7 @@ flowchart TD
 
 ---
 
-## 2. Spring Cloud Sleuth vs Micrometer Tracing
+## 2. Spring Cloud Sleuth vs Micrometer tracing
 
 In Spring Boot 3.x, the legacy **Spring Cloud Sleuth** library was deprecated and rewritten as **Micrometer Tracing**:
 
@@ -69,7 +69,7 @@ In Spring Boot 3.x, the legacy **Spring Cloud Sleuth** library was deprecated an
 
 ---
 
-## 3. Maven Dependencies (`pom.xml`)
+## 3. Maven dependencies (`pomxml`)
 
 Include the Micrometer OpenTelemetry bridge and the Zipkin reporting exporter:
 
@@ -95,7 +95,7 @@ Include the Micrometer OpenTelemetry bridge and the Zipkin reporting exporter:
 
 ---
 
-## 4. Configuration (`application.yml`)
+## 4. Configuration (`applicationyml`)
 
 Configure 100% trace sampling for development and point to the Zipkin collector:
 
@@ -127,7 +127,7 @@ logging:
 
 ---
 
-## 5. Correlated Structured Logging in Action
+## 5. Correlated structured logging in action
 
 With Micrometer Tracing enabled, every log message automatically captures the active `traceId` and `spanId`:
 
@@ -140,7 +140,7 @@ When checking logs in Elasticsearch/Loki, querying for `traceId: "4bf92f3577b34d
 
 ---
 
-## 6. Creating Custom Spans Programmatically
+## 6. Creating custom spans programmatically
 
 For expensive internal algorithms or complex database loops, create manual sub-spans:
 
@@ -180,7 +180,7 @@ public class FraudDetectionService {
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4 Evolution
+## 7. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -190,15 +190,15 @@ public class FraudDetectionService {
 
 ---
 
-## 8. Primary Sources & Further Reading
+## 8. Primary sources and further reading
 
-- [Micrometer Tracing Official Reference Guide](https://micrometer.io/docs/tracing) — Spans, Tracers, and Baggage.
-- [W3C TraceContext Specification](https://www.w3.org/TR/trace-context/) — `traceparent` and `tracestate` header standards.
-- [OpenZipkin Documentation](https://zipkin.io/) — Zipkin UI, span formats, and distributed call graphs.
+- [Micrometer Tracing Official Reference Guide](https://micrometer.io/docs/tracing), Spans, Tracers, and Baggage.
+- [W3C TraceContext Specification](https://www.w3.org/TR/trace-context/), `traceparent` and `tracestate` header standards.
+- [OpenZipkin Documentation](https://zipkin.io/), Zipkin UI, span formats, and distributed call graphs.
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: What is the relationship between a Trace and a Span in distributed tracing?"
     **Answer**: A Trace represents the entire end-to-end request journey across multiple services, while a Span represents an individual timed unit of execution within a single service.
@@ -211,10 +211,10 @@ public class FraudDetectionService {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0061: Centralized Config Server & Dynamic Bus Refresh**](0061-centralized-config-server-bus-refresh.md) | [**All Lessons**](index.md) | [➡️ **0063: Fault Tolerance with Resilience4j**](0063-fault-tolerance-resilience4j.md) |
+| [**0061: Centralized Config Server & Dynamic Bus Refresh**](0061-centralized-config-server-bus-refresh.md) | [**All Lessons**](index.md) | [ **0063: Fault Tolerance with Resilience4j**](0063-fault-tolerance-resilience4j.md) |
 
 🎉 **Lesson 0062 completed! Proceed to Lesson 0063 to master fault tolerance, circuit breakers, and retries with Resilience4j.**

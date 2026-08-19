@@ -2,7 +2,7 @@
 icon: lucide/zap
 ---
 
-# 0074: Building Reactive REST APIs with Spring WebFlux
+# 0074: Building reactive REST APIs with Spring WebFlux
 
 Spring WebFlux offers two distinct programming models for building non-blocking HTTP services:
 1. **Annotated Controllers**: The familiar Spring MVC-style annotations (`@RestController`, `@GetMapping`, `@PostMapping`), adapted to return `Mono<T>` and `Flux<T>`.
@@ -12,7 +12,7 @@ In this lesson, you will master building reactive REST APIs using both models, h
 
 ---
 
-## 1. WebFlux Request Processing Pipeline
+## 1. WebFlux request processing pipeline
 
 ``` mermaid
 flowchart TD
@@ -49,7 +49,7 @@ flowchart TD
 
 ---
 
-## 2. Model 1: Annotated Reactive Controllers
+## 2. Model 1: Annotated reactive controllers
 
 ```java
 package com.example.controller;
@@ -105,11 +105,11 @@ public class ProductReactiveController {
 
 ---
 
-## 3. Model 2: Functional Router Functions
+## 3. Model 2: Functional router functions
 
 Functional endpoints decouple routing configuration from request processing logic:
 
-### 1. Handler Function
+### 1. Handler function
 
 ```java
 package com.example.handler;
@@ -151,7 +151,7 @@ public class ProductHandler {
 }
 ```
 
-### 2. Router Function
+### 2. Router function
 
 ```java
 package com.example.config;
@@ -183,7 +183,7 @@ public class ProductRouterConfig {
 
 ---
 
-## 4. Reactive Global Exception Handling
+## 4. Reactive global exception handling
 
 In WebFlux, handle exceptions globally using `@RestControllerAdvice` with RFC 7807/9457 `ProblemDetails`:
 
@@ -228,7 +228,7 @@ public class ReactiveGlobalExceptionHandler {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -238,7 +238,7 @@ public class ReactiveGlobalExceptionHandler {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
 - [Spring WebFlux Annotated Controllers](https://docs.spring.io/spring-framework/reference/web/webflux/controller.html).
 - [Spring WebFlux Functional Endpoints](https://docs.spring.io/spring-framework/reference/web/webflux/functional.html).
@@ -246,7 +246,7 @@ public class ReactiveGlobalExceptionHandler {
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the main advantage of Functional Endpoints (`RouterFunction`) over Annotated Controllers?"
     **Answer**: Functional endpoints provide explicit, compile-time routing without reflection, annotation scanning overhead, or framework proxy generation.
@@ -259,10 +259,10 @@ public class ReactiveGlobalExceptionHandler {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0073: Project Reactor: Mono, Flux & Schedulers**](0073-project-reactor-mono-flux-schedulers.md) | [**All Lessons**](index.md) | [➡️ **0075: Non-Blocking Persistence with R2DBC & Reactive Redis**](0075-nonblocking-persistence-r2dbc-reactive-redis.md) |
+| [**0073: Project Reactor: Mono, Flux & Schedulers**](0073-project-reactor-mono-flux-schedulers.md) | [**All Lessons**](index.md) | [ **0075: Non-Blocking Persistence with R2DBC & Reactive Redis**](0075-nonblocking-persistence-r2dbc-reactive-redis.md) |
 
 🎉 **Lesson 0074 completed! Proceed to Lesson 0075 to master end-to-end non-blocking persistence with R2DBC and Reactive Redis.**

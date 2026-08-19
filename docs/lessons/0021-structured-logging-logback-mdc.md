@@ -2,7 +2,7 @@
 icon: lucide/terminal
 ---
 
-# 0021: Structured Application Logging with SLF4J, Logback & Mapped Diagnostic Context (MDC)
+# 0021: Structured application logging with SLF4J, Logback, and MDC
 
 In high-scale distributed architectures processing millions of concurrent requests, traditional unstructured plaintext log files (e.g. `2026-08-17 10:00:00 INFO User logged in`) are nearly impossible to query, parse, or aggregate efficiently.
 
@@ -10,7 +10,7 @@ Modern observability demands **Structured JSON Logging** and **Distributed Conte
 
 ---
 
-## 1. Plaintext Logs vs Structured JSON Logs
+## 1. Plaintext logs vs structured JSON logs
 
 ``` mermaid
 flowchart TD
@@ -25,14 +25,14 @@ flowchart TD
     Legacy ~~~ Structured
 ```
 
-### Why Structured JSON Wins:
+### Why structured JSON wins
 - **Zero Regex Parsing**: Elasticsearch, Datadog, and CloudWatch index JSON keys natively into fast inverted index fields.
 - **Dimensional Filtering**: Instantly run queries like `service: order-service AND userId: usr_44 AND level: ERROR`.
 - **Contextual Correlation**: Every log emitted within a request automatically carries the same `traceId` and `clientIp`.
 
 ---
 
-## 2. Setting Up `logstash-logback-encoder`
+## 2. Setting up `logstash-logback-encoder`
 
 Add the encoder to your `pom.xml`:
 
@@ -82,7 +82,7 @@ Create `src/main/resources/logback-spring.xml` to output structured JSON in prod
 
 ---
 
-## 3. Mapped Diagnostic Context (MDC) Architecture
+## 3. Mapped diagnostic context (MDC) architecture
 
 **MDC (Mapped Diagnostic Context)** is an SLF4J feature backed by Java's `ThreadLocal`. It allows you to set key-value context variables at the beginning of an HTTP request that are automatically included in **every log statement** executed on that thread.
 
@@ -106,13 +106,13 @@ sequenceDiagram
     Service->>Log: log.info("Payment captured successfully")
     
     Service-->>Filter: Returns OrderResponse
-    Filter->>MDC: MDC.clear() (Crucial: Prevents ThreadLocal leaks!)
+    Filter->>MDC: MDC.clear() (Prevents ThreadLocal leaks)
     Filter-->>Client: HTTP 201 Created (Header: X-Correlation-ID: c7b91a2e)
 ```
 
 ---
 
-## 4. Implementing the Correlation ID Servlet Filter
+## 4. Implementing the correlation id servlet filter
 
 ```java
 package com.example.demo.filter;
@@ -170,11 +170,11 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
 ---
 
-## 5. Dynamic Log Level Switching via Actuator
+## 5. Dynamic log level switching via actuator
 
 In production, you often need to temporarily enable `DEBUG` logging on a specific package to diagnose an active incident without restarting the container.
 
-### 1. View Current Log Levels
+### 1. View current log levels
 ```bash
 curl -X GET http://localhost:8080/actuator/loggers/com.example.demo
 ```
@@ -186,7 +186,7 @@ curl -X GET http://localhost:8080/actuator/loggers/com.example.demo
 }
 ```
 
-### 2. Dynamically Switch to `DEBUG`
+### 2. Dynamically switch to `DEBUG`
 ```bash
 curl -X POST http://localhost:8080/actuator/loggers/com.example.demo \
      -H "Content-Type: application/json" \
@@ -196,7 +196,7 @@ curl -X POST http://localhost:8080/actuator/loggers/com.example.demo \
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Logging & Context Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Logging context evolution
 
 ``` mermaid
 flowchart TD
@@ -215,7 +215,7 @@ flowchart TD
     SB3 ==>|Telemetry Convergence| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Logging Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -225,15 +225,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [SLF4J Mapped Diagnostic Context (MDC) Manual](https://www.slf4j.org/manual.html#mdc) — Official guide on ThreadLocal context propagation.
-- [Logstash Logback Encoder Documentation](https://github.com/logfellow/logstash-logback-encoder) — Custom JSON fields, masking, and formatting.
-- [Spring Boot Actuator: Loggers Endpoint](https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.loggers) — Runtime log level adjustments.
+- [SLF4J Mapped Diagnostic Context (MDC) Manual](https://www.slf4j.org/manual.html#mdc), Official guide on ThreadLocal context propagation.
+- [Logstash Logback Encoder Documentation](https://github.com/logfellow/logstash-logback-encoder), Custom JSON fields, masking, and formatting.
+- [Spring Boot Actuator: Loggers Endpoint](https://docs.spring.io/spring-boot/reference/actuator/endpoints.html#actuator.endpoints.loggers), Runtime log level adjustments.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is clearing MDC via `MDC.clear()` inside a `finally` block mandatory in Servlet environments?"
     **Answer**: Web servers like Tomcat use thread pools; failing to clear MDC causes residual context variables (e.g. `traceId`) to bleed into unrelated subsequent requests executed by the reused thread.
@@ -246,8 +246,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0020: OpenAPI 3 & Swagger UI Documentation**](0020-openapi-3-and-swagger-ui-documentation.md) | [**All Lessons**](index.md) | [➡️ **0022: Centralized Logging with ELK Stack**](0022-centralized-logging-elk-stack.md) |
+| [**0020: OpenAPI 3 & Swagger UI Documentation**](0020-openapi-3-and-swagger-ui-documentation.md) | [**All Lessons**](index.md) | [ **0022: Centralized Logging with ELK Stack**](0022-centralized-logging-elk-stack.md) |

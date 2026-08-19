@@ -2,7 +2,7 @@
 icon: lucide/shield-check
 ---
 
-# 0004: Aspect-Oriented Programming (AOP) & Advice Types
+# 0004: Aspect-Oriented Programming (AOP) and advice types
 
 In enterprise applications, certain concerns span across multiple architectural layers: **performance metric collection, transaction boundaries, audit trails, and security checks**. These are known as **Cross-Cutting Concerns**.
 
@@ -10,7 +10,7 @@ Without Aspect-Oriented Programming (AOP), you would have to duplicate code in e
 
 ---
 
-## 1. Core AOP Concepts Demystified
+## 1. Core AOP concepts demystified
 
 ``` mermaid
 flowchart TD
@@ -32,7 +32,7 @@ flowchart TD
 
 ---
 
-## 2. The 5 Advice Types
+## 2. The 5 advice types
 
 Spring AOP provides 5 advice types ordered by their execution point:
 
@@ -61,11 +61,11 @@ sequenceDiagram
 
 ---
 
-## 3. Hands-On: Building a Custom `@TrackLatency` Aspect
+## 3. Hands-on: Building a custom `@TrackLatency` aspect
 
 Let's build a production-grade latency monitoring aspect using custom annotations and `@Around` advice.
 
-### Step 1: Create Custom Annotation
+### Step 1: Create custom annotation
 ```java
 package com.example.annotation;
 
@@ -81,7 +81,7 @@ public @interface TrackLatency {
 }
 ```
 
-### Step 2: Write the Aspect Class with `@Around` Advice
+### Step 2: Write the aspect class with `@Around` advice
 ```java
 package com.example.aspect;
 
@@ -118,7 +118,7 @@ public class PerformanceMonitoringAspect {
 }
 ```
 
-### Step 3: Use the Annotation in Your Service
+### Step 3: USE the annotation in your service
 ```java
 @Service
 public class PaymentService {
@@ -133,7 +133,7 @@ public class PaymentService {
 
 ---
 
-## 4. Other Advice Examples (`@Before`, `@AfterThrowing`)
+## 4. Other advice examples (`@before`, `@AfterThrowing`)
 
 ```java
 @Aspect
@@ -158,7 +158,7 @@ public class AuditAspect {
 
 ---
 
-## 5. Critical Architecture Trap: The Self-Invocation Problem
+## 5. Critical architecture trap: The self-invocation problem
 
 One of the most frequent senior interview questions and production bugs is the **Spring AOP Self-Invocation Pitfall**.
 
@@ -180,16 +180,16 @@ flowchart TD
     ScenarioA ~~~ ScenarioB
 ```
 
-### Why it happens:
+### Why it happens
 When `processOrder()` calls `this.saveAuditLog()`, it is executing directly on the raw Java object (`this`), **completely bypassing the Spring AOP Proxy wrapper**.
 
-### How to resolve:
+### How to resolve
 1. **Refactor into a separate bean**: Move `saveAuditLog()` into an `AuditService` bean and inject it.
 2. **Self-Injection**: Inject `OrderService` into itself with `@Lazy`.
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: AOP & Proxying Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: AOP proxying evolution
 
 ``` mermaid
 flowchart TD
@@ -208,7 +208,7 @@ flowchart TD
     SB3 ==>|Bytecode Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | AOP Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -218,14 +218,14 @@ flowchart TD
 
 ---
 
-## 7. Primary Source & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Framework Reference: Aspect-Oriented Programming](https://docs.spring.io/spring-framework/reference/core/aop.html) — Comprehensive guide on Pointcuts and AspectJ integration.
+- [Spring Framework Reference: Aspect-Oriented Programming](https://docs.spring.io/spring-framework/reference/core/aop.html), Comprehensive guide on Pointcuts and AspectJ integration.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Which Advice type provides complete control over target method execution and return values?"
     **Answer**: The `@Around` advice wraps execution completely, controlling when to proceed, modify outputs, or catch exceptions.
@@ -238,10 +238,9 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0003: Auto-Configuration & Starters**](0003-spring-boot-autoconfiguration-internals.md) | [**All Lessons**](index.md) | [**0005: Spring Profiles & Multi-Environment** ➡️](0005-spring-profiles-and-environments.md) |
+| [**0003: Auto-Configuration & Starters**](0003-spring-boot-autoconfiguration-internals.md) | [**All Lessons**](index.md) | [**0005: Spring Profiles & Multi-Environment**](0005-spring-profiles-and-environments.md) |
 
-💬 *Have questions on pointcut expressions or proxy interception? Ask anytime!*

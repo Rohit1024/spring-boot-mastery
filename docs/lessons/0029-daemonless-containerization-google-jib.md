@@ -2,17 +2,17 @@
 icon: lucide/container
 ---
 
-# 0029: Daemonless Containerization with Google Jib (Maven & Gradle)
+# 0029: Daemonless containerization with Google Jib (Maven and Gradle)
 
 Building container images with a traditional `docker build` command requires running a full Docker daemon on your build machine or CI/CD runner. In Kubernetes-based CI/CD pipelines (e.g., Tekton, GitLab CI, GitHub Actions, Jenkins on K8s), running Docker requires mounting the host's privileged Docker socket (`/var/run/docker.sock`) or running insecure Docker-in-Docker (DinD) with root privileges.
 
 **Google Jib** revolutionizes Java containerization by building optimized OCI and Docker-compliant container images **directly from Maven or Gradle without needing a Docker daemon or Dockerfile**.
 
-In this lesson, you will master Jib's internal architecture, configure `jib-maven-plugin` and `jib-gradle-plugin`, leverage intelligent layer caching, and configure reproducible container builds.
+In this lesson, you will master Jib's internal architecture, configure `jib-maven-plugin` and `jib-gradle-plugin`, use intelligent layer caching, and configure reproducible container builds.
 
 ---
 
-## 1. Traditional Docker Daemon vs Google Jib Architecture
+## 1. Traditional Docker daemon vs google Jib architecture
 
 ``` mermaid
 flowchart TD
@@ -35,7 +35,7 @@ flowchart TD
     DockerWay ~~~ JibWay
 ```
 
-### Why Jib Outperforms Dockerfiles in CI/CD:
+### Why Jib outperforms dockerfiles in CI/CD
 1. **Daemonless**: No Docker CLI, no Docker daemon, no root socket required.
 2. **Deterministic & Reproducible**: Generates bit-identical images when source code has not changed.
 3. **Bandwidth Efficient**: Jib computes cryptographic SHA-256 layer hashes locally and only transfers the layers that don't already exist on the target container registry.
@@ -43,7 +43,7 @@ flowchart TD
 
 ---
 
-## 2. Jib's Automatic 4-Layer Architecture
+## 2. Jibs automatic 4-layer architecture
 
 Jib analyzes your build classpath and automatically arranges your container into four distinct OCI layers:
 
@@ -117,7 +117,7 @@ Add `jib-maven-plugin` to your `<build><plugins>` block:
 
 ---
 
-## 4. Jib Execution Goals
+## 4. Jib execution goals
 
 Jib provides three primary Maven/Gradle goals:
 
@@ -128,19 +128,19 @@ flowchart TD
     M --> G3["jib:buildTar<br/><i>(Exports tarball image to disk for air-gapped systems)</i>"]
 ```
 
-### 1. Build and Push Directly to Remote Registry (CI/CD)
+### 1. Build and push directly to remote registry (CI/CD)
 ```bash
 mvn compile jib:build
 ```
 *(Does NOT require Docker installed on the CI runner!)*
 
-### 2. Build Directly into Local Docker Daemon (Local Dev)
+### 2. Build directly into local Docker daemon (local dev)
 ```bash
 mvn compile jib:dockerBuild
 ```
 *(Requires local Docker running; immediately available via `docker images` and `docker run`).*
 
-### 3. Export as Tarball (Air-Gapped / Security Scanning)
+### 3. Export as tarball (air-gapped / security scanning)
 ```bash
 mvn compile jib:buildTar
 # Generates target/jib-image.tar loadable via 'docker load --input target/jib-image.tar'
@@ -148,7 +148,7 @@ mvn compile jib:buildTar
 
 ---
 
-## 5. Gradle DSL Configuration (`build.gradle.kts`)
+## 5. Gradle dsl configuration (`buildgradlekts`)
 
 For Kotlin Gradle builds:
 
@@ -182,7 +182,7 @@ jib {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Jib & OCI Packaging
+## 6. Spring Boot 3 vs Spring Boot 4: Jib oci packaging
 
 ``` mermaid
 flowchart TD
@@ -201,7 +201,7 @@ flowchart TD
     SB3 ==>|Containerization Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Containerization Aspect | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -211,15 +211,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [GoogleContainerTools Jib Official GitHub Repository](https://github.com/GoogleContainerTools/jib) — Complete configuration parameter reference.
-- [Jib Maven Plugin Documentation](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin) — System properties, authentication, and execution lifecycle.
-- [Google Cloud Open Source: Container Best Practices with Jib](https://cloud.google.com/java/getting-started/jib) — Optimizing layer cache utilization.
+- [GoogleContainerTools Jib Official GitHub Repository](https://github.com/GoogleContainerTools/jib), Complete configuration parameter reference.
+- [Jib Maven Plugin Documentation](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin), System properties, authentication, and execution lifecycle.
+- [Google Cloud Open Source: Container Best Practices with Jib](https://cloud.google.com/java/getting-started/jib), Optimizing layer cache utilization.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why does Google Jib NOT require a Dockerfile or Docker daemon to build a container image?"
     **Answer**: Jib directly packages compiled class files and dependencies into standard OCI layer tarballs and communicates directly with the remote container registry API over HTTP/2.
@@ -232,8 +232,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0028: Packaging Paradigms (JAR & Docker)**](0028-packaging-paradigms-jar-docker-layering.md) | [**All Lessons**](index.md) | [➡️ **0030: Multi-Cloud Registry Authentication**](0030-multi-cloud-artifact-registry-authentication-jib.md) |
+| [**0028: Packaging Paradigms (JAR & Docker)**](0028-packaging-paradigms-jar-docker-layering.md) | [**All Lessons**](index.md) | [ **0030: Multi-Cloud Registry Authentication**](0030-multi-cloud-artifact-registry-authentication-jib.md) |

@@ -2,15 +2,15 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting Prometheus Scraping & OpenTelemetry Collector Pitfalls
+# Troubleshooting Prometheus scraping and OpenTelemetry collector pitfalls
 
-Production observability depends on continuous, uninterrupted telemetry pipelines. When Prometheus cannot scrape endpoints, histogram buckets are omitted, or OpenTelemetry collectors drop spans, engineering teams are left blind during major system incidents.
+Production observability depends on continuous telemetry pipelines. When Prometheus cannot scrape endpoints, histogram buckets are omitted, or OpenTelemetry collectors drop spans, engineering teams are left blind during system incidents.
 
-This playbook provides root-cause diagnostic workflows, reproducible scenarios, and production-tested solutions for Prometheus and OpenTelemetry (OTel) telemetry pipeline failures.
+Here are diagnostic workflows and verified solutions for Prometheus and OpenTelemetry telemetry pipeline failures.
 
 ---
 
-## 1. Diagnostic Decision Tree
+## 1. Diagnostic decision tree
 
 ``` mermaid
 flowchart TD
@@ -27,23 +27,23 @@ flowchart TD
 
 ---
 
-## 2. Issue 1: Prometheus Target Shows `DOWN` / 401 Unauthorized
+## 2. Issue 1: Prometheus target shows `DOWN` or 401 Unauthorized
 
-### Symptoms & Error Log
+### Symptoms
 In Prometheus `http://localhost:9090/targets`, the Spring Boot application shows state `DOWN` with error: `server returned HTTP status 401 Unauthorized` or `403 Forbidden`.
 
-### Root Cause
+### Root cause
 Spring Security's `SecurityFilterChain` blocks unauthenticated HTTP requests to `/actuator/prometheus`.
 
 ### Resolution
-Permit public or internal network access to Actuator monitoring endpoints in your `SecurityConfig.java`:
+Permit scraper access to Actuator monitoring endpoints in your `SecurityConfig.java`:
 
 ```java
 @Bean
 public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http
         .authorizeHttpRequests(auth -> auth
-            // Permit internal scraper access to prometheus & health
+            // Permit scraper access to prometheus and health
             .requestMatchers("/actuator/prometheus", "/actuator/health/**").permitAll()
             .anyRequest().authenticated()
         );
@@ -53,13 +53,13 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
 ---
 
-## 3. Issue 2: `histogram_quantile()` Returns `NaN` or Empty in PromQL
+## 3. Issue 2: `histogram_quantile()` returns `NaN` or empty in PromQL
 
 ### Symptoms
 Executing `histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket[5m])) by (le))` in Prometheus or Grafana returns no data or `NaN`.
 
-### Root Cause
-By default, Micrometer does NOT generate histogram boundary buckets (`_bucket{le="..."}`) because of memory optimization. Without buckets, Prometheus cannot compute percentiles.
+### Root cause
+By default, Micrometer does not generate histogram boundary buckets (`_bucket{le="..."}`) for memory optimization. Without buckets, Prometheus cannot compute percentiles.
 
 ### Resolution
 Enable percentile histograms in `application.yml`:
@@ -69,19 +69,19 @@ management:
   metrics:
     distribution:
       percentiles-histogram:
-        http.server.requests: true # Mandatory for histogram_quantile!
+        http.server.requests: true # Required for histogram_quantile
       sla:
         http.server.requests: 50ms, 100ms, 250ms, 500ms, 1000ms
 ```
 
 ---
 
-## 4. Issue 3: Distributed Traces Break Across Microservice Hops
+## 4. Issue 3: Distributed traces break across microservice hops
 
 ### Symptoms
 In Jaeger or Grafana Tempo, traces appear fragmented into individual disconnected single-span traces rather than one continuous multi-service distributed trace tree.
 
-### Diagnostic Flowchart
+### Diagnostic flowchart
 
 ``` mermaid
 sequenceDiagram
@@ -91,19 +91,19 @@ sequenceDiagram
     participant Payment as Payment Service (Server)
 
     Order->>Rest: Makes HTTP POST /payments
-    Note over Rest: ❌ Missing W3C traceparent header injection!
+    Note over Rest: Missing W3C traceparent header injection.
     Rest->>Payment: HTTP POST /payments (No trace context)
-    Payment->>Payment: Generates BRAND NEW Trace ID! (Trace is severed!)
+    Payment->>Payment: Generates brand-new trace ID. Trace is severed.
 ```
 
 ### Resolution
-Ensure your HTTP clients use Spring's auto-configured builders (`RestTemplateBuilder` or `WebClient.Builder`), which automatically register Micrometer Tracing interceptors:
+Ensure your HTTP clients use Spring auto-configured builders (`RestTemplateBuilder` or `WebClient.Builder`), which automatically register Micrometer Tracing interceptors:
 
 ```java
-// ❌ WRONG: Manual instantiation bypasses tracing interceptors
-RestTemplate restTemplate = new RestTemplate();
+// Manual instantiation bypasses tracing interceptors:
+// RestTemplate restTemplate = new RestTemplate();
 
-// ✅ CORRECT: Injected builder includes W3C header propagation
+// Injected builder includes W3C header propagation:
 @Bean
 public RestTemplate restTemplate(RestTemplateBuilder builder) {
     return builder
@@ -115,8 +115,8 @@ public RestTemplate restTemplate(RestTemplateBuilder builder) {
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Spring Modulith & Loom**](spring-modulith-and-virtual-thread-pinning-pitfalls.md) | [**All Debugging Guides**](index.md) | [➡️ **Spring Boot Testing & Testcontainers Debugging**](spring-boot-testing-and-testcontainers-pitfalls.md) |
+| [**Troubleshooting Spring Modulith and Project Loom**](spring-modulith-and-virtual-thread-pinning-pitfalls.md) | [**All debugging guides**](index.md) | [**Spring Boot testing and Testcontainers debugging**](spring-boot-testing-and-testcontainers-pitfalls.md) |

@@ -2,7 +2,7 @@
 icon: lucide/arrow-left-right
 ---
 
-# 0058: Inter-Service Communication: RestTemplate, WebClient & Spring Cloud OpenFeign
+# 0058: Inter-service communication: RestTemplate, WebClient, and Spring Cloud OpenFeign
 
 In a microservices architecture, services rarely operate in isolation. An Order Service must query the Customer Service for address verification, reserve stock with the Inventory Service, and invoke the Payment Gateway.
 
@@ -16,7 +16,7 @@ In this lesson, you will master configuring declarative OpenFeign clients, propa
 
 ---
 
-## 1. Inter-Service Communication Architecture
+## 1. Inter-service communication architecture
 
 ``` mermaid
 flowchart TD
@@ -51,7 +51,7 @@ flowchart TD
 
 ---
 
-## 2. Spring HTTP Client Comparison Matrix
+## 2. Spring http client comparison matrix
 
 | Client | Programming Model | Introduced / Status | Best Used For |
 | :--- | :--- | :--- | :--- |
@@ -62,7 +62,7 @@ flowchart TD
 
 ---
 
-## 3. Maven Dependencies (`pom.xml`)
+## 3. Maven dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -77,7 +77,7 @@ flowchart TD
 
 ---
 
-## 4. Declarative Client with Spring Cloud OpenFeign
+## 4. Declarative client with Spring Cloud OpenFeign
 
 Enable Feign clients in your configuration or application class:
 
@@ -97,7 +97,7 @@ public class OrderServiceApplication {
 }
 ```
 
-### Defining the Feign Interface Contract
+### Defining the Feign interface contract
 
 ```java
 package com.example.client;
@@ -124,9 +124,9 @@ public interface PaymentClient {
 
 ---
 
-## 5. Propagating Auth Tokens & Custom `ErrorDecoder`
+## 5. Propagating auth tokens custom `ErrorDecoder`
 
-### 1. Request Interceptor for Security & Tracing Context
+### 1. Request interceptor for security tracing context
 
 When calling downstream microservices, the caller must propagate the incoming user's JWT Bearer token:
 
@@ -161,7 +161,7 @@ public class FeignClientConfig {
 }
 ```
 
-### 2. Custom `ErrorDecoder` for Resilient Error Mapping
+### 2. Custom `ErrorDecoder` for resilient error mapping
 
 By default, Feign wraps all remote HTTP 4xx/5xx responses in a generic `FeignException`. A custom `ErrorDecoder` translates HTTP status codes into typed business domain exceptions:
 
@@ -193,7 +193,7 @@ public class CustomFeignErrorDecoder implements ErrorDecoder {
 
 ---
 
-## 6. Modern Synchronous `RestClient` Alternative (Spring Boot 3.2+)
+## 6. Modern synchronous `RestClient` alternative (Spring Boot 32)
 
 If you prefer programmatic fluent APIs over declarative interfaces:
 
@@ -222,7 +222,7 @@ public class CustomerServiceClient {
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4 Evolution
+## 7. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -232,15 +232,15 @@ public class CustomerServiceClient {
 
 ---
 
-## 8. Primary Sources & Further Reading
+## 8. Primary sources and further reading
 
-- [Spring Cloud OpenFeign Official Reference](https://docs.spring.io/spring-cloud-openfeign/reference/) — `@FeignClient`, configurations, and interceptors.
-- [Spring Framework RestClient Reference](https://docs.spring.io/spring-framework/reference/integration/rest-clients.html#rest-restclient) — Fluent synchronous client introduced in Spring 6.1.
+- [Spring Cloud OpenFeign Official Reference](https://docs.spring.io/spring-cloud-openfeign/reference/), `@FeignClient`, configurations, and interceptors.
+- [Spring Framework RestClient Reference](https://docs.spring.io/spring-framework/reference/integration/rest-clients.html#rest-restclient), Fluent synchronous client introduced in Spring 6.1.
 - [Spring WebFlux WebClient Guide](https://docs.spring.io/spring-framework/reference/web/webflux-webclient.html).
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: Why is `RestClient` preferred over `RestTemplate` for new Spring Boot 3.2+ applications?"
     **Answer**: `RestClient` provides a modern fluent API, better error handling (`onStatus`), and native integration with modern HTTP interfaces, whereas `RestTemplate` is in maintenance mode.
@@ -253,10 +253,10 @@ public class CustomerServiceClient {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0057: Monolith vs Microservices: System Design Principles**](0057-monolith-vs-microservices-system-design.md) | [**All Lessons**](index.md) | [➡️ **0059: Service Registry & Discovery with Eureka**](0059-service-registry-discovery-eureka.md) |
+| [**0057: Monolith vs Microservices: System Design Principles**](0057-monolith-vs-microservices-system-design.md) | [**All Lessons**](index.md) | [ **0059: Service Registry & Discovery with Eureka**](0059-service-registry-discovery-eureka.md) |
 
 🎉 **Lesson 0058 completed! Proceed to Lesson 0059 to master dynamic service registry and discovery with Spring Cloud Eureka.**

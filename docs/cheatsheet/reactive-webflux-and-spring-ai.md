@@ -2,26 +2,26 @@
 icon: lucide/file-code
 ---
 
-# Reactive WebFlux & Spring AI Cheatsheet
+# Reactive WebFlux and Spring AI cheatsheet
 
-A production reference card for Project Reactor, Spring WebFlux, R2DBC non-blocking persistence, Server-Sent Events (SSE), Spring AI `ChatClient`, RAG Vector Stores, and Model Context Protocol (MCP) tool servers.
+Reference card for Project Reactor, Spring WebFlux, R2DBC non-blocking persistence, Server-Sent Events, Spring AI `ChatClient`, vector stores, and Model Context Protocol tool servers.
 
 ---
 
-## 1. Project Reactor Core Operators Cheat Sheet
+## 1. Project Reactor core operators
 
 ```java
-// Transform & Async Flatten
+// Transform and async flatten
 Mono<UserDto> dtoMono = userMono.map(UserDto::from);
 Flux<Order> ordersFlux = userFlux.flatMap(user -> orderClient.getOrders(user.id()), 16); // Bounded flatMap
 
-// Parallel Zip & Error Recovery
+// Parallel zip and error recovery
 Mono<Dashboard> dashboardMono = Mono.zip(userMono, statsMono)
         .map(tuple -> new Dashboard(tuple.getT1(), tuple.getT2()))
         .onErrorResume(ServiceException.class, ex -> fallbackService.getDegradedDashboard())
         .retryWhen(Retry.backoff(3, Duration.ofMillis(500)));
 
-// Thread Switching (Offloading Blocking I/O)
+// Thread switching (offloading blocking I/O)
 Mono<byte[]> fileMono = Mono.fromCallable(() -> Files.readAllBytes(path))
         .subscribeOn(Schedulers.boundedElastic())
         .publishOn(Schedulers.parallel());
@@ -29,10 +29,10 @@ Mono<byte[]> fileMono = Mono.fromCallable(() -> Files.readAllBytes(path))
 
 ---
 
-## 2. Spring WebFlux Controller & SSE Streaming
+## 2. Spring WebFlux controller and SSE streaming
 
 ```java
-// Streaming SSE Endpoint
+// Streaming SSE endpoint
 @GetMapping(value = "/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
 public Flux<ServerSentEvent<StockEvent>> streamPrices() {
     return stockService.getPriceFlux()
@@ -43,7 +43,7 @@ public Flux<ServerSentEvent<StockEvent>> streamPrices() {
                     .build());
 }
 
-// Functional Router Function
+// Functional router function
 @Bean
 public RouterFunction<ServerResponse> routes(ProductHandler handler) {
     return route()
@@ -55,7 +55,7 @@ public RouterFunction<ServerResponse> routes(ProductHandler handler) {
 
 ---
 
-## 3. R2DBC & Reactive Redis Cache-Aside
+## 3. R2DBC and reactive Redis cache-aside
 
 ```java
 public Mono<Product> getProduct(Long id) {
@@ -72,10 +72,10 @@ public Mono<Product> getProduct(Long id) {
 
 ---
 
-## 4. Spring AI `ChatClient` & Structured Output
+## 4. Spring AI `ChatClient` and structured output
 
 ```java
-// 1. Fluent ChatClient with Structured JSON Record
+// 1. Fluent ChatClient with structured JSON record
 SentimentResult result = chatClient.prompt()
         .user(u -> u.text("Analyze sentiment: {text}")
                 .param("text", reviewText)
@@ -83,7 +83,7 @@ SentimentResult result = chatClient.prompt()
         .call()
         .entity(new BeanOutputConverter<>(SentimentResult.class));
 
-// 2. Real-Time Token Streaming with Project Reactor
+// 2. Real-time token streaming with Project Reactor
 Flux<String> tokenStream = chatClient.prompt()
         .user("Explain quantum computing in 3 sentences")
         .stream()
@@ -92,14 +92,14 @@ Flux<String> tokenStream = chatClient.prompt()
 
 ---
 
-## 5. Spring AI RAG with Vector Stores & Advisors
+## 5. Spring AI RAG with vector stores and advisors
 
 ```java
-// Ingest Documents into pgvector
+// Ingest documents into pgvector
 TokenTextSplitter splitter = new TokenTextSplitter(800, 100, 5, 10000, true);
 vectorStore.accept(splitter.apply(rawDocuments));
 
-// Query with RAG Advisor
+// Query with RAG advisor
 ChatClient ragClient = builder
         .defaultAdvisors(new QuestionAnswerAdvisor(vectorStore, SearchRequest.defaults().withTopK(4)))
         .build();
@@ -109,7 +109,7 @@ String answer = ragClient.prompt().user("What is our refund policy?").call().con
 
 ---
 
-## 6. Model Context Protocol (MCP) Tool Definition
+## 6. Model Context Protocol tool definition
 
 ```java
 @Component
@@ -124,8 +124,8 @@ public class InventoryMcpTools {
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Microservices, Kubernetes & Cloud CI/CD Cheatsheet**](microservices-kubernetes-and-cloud-cicd.md) | [**All Cheatsheets**](index.md) | 🏆 **All Cheatsheets Completed!** |
+| [**Microservices, Kubernetes, and cloud CI/CD cheatsheet**](microservices-kubernetes-and-cloud-cicd.md) | [**All cheatsheets**](index.md) | All cheatsheets completed |

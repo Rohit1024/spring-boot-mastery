@@ -2,15 +2,15 @@
 icon: lucide/shield-check
 ---
 
-# 0023: Spring Security 6 Architecture: Filter Chains, AuthenticationManager & SecurityContext
+# 0023: Spring Security 6 architecture: Filter chains, AuthenticationManager, and SecurityContext
 
-In enterprise web applications, security is not a single checkpoint—it is a layered pipeline that enforces **Authentication** *(Who are you?)* and **Authorization** *(What are you allowed to do?)* before requests ever reach your controller endpoints.
+In enterprise web applications, security is not a single checkpoint, it is a layered pipeline that enforces **Authentication** *(Who are you?)* and **Authorization** *(What are you allowed to do?)* before requests ever reach your controller endpoints.
 
 Spring Security 6 (shipped with Spring Boot 3.x) completely modernizes framework security by eliminating legacy adapter classes (such as `WebSecurityConfigurerAdapter`) in favor of component-based bean declarations and lambda DSLs. In this lesson, you will master the internal architecture of Spring Security 6, understand how the servlet filter chain delegates to Spring-managed beans, and build a modern security configuration from first principles.
 
 ---
 
-## 1. The Security Filter Chain Pipeline
+## 1. The security filter chain pipeline
 
 Spring Security sits in the Servlet filter pipeline in front of `DispatcherServlet`. Because the servlet container (e.g., Tomcat) has its own lifecycle independent of the Spring IoC `ApplicationContext`, Spring bridges this gap using `DelegatingFilterProxy`.
 
@@ -48,14 +48,14 @@ flowchart TD
     StandardServletFilters ~~~ SpringContext ~~~ SecurityFilterChain
 ```
 
-### How the Bridge Works
+### How the bridge works
 1. **`DelegatingFilterProxy`**: A standard `jakarta.servlet.Filter` registered in the container that looks up a Spring bean named `springSecurityFilterChain` from the `ApplicationContext` and delegates all work to it.
 2. **`FilterChainProxy`**: The master Spring bean that coordinates one or more `SecurityFilterChain` instances based on `RequestMatcher` patterns (e.g., one chain for `/api/**` and another for `/oauth2/**`).
 3. **`SecurityFilterChain`**: An ordered list of security filters that execute sequentially for each incoming HTTP request.
 
 ---
 
-## 2. The Core Security Domain Objects
+## 2. The core security domain objects
 
 ``` mermaid
 classDiagram
@@ -100,7 +100,7 @@ classDiagram
 
 ---
 
-## 3. The Authentication Engine Internals
+## 3. The authentication engine internals
 
 When a user submits credentials, the authentication workflow flows through `AuthenticationManager`, `AuthenticationProvider`, and `UserDetailsService`:
 
@@ -139,7 +139,7 @@ sequenceDiagram
 
 ---
 
-## 4. Modern Spring Security 6 Configuration
+## 4. Modern Spring security 6 configuration
 
 In Spring Security 6, you configure security by declaring a `@Bean` of type `SecurityFilterChain`. The legacy `WebSecurityConfigurerAdapter` has been removed.
 
@@ -234,7 +234,7 @@ public class SecurityConfig {
 
 ---
 
-## 5. SecurityContext in Multi-Threaded & Async Environments
+## 5. Securitycontext in multi-threaded async environments
 
 By default, `SecurityContextHolder` uses a `ThreadLocal` strategy (`MODE_THREADLOCAL`). If your application invokes `@Async` background tasks or passes execution to an `ExecutorService`, the child thread will **not** inherit the security context unless explicitly configured:
 
@@ -265,7 +265,7 @@ public class AsyncSecurityConfig {
 
 ---
 
-## 6. Spring Boot 3 (Security 6) vs Spring Boot 4 (Security 7) Evolution
+## 6. Spring Boot 3 (security 6) vs Spring Boot 4 (security 7) evolution
 
 ``` mermaid
 flowchart TD
@@ -284,7 +284,7 @@ flowchart TD
     SB3 ==>|Security Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Security Capability | Spring Boot 3.x (Security 6) | Spring Boot 4.x (Security 7) |
 | :--- | :--- | :--- |
@@ -294,15 +294,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Security 6 Official Architecture Documentation](https://docs.spring.io/spring-security/reference/servlet/architecture.html) — Deep dive into `FilterChainProxy`, `SecurityFilterChain`, and request dispatching.
-- [Spring Security 7 Next-Gen Architecture Vision](https://github.com/spring-projects/spring-security/wiki) — Project Loom scoped security context integration.
-- [Spring Boot 3 Migration Guide for Security](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide#spring-security) — Architectural migration away from deprecated adapters.
+- [Spring Security 6 Official Architecture Documentation](https://docs.spring.io/spring-security/reference/servlet/architecture.html), Deep dive into `FilterChainProxy`, `SecurityFilterChain`, and request dispatching.
+- [Spring Security 7 Next-Gen Architecture Vision](https://github.com/spring-projects/spring-security/wiki), Project Loom scoped security context integration.
+- [Spring Boot 3 Migration Guide for Security](https://github.com/spring-projects/spring-boot/wiki/Spring-Boot-3.0-Migration-Guide#spring-security), Architectural migration away from deprecated adapters.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the exact role of `DelegatingFilterProxy` in the Spring Security filter pipeline?"
     **Answer**: It acts as a bridge between the Servlet container's standard filter lifecycle and Spring's `ApplicationContext`, delegating request processing to the Spring-managed `FilterChainProxy` bean named `springSecurityFilterChain`.
@@ -315,8 +315,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0022: Centralized Logging & ELK**](0022-centralized-logging-elk-stack.md) | [**All Lessons**](index.md) | [➡️ **0024: Password Hashing & Sessions**](0024-password-hashing-bcrypt-argon2-sessions.md) |
+| [**0022: Centralized Logging & ELK**](0022-centralized-logging-elk-stack.md) | [**All Lessons**](index.md) | [ **0024: Password Hashing & Sessions**](0024-password-hashing-bcrypt-argon2-sessions.md) |

@@ -2,13 +2,13 @@
 icon: lucide/gauge
 ---
 
-# Spring Observability, Actuator & Logging Cheatsheet
+# Spring observability, Actuator, and logging cheatsheet
 
-A rapid-reference guide for Spring Boot Actuator endpoints, Micrometer metrics, OpenAPI 3 annotations, Logback structured JSON configurations, and MDC correlation filters.
+Reference guide for Spring Boot Actuator endpoints, Micrometer metrics, OpenAPI 3 annotations, Logback structured JSON configurations, and MDC correlation filters.
 
 ---
 
-## 1. Spring Boot Actuator Production Configuration
+## 1. Spring Boot Actuator production configuration
 
 ```yaml
 management:
@@ -21,28 +21,28 @@ management:
     health:
       show-details: when_authorized
       probes:
-        enabled: true # /actuator/health/liveness & /actuator/health/readiness
+        enabled: true # /actuator/health/liveness and /actuator/health/readiness
   metrics:
     tags:
       application: ${spring.application.name:order-service}
       environment: ${SPRING_PROFILES_ACTIVE:production}
 ```
 
-### Essential Actuator Endpoints
+### Essential Actuator endpoints
 
 | Endpoint | Method | Purpose |
 | :--- | :---: | :--- |
-| `/actuator/health` | `GET` | Overall application health status (`UP`, `DOWN`, `OUT_OF_SERVICE`). |
+| `/actuator/health` | `GET` | Application health status (`UP`, `DOWN`, `OUT_OF_SERVICE`). |
 | `/actuator/health/liveness` | `GET` | Kubernetes Liveness probe (restarts pod on internal JVM crash). |
-| `/actuator/health/readiness` | `GET` | Kubernetes Readiness probe (routes traffic when DB/deps are ready). |
+| `/actuator/health/readiness` | `GET` | Kubernetes Readiness probe (routes traffic when dependencies are ready). |
 | `/actuator/metrics` | `GET` | Lists all registered JVM and custom business metric names. |
 | `/actuator/metrics/{name}` | `GET` | Retrieves detailed dimensional metric measurements. |
-| `/actuator/prometheus` | `GET` | Formats metrics for automated Prometheus scraper scraping. |
+| `/actuator/prometheus` | `GET` | Formats metrics for Prometheus scraping. |
 | `/actuator/loggers/{name}` | `GET / POST` | Reads or dynamically overrides runtime log levels without restarting. |
 
 ---
 
-## 2. Micrometer Custom Metrics Snippets
+## 2. Micrometer custom metrics snippets
 
 ```java
 @Service
@@ -57,7 +57,7 @@ public class MetricService {
                 .tag("channel", "mobile")
                 .register(registry);
 
-        // 2. Timer (Latency distribution & percentiles)
+        // 2. Timer (Latency distribution and percentiles)
         this.paymentTimer = Timer.builder("payment.latency")
                 .publishPercentiles(0.5, 0.95, 0.99)
                 .register(registry);
@@ -70,7 +70,7 @@ public class MetricService {
 
 ---
 
-## 3. OpenAPI 3 / SpringDoc Quick Reference
+## 3. OpenAPI 3 and SpringDoc quick reference
 
 ```java
 @RestController
@@ -93,7 +93,7 @@ public class OrderController {
 
 ---
 
-## 4. MDC Correlation Filter Pattern
+## 4. MDC correlation filter pattern
 
 ```java
 @Component
@@ -109,7 +109,7 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
             res.setHeader("X-Correlation-ID", traceId);
             chain.doFilter(req, res);
         } finally {
-            MDC.clear(); // Always clear in finally block!
+            MDC.clear(); // Always clear in finally block.
         }
     }
 }
@@ -117,7 +117,7 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
 
 ---
 
-## 5. Runtime Log Level Modification via cURL
+## 5. Runtime log level modification with cURL
 
 ```bash
 # Set package logging to DEBUG in production:
@@ -133,8 +133,8 @@ curl -X POST http://localhost:8080/actuator/loggers/com.example.demo \
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Data JPA & Hibernate Cheatsheet**](spring-data-jpa-hibernate.md) | [**All Cheatsheets**](index.md) | [➡️ **Spring Security 6 & JWT Cheatsheet**](spring-security-6-jwt-oauth2.md) |
+| [**Spring Data JPA and Hibernate cheatsheet**](spring-data-jpa-hibernate.md) | [**All cheatsheets**](index.md) | [**Spring Security 6, JWT, and OAuth2 cheatsheet**](spring-security-6-jwt-oauth2.md) |

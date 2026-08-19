@@ -2,7 +2,7 @@
 icon: lucide/database-zap
 ---
 
-# 0080: Retrieval-Augmented Generation (RAG) with Vector Stores & Embeddings
+# 0080: Retrieval-Augmented Generation (RAG) with vector stores and embeddings
 
 Large Language Models suffer from two critical limitations in enterprise software:
 1. **Knowledge Cutoffs**: They lack knowledge of events occurring after their training cutoff.
@@ -16,7 +16,7 @@ In this lesson, you will master document chunking, embedding generation with `Em
 
 ---
 
-## 1. Retrieval-Augmented Generation (RAG) Pipeline
+## 1. Retrieval-augmented generation (RAG) pipeline
 
 ``` mermaid
 flowchart TD
@@ -53,7 +53,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 Include the Spring AI OpenAI and PostgreSQL `pgvector` starters:
 
@@ -68,7 +68,7 @@ Include the Spring AI OpenAI and PostgreSQL `pgvector` starters:
 </dependency>
 ```
 
-### PostgreSQL `pgvector` Schema Configuration (`application.yml`)
+### PostgreSQL `pgvector` schema configuration (`applicationyml`)
 
 ```yaml
 spring:
@@ -87,7 +87,7 @@ spring:
 
 ---
 
-## 3. Document Ingestion Service
+## 3. Document ingestion service
 
 Split large enterprise documents into semantically coherent chunks and index them into the vector database:
 
@@ -136,7 +136,7 @@ public class DocumentIngestionService {
 
 ---
 
-## 4. Building the RAG Question-Answering Service
+## 4. Building the RAG question-answering service
 
 In Spring AI, the **`QuestionAnswerAdvisor`** intercepts the `ChatClient` prompt chain, automatically generates the query embedding, queries the `VectorStore`, and injects the retrieved documents into the system prompt:
 
@@ -182,7 +182,7 @@ public class EnterpriseKnowledgeService {
 
 ---
 
-## 5. Metadata Filtering in Similarity Search
+## 5. Metadata filtering in similarity search
 
 To prevent HR documents from leaking to general employees, apply dynamic metadata filters during vector search:
 
@@ -199,7 +199,7 @@ public List<Document> searchDepartmentDocs(String query, String userDepartment) 
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -209,15 +209,15 @@ public List<Document> searchDepartmentDocs(String query, String userDepartment) 
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring AI Vector Stores Reference](https://docs.spring.io/spring-ai/reference/api/vectordbs.html) — PgVector, Qdrant, and Milvus.
+- [Spring AI Vector Stores Reference](https://docs.spring.io/spring-ai/reference/api/vectordbs.html), PgVector, Qdrant, and Milvus.
 - [Spring AI QuestionAnswerAdvisor](https://docs.spring.io/spring-ai/reference/api/advisors.html#_questionansweradvisor).
 - [Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks (Lewis et al.)](https://arxiv.org/abs/2005.11401).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the primary purpose of an Embedding Model in a RAG system?"
     **Answer**: It converts human text into high-dimensional numerical vectors that capture the semantic meaning and context of the text for similarity searches.
@@ -230,10 +230,10 @@ public List<Document> searchDepartmentDocs(String query, String userDepartment) 
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0079: Spring AI: LLM Chat Clients & Prompts**](0079-spring-ai-llm-chatclient-prompts.md) | [**All Lessons**](index.md) | [➡️ **0081: Model Context Protocol (MCP) in Spring AI**](0081-mcp-server-tool-integration-spring-ai.md) |
+| [**0079: Spring AI: LLM Chat Clients & Prompts**](0079-spring-ai-llm-chatclient-prompts.md) | [**All Lessons**](index.md) | [ **0081: Model Context Protocol (MCP) in Spring AI**](0081-mcp-server-tool-integration-spring-ai.md) |
 
 🎉 **Lesson 0080 completed! Proceed to Lesson 0081 to master the revolutionary Model Context Protocol (MCP) and AI tool integration.**

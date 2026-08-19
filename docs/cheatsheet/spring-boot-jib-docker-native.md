@@ -2,13 +2,13 @@
 icon: lucide/container
 ---
 
-# Spring Boot Packaging, Jib & GraalVM Native Cheatsheet
+# Spring Boot packaging, Jib, and GraalVM native cheatsheet
 
-A rapid reference guide for Spring Boot multi-stage Dockerfiles, Google Jib daemonless container builds, multi-cloud registry authentication commands, and GraalVM AOT native image compilation.
+Reference guide for Spring Boot multi-stage Dockerfiles, Google Jib daemonless container builds, multi-cloud registry authentication commands, and GraalVM AOT native image compilation.
 
 ---
 
-## 1. Spring Boot Layered JAR Commands
+## 1. Spring Boot layered JAR commands
 
 ```bash
 # 1. Inspect internal layers inside the executable JAR
@@ -23,7 +23,7 @@ java -XX:MaxRAMPercentage=75.0 org.springframework.boot.loader.launch.JarLaunche
 
 ---
 
-## 2. Google Jib CLI Quick Reference
+## 2. Google Jib CLI quick reference
 
 ```bash
 # Direct push to remote registry (No Docker daemon needed)
@@ -44,7 +44,7 @@ mvn compile jib:buildTar
 
 ---
 
-## 3. Multi-Cloud Registry Authentication Quick Reference
+## 3. Multi-cloud registry authentication quick reference
 
 ### Google Cloud Artifact Registry (GAR)
 ```bash
@@ -88,7 +88,7 @@ mvn compile jib:build \
 
 ---
 
-## 4. Jib `pom.xml` Parametrized Template
+## 4. Jib `pom.xml` parametrized template
 
 ```xml
 <properties>
@@ -122,7 +122,7 @@ mvn compile jib:build \
 
 ---
 
-## 5. GraalVM Native Image Commands
+## 5. GraalVM native image commands
 
 ```bash
 # Compile native binary with native-maven-plugin
@@ -140,8 +140,8 @@ mvn clean package jib:build -Pnative-jib
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Security 6, JWT & OAuth2 Cheatsheet**](spring-security-6-jwt-oauth2.md) | [**All Cheatsheets**](index.md) | [➡️ **Spring Batch & Schedulers Cheatsheet**](spring-batch-quartz-shedlock.md) |
+| [**Spring Security 6, JWT, and OAuth2 cheatsheet**](spring-security-6-jwt-oauth2.md) | [**All cheatsheets**](index.md) | [**Spring Batch, Quartz, and ShedLock cheatsheet**](spring-batch-quartz-shedlock.md) |

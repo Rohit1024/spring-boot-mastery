@@ -2,17 +2,17 @@
 icon: lucide/cpu
 ---
 
-# 0011: Design Patterns in Spring: Strategy & Decorator Patterns
+# 0011: Design patterns in Spring: Strategy and Decorator patterns
 
-Enterprise architectures thrive on **clean separation of concerns** and the **Open/Closed Principle (OCP)** — systems should be open for extension but closed for modification.
+Enterprise architectures thrive on **clean separation of concerns** and the **Open/Closed Principle (OCP)**, systems should be open for extension but closed for modification.
 
 In this lesson, we explore how Spring's **Inversion of Control (IoC) Container** natively supercharges classic Gang of Four (GoF) design patterns, focusing on the **Strategy Pattern** (eliminating `if/else` ladders) and the **Decorator Pattern** (modular behavior composition).
 
 ---
 
-## 1. The Strategy Pattern in Spring Boot
+## 1. The strategy pattern in Spring Boot
 
-### The Problem: Rigid `switch` Statements & `if/else` Sprawl
+### The problem: Rigid `switch` statements `if/else` sprawl
 
 ```java
 // ❌ ANTI-PATTERN: Violates Open/Closed Principle (OCP)
@@ -32,7 +32,7 @@ public void processPayment(String gatewayType, BigDecimal amount) {
 
 ---
 
-### The Spring Solution: Automatic Strategy Map Injection
+### The Spring solution: Automatic strategy map injection
 
 Spring's IoC container can automatically inject all implementations of an interface into a `Map<String, PaymentStrategy>` or `List<PaymentStrategy>`, keyed by the Spring Bean name:
 
@@ -51,9 +51,9 @@ flowchart TD
 
 ---
 
-### Strategy Pattern Code Implementation
+### Strategy pattern code implementation
 
-#### Step 1: Define the Common Strategy Interface
+#### Step 1: Define the common strategy interface
 ```java
 package com.example.demo.strategy;
 
@@ -65,7 +65,7 @@ public interface PaymentStrategy {
 }
 ```
 
-#### Step 2: Implement Strategy Beans
+#### Step 2: Implement strategy beans
 ```java
 package com.example.demo.strategy;
 
@@ -101,7 +101,7 @@ public class PaypalPaymentStrategy implements PaymentStrategy {
 }
 ```
 
-#### Step 3: Implement the Context Service with Map Injection
+#### Step 3: Implement the context service with map injection
 ```java
 package com.example.demo.service;
 
@@ -137,7 +137,7 @@ public class PaymentContextService {
 
 ---
 
-## 2. The Decorator / Wrapper Pattern in Spring
+## 2. The decorator / wrapper pattern in Spring
 
 The **Decorator Pattern** allows behavior to be added to an individual object dynamically without affecting other instances or altering the base class.
 
@@ -147,9 +147,9 @@ flowchart TD
     Dec -->|Cache Miss| Core["⚙️ DefaultOrderService<br/><i>(Executes heavy DB queries)</i>"]
 ```
 
-### Implementing a Decorator with `@Primary` and Delegation
+### Implementing a decorator with `@Primary` and delegation
 
-#### Step 1: Base Interface
+#### Step 1: Base interface
 ```java
 package com.example.demo.service;
 
@@ -160,7 +160,7 @@ public interface OrderService {
 }
 ```
 
-#### Step 2: Core Concrete Service
+#### Step 2: Core concrete service
 ```java
 package com.example.demo.service;
 
@@ -176,7 +176,7 @@ public class DefaultOrderService implements OrderService {
 }
 ```
 
-#### Step 3: Decorator with Caching and Logging
+#### Step 3: Decorator with caching and logging
 ```java
 package com.example.demo.service;
 
@@ -214,7 +214,7 @@ public class CachedOrderServiceDecorator implements OrderService {
 
 ---
 
-## 3. Other Core Spring Design Patterns Summary
+## 3. Other core Spring design patterns summary
 
 | GoF Design Pattern | Spring Framework Implementation |
 | :--- | :--- |
@@ -226,7 +226,7 @@ public class CachedOrderServiceDecorator implements OrderService {
 
 ---
 
-## 4. Spring Boot 3 vs Spring Boot 4: Design Pattern Evolution
+## 4. Spring Boot 3 vs Spring Boot 4: Design pattern evolution
 
 ``` mermaid
 flowchart TD
@@ -245,7 +245,7 @@ flowchart TD
     SB3 ==>|Language Feature Convergence| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Pattern Implementation | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -277,15 +277,15 @@ public class ModernPaymentProcessor {
 
 ---
 
-## 5. Primary Sources & Further Reading
+## 5. Primary sources and further reading
 
-- [Design Patterns: Elements of Reusable Object-Oriented Software (Gang of Four)](https://en.wikipedia.org/wiki/Design_Patterns) — Foundational design pattern principles.
-- [Spring Framework IoC: Collection & Map Injection](https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired.html) — Spring's automatic map and list autowiring mechanics.
-- [Java 21 Pattern Matching for switch](https://docs.oracle.com/en/java/javase/21/language/pattern-matching-switch.html) — Official documentation for pattern matching in switch.
+- [Design Patterns: Elements of Reusable Object-Oriented Software (Gang of Four)](https://en.wikipedia.org/wiki/Design_Patterns), Foundational design pattern principles.
+- [Spring Framework IoC: Collection & Map Injection](https://docs.spring.io/spring-framework/reference/core/beans/annotation-config/autowired.html), Spring's automatic map and list autowiring mechanics.
+- [Java 21 Pattern Matching for switch](https://docs.oracle.com/en/java/javase/21/language/pattern-matching-switch.html), Official documentation for pattern matching in switch.
 
 ---
 
-## 6. Knowledge Check & Retrieval Practice
+## 6. Knowledge check and practice
 
 ??? question "Question 1: How does Spring's IoC container resolve `public PaymentService(Map<String, PaymentStrategy> map)`?"
     **Answer**: Spring automatically locates all beans implementing `PaymentStrategy` in the `ApplicationContext` and puts them in the map where the key is the Spring bean name and the value is the bean instance.
@@ -293,16 +293,16 @@ public class ModernPaymentProcessor {
 ??? question "Question 2: How does the Strategy pattern uphold the Open/Closed Principle (OCP)?"
     **Answer**: New strategies can be introduced simply by authoring a new `@Component` implementing the interface without modifying or recompiling existing dispatching classes.
 
-??? question "Question 3: How does the `@Primary` annotation facilitate the Decorator pattern in Spring?"
+??? question "Question 3: How does the `@Primary` annotation help the Decorator pattern in Spring?"
     **Answer**: `@Primary` ensures that when other components (like controllers) autowire the interface, Spring supplies the decorator wrapper rather than the un-decorated underlying service.
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0010: Standardizing Response Envelopes & DTO Pattern**](0010-dto-pattern-and-response-envelopes.md) | [**All Lessons**](index.md) | [➡️ **0012: JDBC vs Hibernate ORM Internals**](0012-jdbc-vs-hibernate-orm-internals.md) |
+| [**0010: Standardizing Response Envelopes & DTO Pattern**](0010-dto-pattern-and-response-envelopes.md) | [**All Lessons**](index.md) | [ **0012: JDBC vs Hibernate ORM Internals**](0012-jdbc-vs-hibernate-orm-internals.md) |
 
 🎉 **Congratulations on completing Module 2: RESTful Web Services & Spring MVC!**
 

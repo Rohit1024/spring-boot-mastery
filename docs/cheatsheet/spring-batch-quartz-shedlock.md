@@ -2,15 +2,15 @@
 icon: lucide/calendar-range
 ---
 
-# Spring Batch, Quartz & ShedLock Cheatsheet
+# Spring Batch, Quartz, and ShedLock cheatsheet
 
-A rapid reference guide for Spring Batch 5 domain models, Chunk-Oriented Processing, Fault Tolerance (Skip & Retry), ShedLock distributed locks, and Clustered Quartz configuration.
+Reference guide for Spring Batch 5 domain models, chunk-oriented processing, skip and retry policies, ShedLock distributed locks, and clustered Quartz configuration.
 
 ---
 
-## 1. Spring Batch 5 Configuration Snippets
+## 1. Spring Batch 5 configuration snippets
 
-### Standard Chunk Step with Skip & Retry:
+### Standard chunk step with skip and retry
 ```java
 @Bean
 public Step processChunkStep(
@@ -37,7 +37,7 @@ public Step processChunkStep(
 }
 ```
 
-### Multi-Threaded Step with Virtual Threads:
+### Multithreaded step with virtual threads
 ```java
 @Bean
 public Step multiThreadedStep(
@@ -62,21 +62,21 @@ public Step multiThreadedStep(
 
 ---
 
-## 2. Spring Batch Schema Tables Reference
+## 2. Spring Batch schema tables reference
 
-| Table Name | Primary Role |
+| Table name | Primary role |
 | :--- | :--- |
-| **`BATCH_JOB_INSTANCE`** | Highest-level logical job run (stores `JOB_NAME` and `JOB_KEY`). |
-| **`BATCH_JOB_EXECUTION`** | Physical execution attempt (stores `START_TIME`, `STATUS`, `EXIT_CODE`). |
-| **`BATCH_JOB_EXECUTION_PARAMS`** | Parameters passed to the job execution (`STRING`, `DATE`, `LONG`). |
-| **`BATCH_STEP_EXECUTION`** | Progress per step (stores `READ_COUNT`, `WRITE_COUNT`, `COMMIT_COUNT`, `SKIP_COUNT`). |
-| **`BATCH_STEP_EXECUTION_CONTEXT`** | Checkpoint data for restarting failed steps. |
+| `BATCH_JOB_INSTANCE` | Highest-level logical job run (stores `JOB_NAME` and `JOB_KEY`). |
+| `BATCH_JOB_EXECUTION` | Physical execution attempt (stores `START_TIME`, `STATUS`, `EXIT_CODE`). |
+| `BATCH_JOB_EXECUTION_PARAMS` | Parameters passed to the job execution (`STRING`, `DATE`, `LONG`). |
+| `BATCH_STEP_EXECUTION` | Progress per step (stores `READ_COUNT`, `WRITE_COUNT`, `COMMIT_COUNT`, `SKIP_COUNT`). |
+| `BATCH_STEP_EXECUTION_CONTEXT` | Checkpoint data for restarting failed steps. |
 
 ---
 
-## 3. ShedLock Distributed Locking Quick Reference
+## 3. ShedLock distributed locking quick reference
 
-### 1. PostgreSQL Schema:
+### 1. PostgreSQL schema
 ```sql
 CREATE TABLE shedlock (
     name VARCHAR(64) NOT NULL PRIMARY KEY,
@@ -86,7 +86,7 @@ CREATE TABLE shedlock (
 );
 ```
 
-### 2. Lock Configuration & Usage:
+### 2. Lock configuration and usage
 ```java
 @Configuration
 @EnableScheduling
@@ -107,13 +107,13 @@ public class ShedLockConfig {
 @Scheduled(cron = "0 0 2 * * ?")
 @SchedulerLock(name = "dailyBilling", lockAtMostFor = "15m", lockAtLeastFor = "30s")
 public void runDailyBilling() {
-    // Guaranteed to execute on AT MOST 1 server instance across your cluster!
+    // Executes on at most one server instance across the cluster.
 }
 ```
 
 ---
 
-## 4. Quartz Clustered Scheduling Configuration (`application.yml`)
+## 4. Quartz clustered scheduling configuration (`application.yml`)
 
 ```yaml
 spring:
@@ -130,8 +130,8 @@ spring:
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Boot Packaging & Jib Cheatsheet**](spring-boot-jib-docker-native.md) | [**All Cheatsheets**](index.md) | [➡️ **GraphQL, gRPC & WebSockets Cheatsheet**](graphql-grpc-websockets.md) |
+| [**Spring Boot packaging, Jib, and GraalVM native cheatsheet**](spring-boot-jib-docker-native.md) | [**All cheatsheets**](index.md) | [**GraphQL, gRPC, and WebSockets protocol cheatsheet**](graphql-grpc-websockets.md) |

@@ -2,7 +2,7 @@
 icon: lucide/shield-check
 ---
 
-# 0015: Transaction Management: @Transactional, Proxy Mechanics, Propagation & Isolation Levels
+# 0015: Transaction management: @Transactional, proxy mechanics, propagation, and isolation levels
 
 In distributed and high-concurrency systems, maintaining **data consistency** across multi-step database mutations is paramount. Spring provides declarative transaction management via `@Transactional`, but treating it as a black box leads to silent data corruption, unrolled rollbacks, and locking deadlocks.
 
@@ -10,7 +10,7 @@ In this lesson, you will dissect how `@Transactional` operates via **AOP proxies
 
 ---
 
-## 1. How `@Transactional` Operates Under the Hood
+## 1. How `@Transactional` operates under the hood
 
 Spring does not alter bytecode or talk directly to the database driver at compile time. Instead, Spring wraps your bean in a **Dynamic Proxy** using Spring AOP:
 
@@ -47,7 +47,7 @@ sequenceDiagram
 
 ---
 
-## 2. The Self-Invocation Trap (Why `@Transactional` Silently Fails)
+## 2. The self-invocation trap (why `@Transactional` silently fails)
 
 The most infamous pitfall in Spring development is calling a `@Transactional` method from another method **within the same class**:
 
@@ -78,13 +78,13 @@ flowchart TD
     M1 -->|"❌ this.methodB()<br/>Bypasses Proxy!"| M2["methodB()<br/><i>(@Transactional ignored!)</i>"]
 ```
 
-### The Solutions:
+### The solutions
 1. **Move the method to a separate `@Service` bean** (Recommended for clean architecture).
 2. **Self-inject the bean** via constructor or `@Lazy` injection and invoke through the injected reference (`orderService.createSingleOrder(req)`).
 
 ---
 
-## 3. Rollback Mechanics: Checked vs Unchecked Exceptions
+## 3. Rollback mechanics: Checked vs unchecked exceptions
 
 By default in Spring:
 - **Unchecked Exceptions** (subclasses of `RuntimeException` and `Error`) trigger an automatic **ROLLBACK**.
@@ -108,7 +108,7 @@ public void importDataSafe() throws IOException {
 
 ---
 
-## 4. Transaction Propagation Levels
+## 4. Transaction propagation levels
 
 Propagation defines how transaction boundaries behave when a transactional method calls another transactional method.
 
@@ -122,7 +122,7 @@ Propagation defines how transaction boundaries behave when a transactional metho
 | **`NOT_SUPPORTED`** | Suspends current transaction and executes non-transactionally. | Long-running I/O or external HTTP calls. |
 | **`NEVER`** | Throws exception if an active transaction exists. | Strict non-transactional operations. |
 
-### Real-World Example: Audit Logging with `REQUIRES_NEW`
+### Real-world example: Audit logging with `REQUIRES_NEW`
 
 ```java
 @Service
@@ -158,23 +158,23 @@ public class AuditService {
 
 ---
 
-## 5. Database Isolation Levels & Concurrency Anomalies
+## 5. Database isolation levels concurrency anomalies
 
 Isolation levels prevent data anomalies when multiple transactions execute concurrently:
 
-### Concurrency Anomalies:
+### Concurrency anomalies
 1. **Dirty Read**: Transaction A reads uncommitted modifications made by Transaction B (which may later roll back).
 2. **Non-Repeatable Read**: Transaction A reads a row, Transaction B updates/commits that row, Transaction A reads it again and sees different values.
 3. **Phantom Read**: Transaction A queries a range of rows, Transaction B inserts/commits new matching rows, Transaction A re-queries and sees "phantom" rows.
 
-### Isolation Level vs Anomaly Matrix:
+### Isolation level vs anomaly matrix
 
 | Isolation Level | Dirty Read | Non-Repeatable Read | Phantom Read | Typical DB Default |
 | :--- | :---: | :---: | :---: | :---: |
-| **`READ_UNCOMMITTED`** | ❌ Allowed | ❌ Allowed | ❌ Allowed | — |
+| **`READ_UNCOMMITTED`** | ❌ Allowed | ❌ Allowed | ❌ Allowed |, |
 | **`READ_COMMITTED`** | 🛡️ Prevented | ❌ Allowed | ❌ Allowed | PostgreSQL, Oracle, SQL Server |
 | **`REPEATABLE_READ`** | 🛡️ Prevented | 🛡️ Prevented | ❌ / 🛡️ (MVCC) | MySQL (InnoDB) |
-| **`SERIALIZABLE`** | 🛡️ Prevented | 🛡️ Prevented | 🛡️ Prevented | — (Highest lock contention) |
+| **`SERIALIZABLE`** | 🛡️ Prevented | 🛡️ Prevented | 🛡️ Prevented |, (Highest lock contention) |
 
 ```java
 @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -185,7 +185,7 @@ public void executeCriticalFinancialTransfer(Long fromId, Long toId, BigDecimal 
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Transaction Architecture Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Transaction architecture evolution
 
 ``` mermaid
 flowchart TD
@@ -204,7 +204,7 @@ flowchart TD
     SB3 ==>|Loom Concurrency Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Transaction Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -214,15 +214,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Framework Reference: Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html) — Core reference on AOP proxies and `PlatformTransactionManager`.
-- [Vlad Mihalcea: Spring @Transactional Rules and Pitfalls](https://vladmihalcea.com/spring-transactional-rules-and-pitfalls/) — In-depth analysis of proxy self-invocation and rollback traps.
-- [PostgreSQL Documentation: Transaction Isolation](https://www.postgresql.org/docs/current/transaction-iso.html) — How relational engines implement MVCC and isolation levels.
+- [Spring Framework Reference: Transaction Management](https://docs.spring.io/spring-framework/reference/data-access/transaction.html), Core reference on AOP proxies and `PlatformTransactionManager`.
+- [Vlad Mihalcea: Spring @Transactional Rules and Pitfalls](https://vladmihalcea.com/spring-transactional-rules-and-pitfalls/), In-depth analysis of proxy self-invocation and rollback traps.
+- [PostgreSQL Documentation: Transaction Isolation](https://www.postgresql.org/docs/current/transaction-iso.html), How relational engines implement MVCC and isolation levels.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why does calling `@Transactional methodB()` from `methodA()` in the same class fail to initiate a transaction?"
     **Answer**: Internal method calls use the standard `this` pointer in Java heap memory, bypassing the Spring AOP dynamic proxy (`TransactionInterceptor`) that manages transaction boundaries.
@@ -235,8 +235,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0014: Entity Relationships & N+1 Problem**](0014-entity-relationships-lazy-loading-n-plus-1.md) | [**All Lessons**](index.md) | [➡️ **0016: Multi-DataSource & NoSQL Integration**](0016-multi-datasource-and-nosql-integration.md) |
+| [**0014: Entity Relationships & N+1 Problem**](0014-entity-relationships-lazy-loading-n-plus-1.md) | [**All Lessons**](index.md) | [ **0016: Multi-DataSource & NoSQL Integration**](0016-multi-datasource-and-nosql-integration.md) |

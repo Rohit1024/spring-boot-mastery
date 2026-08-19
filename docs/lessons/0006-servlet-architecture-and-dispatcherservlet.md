@@ -2,7 +2,7 @@
 icon: lucide/network
 ---
 
-# 0006: Servlet Architecture vs Spring DispatcherServlet & Web MVC Pipeline
+# 0006: Servlet architecture vs Spring DispatcherServlet and Web MVC pipeline
 
 Before building REST APIs, we must understand how HTTP requests travel from the network into your Java code. 
 
@@ -10,7 +10,7 @@ In this lesson, we demystify the transition from raw **Java Servlets (`HttpServl
 
 ---
 
-## 1. The Pre-Spring Era: Raw Java Servlets
+## 1. The pre-spring era: Raw Java servlets
 
 In classic Java Enterprise applications (Java EE / Jakarta EE), the **Servlet Container** (such as Apache Tomcat or Eclipse Jetty) listens on a network port (e.g., `8080`), accepts TCP connections, parses raw HTTP text streams, and maps them to registered `HttpServlet` instances.
 
@@ -22,14 +22,14 @@ flowchart TD
     Tomcat -->|web.xml routing| S3["ProductServlet<br/><i>/products/*</i>"]
 ```
 
-### The Limitations of Raw Servlets:
+### The limitations of raw servlets
 1. **Scattered Boilerplate**: Every servlet had to manually read query parameters, parse JSON request streams using low-level I/O streams, and write response headers.
 2. **Duplicate Cross-Cutting Logic**: Authentication, logging, and error handling had to be copy-pasted across dozens of servlets.
 3. **Tight Coupling to Servlet API**: Testing required complex mocks of `HttpServletRequest` and `HttpServletResponse`.
 
 ---
 
-## 2. The Spring MVC Solution: Front Controller Pattern
+## 2. The Spring mvc solution: Front controller pattern
 
 Spring MVC eliminates servlet sprawl by introducing a **Front Controller** pattern implemented by a single master servlet: **`DispatcherServlet`**.
 
@@ -54,7 +54,7 @@ flowchart TD
 
 ---
 
-## 3. Deep Dive: The `DispatcherServlet` Internal Lifecycle
+## 3. Deep dive: The `DispatcherServlet` internal lifecycle
 
 When a request arrives at `DispatcherServlet`, it executes `doDispatch(request, response)`. Here is the exact internal sequence:
 
@@ -102,7 +102,7 @@ sequenceDiagram
     Tomcat-->>Client: HTTP 201 Created (JSON Response)
 ```
 
-### Key Components Explained:
+### Key components explained
 - **`HandlerMapping`**: Inspects `@RequestMapping` annotations to locate the specific method that handles the incoming URL, HTTP method (`GET`, `POST`), and headers.
 - **`HandlerExecutionChain`**: Wraps the target handler method along with all configured **`HandlerInterceptor`** instances.
 - **`HandlerAdapter` (`RequestMappingHandlerAdapter`)**: Invokes the method via reflection, calling `HandlerMethodArgumentResolver` to bind `@PathVariable`, `@RequestParam`, and `@RequestBody`.
@@ -110,7 +110,7 @@ sequenceDiagram
 
 ---
 
-## 4. Comparing Extension Points: Filters vs Interceptors vs AOP
+## 4. Comparing extension points: Filters vs interceptors vs AOP
 
 Understanding where your logic should execute in the request pipeline is essential for writing clean web applications:
 
@@ -142,7 +142,7 @@ flowchart TD
 
 ---
 
-## 5. Hands-On: Building a Custom Request Tracking Interceptor
+## 5. Hands-on: Building a custom request tracking interceptor
 
 Let's implement a custom `HandlerInterceptor` that generates a unique `X-Trace-Id`, measures execution latency, and injects it into the SLF4J Mapped Diagnostic Context (MDC):
 
@@ -206,7 +206,7 @@ public class RequestMetricsInterceptor implements HandlerInterceptor {
 }
 ```
 
-### Step 2: Register the Interceptor via `WebMvcConfigurer`
+### Step 2: Register the interceptor via `WebMvcConfigurer`
 
 ```java
 package com.example.demo.config;
@@ -234,7 +234,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Servlet Pipeline & Web Engine Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Servlet pipeline web engine evolution
 
 ``` mermaid
 flowchart TD
@@ -253,7 +253,7 @@ flowchart TD
     SB3 ==>|Concurrency Revolution| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Web Engine Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -264,15 +264,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Framework Reference: Web MVC Architecture](https://docs.spring.io/spring-framework/reference/web/webmvc.html) — The official deep dive into `DispatcherServlet` and handler execution.
-- [Jakarta Servlet Specification](https://jakarta.ee/specifications/servlet/) — Standard defining the Servlet container lifecycle and filter chains.
-- [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html) — Authoritative HTTP standards for methods, status codes, and headers.
+- [Spring Framework Reference: Web MVC Architecture](https://docs.spring.io/spring-framework/reference/web/webmvc.html), The official deep dive into `DispatcherServlet` and handler execution.
+- [Jakarta Servlet Specification](https://jakarta.ee/specifications/servlet/), Standard defining the Servlet container lifecycle and filter chains.
+- [RFC 9110: HTTP Semantics](https://www.rfc-editor.org/rfc/rfc9110.html), Authoritative HTTP standards for methods, status codes, and headers.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the primary role of the `DispatcherServlet` in Spring MVC?"
     **Answer**: It acts as the Front Controller, centralizing request routing, adapter invocation, argument binding, and response serialization across all endpoints.
@@ -285,10 +285,9 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0005: Spring Profiles & Multi-Environment Configuration**](0005-spring-profiles-and-environments.md) | [**All Lessons**](index.md) | [➡️ **0007: Building RESTful CRUD APIs with Controllers**](0007-building-restful-crud-apis.md) |
+| [**0005: Spring Profiles & Multi-Environment Configuration**](0005-spring-profiles-and-environments.md) | [**All Lessons**](index.md) | [ **0007: Building RESTful CRUD APIs with Controllers**](0007-building-restful-crud-apis.md) |
 
-💬 *Have any questions about the DispatcherServlet pipeline? Ask anytime!*

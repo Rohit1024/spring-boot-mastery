@@ -2,7 +2,7 @@
 icon: lucide/cpu
 ---
 
-# 0032: Containerizing GraalVM Native Images with Google Jib & Distroless
+# 0032: Containerizing GraalVM native images with Google Jib and Distroless
 
 Compiling a Spring Boot application with GraalVM produces a standalone native Linux executable binary. However, to deploy this binary onto modern orchestration platforms like **Kubernetes**, **Google Cloud Run**, or **AWS ECS**, the executable must be packaged into an OCI-compliant container image.
 
@@ -12,7 +12,7 @@ In this lesson, you will master the **Hybrid Jib + GraalVM Pipeline**: compiling
 
 ---
 
-## 1. The Architecture: GraalVM + Jib Hybrid Pipeline
+## 1. The architecture: GraalVM Jib hybrid pipeline
 
 ``` mermaid
 flowchart TD
@@ -35,14 +35,14 @@ flowchart TD
     Step1 ~~~ Step2 ~~~ Step3
 ```
 
-### Key Advantages of Jib for Native Binaries:
+### Key advantages of Jib for native binaries
 1. **No Docker Daemon Required**: The CI runner compiles the native binary and Jib uploads the OCI image directly to your registry over HTTP/2.
 2. **Minimal Distroless Footprint**: Total container size is only **~45MB to ~70MB** (compared to 250MB+ for standard JVM containers).
 3. **Reproducible Layering**: Base OS layer (glibc/certs) remains cached; only the native binary layer updates on code changes.
 
 ---
 
-## 2. Choosing the Native Base Image
+## 2. Choosing the native base image
 
 Because GraalVM dynamic native binaries link against the standard C library (`glibc`), the container base image must supply `glibc` and root SSL certificates:
 
@@ -54,7 +54,7 @@ Because GraalVM dynamic native binaries link against the standard C library (`gl
 
 ---
 
-## 3. Configuring Maven for Jib Native Packaging
+## 3. Configuring maven for Jib native packaging
 
 Configure a dedicated Maven profile that pairs `native-maven-plugin` with `jib-maven-plugin`:
 
@@ -149,15 +149,15 @@ Configure a dedicated Maven profile that pairs `native-maven-plugin` with `jib-m
 
 ---
 
-## 4. Execution & Pipeline Automation
+## 4. Execution pipeline automation
 
-### 1. Local / CI Execution Command
+### 1. Local / ci execution command
 ```bash
 # Compiles native binary and pushes container directly to cloud registry:
 mvn clean package jib:build -Pnative-jib
 ```
 
-### 2. Complete GitHub Actions CI/CD Pipeline (`.github/workflows/native-jib.yml`)
+### 2. Complete github actions CI/CD pipeline (`.github/workflows/native-jibyml`)
 
 ```yaml
 name: Build & Push Native Container
@@ -196,7 +196,7 @@ jobs:
 
 ---
 
-## 5. Startup & Footprint Benchmark in Production
+## 5. Startup footprint benchmark in production
 
 Once deployed to Kubernetes or Google Cloud Run:
 
@@ -217,7 +217,7 @@ docker run -p 8080:8080 ghcr.io/mycompany/order-service:v1.0.0
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Native Container Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Native container evolution
 
 ``` mermaid
 flowchart TD
@@ -236,7 +236,7 @@ flowchart TD
     SB3 ==>|Native Packaging Convergence| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Native Container Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -246,15 +246,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [GoogleContainerTools Jib: Extra Directories Documentation](https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#how-do-i-add-extra-files-to-the-image) — Setting custom file permissions and entrypoints.
-- [GraalVM Native Image with Distroless Guide](https://github.com/GoogleContainerTools/distroless) — Running native executables in minimal Linux distributions.
-- [Cloud Native Computing Foundation: MicroVM & Serverless Containers](https://www.cncf.io/) — Best practices for sub-second scaling.
+- [GoogleContainerTools Jib: Extra Directories Documentation](https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#how-do-i-add-extra-files-to-the-image), Setting custom file permissions and entrypoints.
+- [GraalVM Native Image with Distroless Guide](https://github.com/GoogleContainerTools/distroless), Running native executables in minimal Linux distributions.
+- [Cloud Native Computing Foundation: MicroVM & Serverless Containers](https://www.cncf.io/), Best practices for sub-second scaling.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is `gcr.io/distroless/base-debian12` used instead of `gcr.io/distroless/java21` when containerizing GraalVM native images with Jib?"
     **Answer**: The GraalVM native binary is already compiled machine code that embeds SubstrateVM; it does not need a Java Runtime Environment (JRE), but requires standard C library dependencies (`glibc` and SSL certs) provided by `base-debian12`.
@@ -267,10 +267,10 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0031: GraalVM AOT Native Images**](0031-graalvm-aot-native-image-compilation.md) | [**All Lessons**](index.md) | [➡️ **0033: Spring Batch Core Architecture**](0033-spring-batch-architecture-jobrepository.md) |
+| [**0031: GraalVM AOT Native Images**](0031-graalvm-aot-native-image-compilation.md) | [**All Lessons**](index.md) | [ **0033: Spring Batch Core Architecture**](0033-spring-batch-architecture-jobrepository.md) |
 
 🎉 **Congratulations on completing Module 6: Building, Packaging & Containerizing Spring Boot Applications!**

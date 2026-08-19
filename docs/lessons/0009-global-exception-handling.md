@@ -2,7 +2,7 @@
 icon: lucide/alert-triangle
 ---
 
-# 0009: Global Exception Handling with `@RestControllerAdvice` & ProblemDetails
+# 0009: Global exception handling with @RestControllerAdvice and ProblemDetails
 
 In production systems, unhandled exceptions lead to ugly **Whitelabel Error Pages**, leak internal Java stack traces and SQL queries to potential attackers (OWASP Security Risk), and degrade API client ergonomics.
 
@@ -10,7 +10,7 @@ In this lesson, we master centralized global exception handling using **`@RestCo
 
 ---
 
-## 1. Exception Handling Architecture in Spring MVC
+## 1. Exception handling architecture in Spring mvc
 
 When an uncaught exception is thrown inside a Controller, Service, or Repository, the `DispatcherServlet` catches it and delegates resolution to the **`HandlerExceptionResolver`** chain:
 
@@ -39,11 +39,11 @@ sequenceDiagram
 
 ---
 
-## 2. The RFC 7807 / RFC 9457 `ProblemDetail` Standard
+## 2. The RFC 7807 / RFC 9457 `ProblemDetail` standard
 
 Starting in Spring Boot 3.x / Spring Framework 6, Spring natively implements **RFC 9457 ("Problem Details for HTTP APIs")** via `org.springframework.http.ProblemDetail`.
 
-### Why Standardized Error Schemas Matter:
+### Why standardized error schemas matter
 Instead of every company inventing its own ad-hoc error format (`{"err": "failed"}` vs `{"error_message": "failed"}`), RFC 9457 establishes a universal JSON schema:
 
 ```json
@@ -68,11 +68,11 @@ Instead of every company inventing its own ad-hoc error format (`{"err": "failed
 
 ---
 
-## 3. Production-Ready `@RestControllerAdvice` Implementation
+## 3. Production-ready `@RestControllerAdvice` implementation
 
 Let's build a unified global exception handler handling validation failures, domain exceptions, malformed JSON, and catch-all server errors:
 
-### Step 1: Define Custom Business Exceptions
+### Step 1: Define custom business exceptions
 
 ```java
 package com.example.demo.exception;
@@ -93,7 +93,7 @@ public class BusinessRuleViolationException extends RuntimeException {
 }
 ```
 
-### Step 2: Implement the Global Exception Handler
+### Step 2: Implement the global exception handler
 
 ```java
 package com.example.demo.exception;
@@ -199,7 +199,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 ---
 
-## 4. Enabling RFC 7807 Globally in `application.yml`
+## 4. Enabling RFC 7807 globally in `application.yml`
 
 Spring Boot 3 allows you to enable RFC 7807 `ProblemDetail` responses automatically for standard framework exceptions by adding:
 
@@ -214,7 +214,7 @@ When enabled, Spring MVC converts missing request parameters, unsupported media 
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Exception Handling Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Exception handling evolution
 
 ``` mermaid
 flowchart TD
@@ -233,7 +233,7 @@ flowchart TD
     SB3 ==>|Error Spec Standardization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Exception Handling Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -243,15 +243,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) — The IETF standard specification.
-- [Spring Framework Reference: Error Responses & ProblemDetail](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-ann-rest-exceptions.html) — Official documentation on `ProblemDetail` and `@ExceptionHandler`.
-- [Spring Boot 3 Error Handling Guide](https://docs.spring.io/spring-boot/reference/web/servlet.html#web.servlet.spring-mvc.error-handling) — Auto-configuration of error responses.
+- [RFC 9457: Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html), The IETF standard specification.
+- [Spring Framework Reference: Error Responses & ProblemDetail](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-ann-rest-exceptions.html), Official documentation on `ProblemDetail` and `@ExceptionHandler`.
+- [Spring Boot 3 Error Handling Guide](https://docs.spring.io/spring-boot/reference/web/servlet.html#web.servlet.spring-mvc.error-handling), Auto-configuration of error responses.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why should internal exception messages and stack traces never be returned to the API client in production?"
     **Answer**: Exposing stack traces leaks internal database structures, framework versions, and class paths to attackers, violating the principle of least privilege.
@@ -264,10 +264,9 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0008: Spring Bean Validation**](0008-spring-bean-validation.md) | [**All Lessons**](index.md) | [➡️ **0010: Standardizing Response Envelopes & DTO Pattern**](0010-dto-pattern-and-response-envelopes.md) |
+| [**0008: Spring Bean Validation**](0008-spring-bean-validation.md) | [**All Lessons**](index.md) | [ **0010: Standardizing Response Envelopes & DTO Pattern**](0010-dto-pattern-and-response-envelopes.md) |
 
-💬 *Ready to master clean API contracts and object mapping? Proceed to DTOs & Response Envelopes!*

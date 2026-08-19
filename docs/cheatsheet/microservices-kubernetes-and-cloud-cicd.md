@@ -2,13 +2,13 @@
 icon: lucide/file-code
 ---
 
-# Microservices, Kubernetes & Cloud CI/CD Cheatsheet
+# Microservices, Kubernetes, and cloud CI/CD cheatsheet
 
-A production reference card for Spring Cloud (OpenFeign, Gateway, Config Server, Eureka), Resilience4j fault tolerance, distributed patterns (SAGA, Outbox, Idempotency), Kubernetes workloads, and AWS CI/CD.
+Production reference card for Spring Cloud (OpenFeign, Gateway, Config Server, Eureka), Resilience4j fault tolerance, distributed patterns (Saga, outbox, idempotency), Kubernetes workloads, and AWS CI/CD.
 
 ---
 
-## 1. Spring Cloud OpenFeign Declarative Client
+## 1. Spring Cloud OpenFeign declarative client
 
 ```java
 @FeignClient(name = "payment-service", path = "/api/v1/payments", configuration = FeignConfig.class)
@@ -17,7 +17,7 @@ public interface PaymentClient {
     PaymentResponse charge(@RequestBody PaymentRequest request);
 }
 
-// Bearer Token Propagation Interceptor
+// Bearer token propagation interceptor
 @Bean
 public RequestInterceptor bearerTokenInterceptor() {
     return template -> {
@@ -32,7 +32,7 @@ public RequestInterceptor bearerTokenInterceptor() {
 
 ---
 
-## 2. Spring Cloud Gateway YAML Configuration
+## 2. Spring Cloud Gateway YAML configuration
 
 ```yaml
 spring:
@@ -50,25 +50,25 @@ spring:
 
 ---
 
-## 3. Resilience4j Fault Tolerance Cheat Sheet
+## 3. Resilience4j fault tolerance reference
 
-| Annotation | Key Configuration | Purpose |
+| Annotation | Key configuration | Purpose |
 | :--- | :--- | :--- |
-| **`@CircuitBreaker`** | `failure-rate-threshold: 50`, `wait-duration-in-open-state: 10s` | Trips to OPEN on 50% failures; returns immediate fallback. |
-| **`@Retry`** | `max-attempts: 3`, `wait-duration: 500ms`, `exponential-backoff: true` | Retries on transient network exceptions with backoff. |
-| **`@Bulkhead`** | `max-concurrent-calls: 15`, `max-wait-duration: 20ms` | Isolates concurrent executions to prevent thread starvation. |
-| **`@TimeLimiter`** | `timeout-duration: 2s` | Aborts long-hanging asynchronous calls. |
+| `@CircuitBreaker` | `failure-rate-threshold: 50`, `wait-duration-in-open-state: 10s` | Trips to OPEN on 50% failures; returns immediate fallback. |
+| `@Retry` | `max-attempts: 3`, `wait-duration: 500ms`, `exponential-backoff: true` | Retries on transient network exceptions with backoff. |
+| `@Bulkhead` | `max-concurrent-calls: 15`, `max-wait-duration: 20ms` | Isolates concurrent executions to prevent thread starvation. |
+| `@TimeLimiter` | `timeout-duration: 2s` | Aborts long-hanging asynchronous calls. |
 
 ---
 
-## 4. Distributed Transaction & Reliability Patterns
+## 4. Distributed transaction and reliability patterns
 
-### Transactional Outbox Worker (`SKIP LOCKED`)
+### Transactional outbox worker (`SKIP LOCKED`)
 ```sql
 SELECT * FROM outbox_events WHERE status = 'PENDING' ORDER BY created_at ASC LIMIT 50 FOR UPDATE SKIP LOCKED;
 ```
 
-### Distributed Idempotency Key with Redis `SETNX`
+### Distributed idempotency key with Redis `SETNX`
 ```java
 Boolean acquired = redisTemplate.opsForValue().setIfAbsent("idempotency:" + key, "PROCESSING", Duration.ofMinutes(5));
 if (Boolean.TRUE.equals(acquired)) {
@@ -80,9 +80,9 @@ if (Boolean.TRUE.equals(acquired)) {
 
 ---
 
-## 5. Kubernetes Production Manifests
+## 5. Kubernetes production manifests
 
-### Zero-Downtime Deployment & Probes
+### Zero-downtime deployment and probes
 ```yaml
 spec:
   replicas: 3
@@ -109,7 +109,7 @@ spec:
 
 ---
 
-## 6. AWS CodeBuild `buildspec.yml` Phase Matrix
+## 6. AWS CodeBuild `buildspec.yml` phase matrix
 
 ```yaml
 version: 0.2
@@ -133,8 +133,8 @@ artifacts:
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Redis Caching & Kafka Cheatsheet**](redis-caching-and-kafka-messaging.md) | [**All Cheatsheets**](index.md) | [➡️ **Reactive WebFlux & Spring AI Cheatsheet**](reactive-webflux-and-spring-ai.md) |
+| [**Redis caching and Kafka cheatsheet**](redis-caching-and-kafka-messaging.md) | [**All cheatsheets**](index.md) | [**Reactive WebFlux and Spring AI cheatsheet**](reactive-webflux-and-spring-ai.md) |

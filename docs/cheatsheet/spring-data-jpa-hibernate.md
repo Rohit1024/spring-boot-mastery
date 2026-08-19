@@ -2,13 +2,13 @@
 icon: lucide/database
 ---
 
-# Spring Data JPA & Hibernate Cheatsheet
+# Spring Data JPA and Hibernate cheatsheet
 
-A rapid-reference guide for JPA entity mappings, repository derived queries, fetch strategies, `@Transactional` configurations, and multi-database settings.
+Reference guide for JPA entity mappings, repository derived queries, fetch strategies, `@Transactional` configurations, and multi-database settings.
 
 ---
 
-## 1. Entity Lifecycle States & EntityManager
+## 1. Entity lifecycle states and EntityManager
 
 ``` mermaid
 stateDiagram-v2
@@ -22,16 +22,16 @@ stateDiagram-v2
 
 | Method | Effect |
 | :--- | :--- |
-| `em.persist(e)` | Transitions `TRANSIENT` -> `MANAGED`. Entity assigned DB ID (if generated). |
+| `em.persist(e)` | Transitions `TRANSIENT` -> `MANAGED`. Entity receives generated database ID if configured. |
 | `em.merge(e)` | Copies state of `DETACHED` entity into a new `MANAGED` entity instance. |
 | `em.remove(e)` | Transitions `MANAGED` -> `REMOVED`. Queues SQL `DELETE` for next flush. |
-| `em.detach(e)` | Removes entity from Persistence Context (stops dirty checking). |
-| `em.flush()` | Forces pending SQL (`INSERT`, `UPDATE`, `DELETE`) to execute to DB without committing. |
-| `em.clear()` | Detaches **all** entities from the current Persistence Context. |
+| `em.detach(e)` | Removes entity from Persistence Context and stops dirty checking. |
+| `em.flush()` | Forces pending SQL (`INSERT`, `UPDATE`, `DELETE`) to execute without committing. |
+| `em.clear()` | Detaches all entities from the current Persistence Context. |
 
 ---
 
-## 2. Common JPA Entity Annotations
+## 2. Common JPA entity annotations
 
 ```java
 @Entity
@@ -67,9 +67,9 @@ public class Order {
 
 ---
 
-## 3. Spring Data Derived Query Cheatsheet
+## 3. Spring Data derived query reference
 
-| Keyword | Repository Method Signature | Derived JPQL Snippet |
+| Keyword | Repository method signature | Derived JPQL snippet |
 | :--- | :--- | :--- |
 | `And` | `findByStatusAndCustomerId(...)` | `WHERE o.status = :status AND o.customerId = :cId` |
 | `Or` | `findByNameOrEmail(...)` | `WHERE u.name = :name OR u.email = :email` |
@@ -85,12 +85,12 @@ public class Order {
 
 ---
 
-## 4. Query Types: JPQL vs Native vs Projections
+## 4. Query types: JPQL, native SQL, and projections
 
 ```java
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    // 1. JPQL (Object Oriented)
+    // 1. JPQL
     @Query("SELECT u FROM User u WHERE u.email = :email")
     Optional<User> findByEmailJpql(@Param("email") String email);
 
@@ -98,11 +98,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query(value = "SELECT * FROM users WHERE metadata->>'tier' = 'GOLD'", nativeQuery = true)
     List<User> findGoldTierUsers();
 
-    // 3. Record DTO Projection (Constructor Expression)
+    // 3. Record DTO projection
     @Query("SELECT new com.example.dto.UserSummaryDto(u.id, u.email) FROM User u")
     List<UserSummaryDto> findAllSummaries();
 
-    // 4. JOIN FETCH to eliminate N+1
+    // 4. JOIN FETCH to eliminate N+1 queries
     @Query("SELECT o FROM Order o JOIN FETCH o.customer WHERE o.id = :id")
     Optional<Order> findWithCustomerById(@Param("id") Long id);
 
@@ -114,25 +114,24 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ---
 
-## 5. `@Transactional` Propagation & Isolation Cheatsheet
+## 5. `@Transactional` propagation and isolation reference
 
-### Propagation:
-- **`REQUIRED`** *(Default)*: Joins existing TX or creates a new one.
-- **`REQUIRES_NEW`**: Always starts a brand-new independent TX (suspending existing).
-- **`NESTED`**: Executes within a nested TX using JDBC Savepoints.
-- **`MANDATORY`**: Requires existing TX; throws exception if none.
-- **`SUPPORTS`**: Runs in TX if present; non-transactionally if none.
+### Propagation
+- **`REQUIRED`** *(Default)*: Joins existing transaction or creates a new one.
+- **`REQUIRES_NEW`**: Starts an independent transaction and suspends the existing one.
+- **`NESTED`**: Executes within a nested transaction using JDBC savepoints.
+- **`MANDATORY`**: Requires an existing transaction; throws an exception if none exists.
+- **`SUPPORTS`**: Runs in a transaction if present; executes non-transactionally otherwise.
 
-### Isolation Levels:
-- **`READ_COMMITTED`**: Standard default for PostgreSQL/Oracle. Prevents Dirty Reads.
-- **`REPEATABLE_READ`**: Standard default for MySQL InnoDB. Prevents Dirty & Non-Repeatable Reads.
-- **`SERIALIZABLE`**: Highest isolation. Prevents all anomalies at the cost of strict row/range locking.
+### Isolation levels
+- **`READ_COMMITTED`**: Standard default for PostgreSQL and Oracle. Prevents dirty reads.
+- **`REPEATABLE_READ`**: Standard default for MySQL InnoDB. Prevents dirty and non-repeatable reads.
+- **`SERIALIZABLE`**: Highest isolation. Prevents all concurrency anomalies through strict row and range locks.
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Web MVC & REST APIs Cheatsheet**](spring-web-mvc-rest.md) | [**All Cheatsheets**](index.md) | [➡️ **Spring Observability & Actuator Cheatsheet**](spring-observability-devtools.md) |
-
+| [**Spring Web MVC and REST APIs cheatsheet**](spring-web-mvc-rest.md) | [**All cheatsheets**](index.md) | [**Spring observability, Actuator, and logging cheatsheet**](spring-observability-devtools.md) |

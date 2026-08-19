@@ -2,15 +2,15 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting Reactive WebFlux & Spring AI Pitfalls
+# Troubleshooting Reactive WebFlux and Spring AI pitfalls
 
 Reactive systems and Generative AI microservices introduce specialized failure modes: silent event loop freezing, R2DBC connection pool starvation from dangling subscriptions, unbounded `flatMap` memory explosions, and LLM context window overflows.
 
-This playbook provides root-cause analyses, diagnostic flowcharts, and concrete resolutions for common Spring WebFlux, Project Reactor, R2DBC, and Spring AI pitfalls.
+Here are root-cause analyses, diagnostic flowcharts, and concrete resolutions for common Spring WebFlux, Project Reactor, R2DBC, and Spring AI pitfalls.
 
 ---
 
-## 1. Diagnostic Flow: WebFlux Freezes & AI Outages
+## 1. Diagnostic flow: WebFlux freezes and AI outages
 
 ``` mermaid
 flowchart TD
@@ -54,16 +54,16 @@ flowchart TD
 
 ---
 
-## 2. Pitfall 1: Event Loop Thread Blocking & BlockHound Detection
+## 2. Pitfall 1: Event loop thread blocking and BlockHound detection
 
-### Symptom
+### Symptoms
 Under a test load of just 50 requests/sec, the WebFlux service latency degrades from 5ms to over 20 seconds, and CPU utilization drops to near zero.
 
-### Root Cause
-A blocking library call (e.g. `Thread.sleep()`, JDBC call, or `FileInputStream`) is executing inside a Netty event loop thread (`reactor-http-nio-*`), freezing the thread and blocking all other concurrent requests sharing that core.
+### Root cause
+A blocking library call (`Thread.sleep()`, JDBC call, or `FileInputStream`) is executing inside a Netty event loop thread (`reactor-http-nio-*`), freezing the thread and blocking all other concurrent requests sharing that core.
 
-### Diagnostic & Resolution
-Add **BlockHound** to detect blocking calls automatically during tests and development:
+### Diagnostic and resolution
+Add BlockHound to detect blocking calls automatically during tests and development:
 
 ```xml
 <dependency>
@@ -75,14 +75,13 @@ Add **BlockHound** to detect blocking calls automatically during tests and devel
 ```
 
 ```java
-// Install BlockHound in test setup or main class
 @BeforeAll
 static void setUpBlockHound() {
     BlockHound.install();
 }
 ```
 
-When a blocking call executes on an event loop, BlockHound immediately throws an actionable stack trace:
+When a blocking call executes on an event loop, BlockHound throws an actionable stack trace:
 ```text
 reactor.blockhound.BlockingOperationError: Blocking call! java.io.FileInputStream#readBytes
     at java.io.FileInputStream.read(FileInputStream.java:279)
@@ -90,7 +89,7 @@ reactor.blockhound.BlockingOperationError: Blocking call! java.io.FileInputStrea
 ```
 
 ```java
-// ✅ RESOLUTION: Offload blocking legacy calls to Schedulers.boundedElastic()
+// Offload blocking legacy calls to Schedulers.boundedElastic()
 public Mono<String> readLegacyConfig(String path) {
     return Mono.fromCallable(() -> legacyFileReader.readConfig(path))
             .subscribeOn(Schedulers.boundedElastic());
@@ -99,23 +98,22 @@ public Mono<String> readLegacyConfig(String path) {
 
 ---
 
-## 3. Pitfall 2: R2DBC Connection Pool Starvation from Dangling Subscriptions
+## 3. Pitfall 2: R2DBC connection pool starvation from dangling subscriptions
 
-### Symptom Log
+### Symptoms
 ```text
 io.r2dbc.pool.ConnectionPoolTimeoutException: 
 Timeout acquiring connection for 30000ms [pool-size: 30, active: 30, pending: 450]
 ```
 
-### Root Cause
-1. **Unsubscribed Assembly**: Assembling an R2DBC query without returning the `Mono`/`Flux` in the controller response chain. In Reactor, if a pipeline is subscribed to partially and abandoned without a `cancel` signal, the underlying R2DBC connection remains reserved.
-2. **Missing Timeout**: Queries on deadlocked tables hold connections indefinitely.
+### Root causes
+1. **Unsubscribed assembly**: Assembling an R2DBC query without returning the `Mono`/`Flux` in the controller response chain. If a pipeline is subscribed to partially and abandoned without a `cancel` signal, the underlying R2DBC connection remains reserved.
+2. **Missing timeout**: Queries on deadlocked tables hold connections indefinitely.
 
 ### Resolution
-Always chain timeout operators and verify reactive pipeline consumption:
+Chain timeout operators and verify reactive pipeline consumption:
 
 ```java
-// ✅ RESOLUTION: Enforce timeouts and guarantee disposal
 public Mono<Product> getProductWithGuard(Long id) {
     return productR2dbcRepository.findById(id)
             .timeout(Duration.ofSeconds(3)) // Release connection if DB fails to respond in 3s
@@ -125,22 +123,19 @@ public Mono<Product> getProductWithGuard(Long id) {
 
 ---
 
-## 4. Pitfall 3: Unbounded `flatMap` Memory Explosion
+## 4. Pitfall 3: Unbounded `flatMap` memory explosion
 
-### Symptom
+### Symptoms
 When processing a bulk import of 50,000 items, the microservice crashes with `java.lang.OutOfMemoryError: Java heap space` or Kubernetes `OOMKilled` (Exit Code 137).
 
-### Root Cause
+### Root cause
 Calling `Flux.fromIterable(hugeList).flatMap(service::call)` triggers all 50,000 asynchronous calls concurrently, creating 50,000 in-flight HTTP request buffers and socket handlers.
 
 ### Resolution
 Enforce explicit concurrency limits on `flatMap`:
 
 ```java
-// ❌ DANGEROUS: Spawns unbounded concurrent network calls
-// itemsFlux.flatMap(item -> paymentClient.charge(item));
-
-// ✅ RESOLUTION: Bounded Concurrency (Max 16 concurrent requests)
+// Bounded concurrency (Max 16 concurrent requests)
 public Flux<Receipt> processBulkItems(Flux<Item> itemsFlux) {
     return itemsFlux
             .flatMap(paymentClient::charge, 16); // Bounded to 16 concurrent executions
@@ -149,16 +144,16 @@ public Flux<Receipt> processBulkItems(Flux<Item> itemsFlux) {
 
 ---
 
-## 5. Pitfall 4: Spring AI Rate Limits & Token Window Overflow
+## 5. Pitfall 4: Spring AI rate limits and token window overflow
 
-### Symptom Log
+### Symptoms
 ```text
 org.springframework.ai.retry.NonTransientAiException: 
 429 Too Many Requests: Rate limit reached for model gpt-4o in organization org-123
 ```
 
-### Root Cause
-High-concurrency user requests overwhelm the LLM API quota (Requests Per Minute / Tokens Per Minute). Additionally, injecting large un-chunked RAG documents exceeds the maximum context window token limit (e.g. 128k tokens).
+### Root cause
+High-concurrency user requests overwhelm the LLM API quota (requests per minute or tokens per minute). In addition, injecting large un-chunked RAG documents exceeds the maximum context window token limit.
 
 ### Resolution
 1. Configure Spring AI exponential retry policies in `application.yml`:
@@ -177,14 +172,13 @@ spring:
 2. Budget RAG context chunks with `TokenTextSplitter`:
 
 ```java
-// ✅ RESOLUTION: Safe chunk budgeting (800 tokens max per chunk, Top-K = 3)
 TokenTextSplitter splitter = new TokenTextSplitter(800, 100, 5, 5000, true);
 ```
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Microservices & SAGA**](microservices-circuit-breaker-and-distributed-transaction-pitfalls.md) | [**All Debugging Guides**](index.md) | 🏆 **All Diagnostic Playbooks Completed!** |
+| [**Troubleshooting microservices and Saga**](microservices-circuit-breaker-and-distributed-transaction-pitfalls.md) | [**All debugging guides**](index.md) | All diagnostic playbooks completed |

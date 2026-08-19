@@ -2,15 +2,15 @@
 icon: lucide/network
 ---
 
-# GraphQL, gRPC & WebSockets Protocol Cheatsheet
+# GraphQL, gRPC, and WebSockets protocol cheatsheet
 
-A rapid reference guide for Spring for GraphQL queries, batch mapping, Protocol Buffers & gRPC RPC services, and WebSockets STOMP messaging.
+Reference for Spring for GraphQL queries, batch mapping, Protocol Buffers, gRPC RPC services, and WebSockets STOMP messaging.
 
 ---
 
-## 1. Spring for GraphQL Quick Reference
+## 1. Spring for GraphQL quick reference
 
-### Schema Definition (`schema.graphqls`):
+### Schema definition (`schema.graphqls`)
 ```graphql
 type Query {
     order(id: ID!): Order
@@ -32,7 +32,7 @@ type Order {
 }
 ```
 
-### Controller Annotations:
+### Controller annotations
 ```java
 @Controller
 public class GraphQLController {
@@ -53,9 +53,9 @@ public class GraphQLController {
 
 ---
 
-## 2. Spring gRPC & Protocol Buffers Quick Reference
+## 2. Spring gRPC and Protocol Buffers quick reference
 
-### Protobuf Definition (`order.proto`):
+### Protobuf definition (`order.proto`)
 ```protobuf
 syntax = "proto3";
 package order;
@@ -70,7 +70,7 @@ message OrderRequest { int64 order_id = 1; }
 message OrderResponse { int64 order_id = 1; double total = 2; }
 ```
 
-### Server Implementation (`@GrpcService`):
+### Server implementation (`@GrpcService`)
 ```java
 @GrpcService
 public class OrderGrpcServiceImpl extends OrderGrpcServiceGrpc.OrderGrpcServiceImplBase {
@@ -86,7 +86,7 @@ public class OrderGrpcServiceImpl extends OrderGrpcServiceGrpc.OrderGrpcServiceI
 }
 ```
 
-### Client Stub Injection (`@GrpcClient`):
+### Client stub injection (`@GrpcClient`)
 ```java
 @Service
 public class OrderServiceClient {
@@ -102,9 +102,9 @@ public class OrderServiceClient {
 
 ---
 
-## 3. WebSockets & STOMP Messaging Quick Reference
+## 3. WebSockets and STOMP messaging quick reference
 
-### Broker Configuration:
+### Broker configuration
 ```java
 @Configuration
 @EnableWebSocketMessageBroker
@@ -123,7 +123,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 }
 ```
 
-### Message Controller & User Notifications:
+### Message controller and user notifications
 ```java
 @Controller
 public class ChatController {
@@ -139,8 +139,8 @@ messagingTemplate.convertAndSendToUser("alice", "/queue/notifications", alert);
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Batch & Schedulers Cheatsheet**](spring-batch-quartz-shedlock.md) | [**All Cheatsheets**](index.md) | [➡️ **Spring Modulith & Virtual Threads Cheatsheet**](spring-modulith-and-virtual-threads.md) |
+| [**Spring Batch and schedulers cheatsheet**](spring-batch-quartz-shedlock.md) | [**All cheatsheets**](index.md) | [**Spring Modulith and virtual threads cheatsheet**](spring-modulith-and-virtual-threads.md) |

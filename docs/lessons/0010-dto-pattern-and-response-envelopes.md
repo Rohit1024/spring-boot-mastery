@@ -2,7 +2,7 @@
 icon: lucide/box
 ---
 
-# 0010: Standardizing Response Envelopes & DTO Pattern with Lombok & MapStruct
+# 0010: Standardizing response envelopes and DTO pattern with Lombok and MapStruct
 
 Exposing database JPA entities directly across REST endpoints is one of the most common and dangerous anti-patterns in backend engineering.
 
@@ -10,7 +10,7 @@ In this lesson, we dissect why **Data Transfer Objects (DTOs)** are mandatory fo
 
 ---
 
-## 1. Why You Must NEVER Expose JPA Entities in REST APIs
+## 1. Why you must never expose JPA entities in REST APIs
 
 ``` mermaid
 flowchart TD
@@ -28,7 +28,7 @@ flowchart TD
     AntiPattern ~~~ DTO_Pattern
 ```
 
-### The 5 Critical Risks of Exposing Entities:
+### The 5 critical risks of exposing entities
 1. **Security Leaks (Over-Fetching)**: Sensitive internal fields (e.g., `passwordHash`, `ssn`, `internalAuditLogs`) are inadvertently serialized into JSON.
 2. **Mass-Assignment Vulnerability (Over-Posting)**: An attacker submits `{"role": "ADMIN", "isVerified": true}` in a registration `POST` payload. If the controller binds directly to an entity, internal flags get overwritten.
 3. **Infinite JSON Circular Recursion**: Bidirectional relationships (`@ManyToOne` and `@OneToMany`) trigger infinite loops during Jackson serialization, throwing `StackOverflowError`.
@@ -37,11 +37,11 @@ flowchart TD
 
 ---
 
-## 2. Java Records: Modern Immutable DTOs
+## 2. Java records: Modern immutable dtos
 
 Starting in Java 17+, **Java `record` classes** provide the cleanest syntax for immutable DTOs with built-in `equals()`, `hashCode()`, `toString()`, and getters:
 
-### Request DTO (Command Payload)
+### Request DTO (command payload)
 ```java
 package com.example.demo.dto;
 
@@ -64,7 +64,7 @@ public record CreateUserRequest(
 ) {}
 ```
 
-### Response DTO (Projection)
+### Response DTO (projection)
 ```java
 package com.example.demo.dto;
 
@@ -81,7 +81,7 @@ public record UserResponse(
 
 ---
 
-## 3. Designing a Unified API Response Envelope
+## 3. Designing a unified API response envelope
 
 Standardizing your JSON response format ensures consistency across frontend teams and microservice consumers:
 
@@ -100,7 +100,7 @@ Standardizing your JSON response format ensures consistency across frontend team
 }
 ```
 
-### Generic `ApiResponse<T>` Implementation
+### Generic `ApiResponse<T>` implementation
 
 ```java
 package com.example.demo.dto;
@@ -147,7 +147,7 @@ public class ApiResponse<T> {
 
 ---
 
-## 4. Entity <-> DTO Mapping: Manual vs ModelMapper vs MapStruct
+## 4. Entity - DTO mapping: Manual vs modelmapper vs MapStruct
 
 ``` mermaid
 flowchart TD
@@ -164,11 +164,11 @@ flowchart TD
 
 ---
 
-## 5. Enterprise Implementation with MapStruct
+## 5. Enterprise implementation with MapStruct
 
 MapStruct runs as an annotation processor during `mvn compile` / `gradle build`, generating regular Java bytecode with zero reflection overhead.
 
-### Maven Dependency
+### Maven dependency
 ```xml
 <dependency>
     <groupId>org.mapstruct</groupId>
@@ -183,7 +183,7 @@ MapStruct runs as an annotation processor during `mvn compile` / `gradle build`,
 </dependency>
 ```
 
-### The Mapper Interface
+### The mapper interface
 ```java
 package com.example.demo.mapper;
 
@@ -208,7 +208,7 @@ public interface UserMapper {
 }
 ```
 
-### In Your Service:
+### In your service
 ```java
 @Service
 @RequiredArgsConstructor
@@ -231,7 +231,7 @@ public class UserService {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: DTO & Mapping Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: DTO mapping evolution
 
 ``` mermaid
 flowchart TD
@@ -250,7 +250,7 @@ flowchart TD
     SB3 ==>|Serialization Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | DTO & Mapping Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -269,15 +269,15 @@ public void handlePayload(Object event) {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [MapStruct Official Documentation](https://mapstruct.org/documentation/stable/reference/html/) — Complete guide to advanced mappings, qualifiers, and decorators.
-- [Martin Fowler on DTOs](https://martinfowler.com/eaaCatalog/dataTransferObject.html) — The seminal definition of the Data Transfer Object pattern.
-- [Java 21 Record Patterns Specification](https://docs.oracle.com/en/java/javase/21/language/record-patterns.html) — Pattern matching and deconstruction for records.
+- [MapStruct Official Documentation](https://mapstruct.org/documentation/stable/reference/html/), Complete guide to advanced mappings, qualifiers, and decorators.
+- [Martin Fowler on DTOs](https://martinfowler.com/eaaCatalog/dataTransferObject.html), The seminal definition of the Data Transfer Object pattern.
+- [Java 21 Record Patterns Specification](https://docs.oracle.com/en/java/javase/21/language/record-patterns.html), Pattern matching and deconstruction for records.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is mass-assignment (over-posting) vulnerability, and how does the DTO pattern prevent it?"
     **Answer**: Attackers send unauthorized fields (e.g., `role: ADMIN`) in the request JSON. By binding incoming requests to dedicated Request DTOs that only contain permitted user-editable fields, unapproved fields cannot reach the database entity.
@@ -290,10 +290,9 @@ public void handlePayload(Object event) {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0009: Global Exception Handling**](0009-global-exception-handling.md) | [**All Lessons**](index.md) | [➡️ **0011: Design Patterns in Spring: Strategy & Decorator**](0011-design-patterns-strategy-decorator.md) |
+| [**0009: Global Exception Handling**](0009-global-exception-handling.md) | [**All Lessons**](index.md) | [ **0011: Design Patterns in Spring: Strategy & Decorator**](0011-design-patterns-strategy-decorator.md) |
 
-💬 *Ready to apply GoF architectural design patterns using Spring's IoC container? Proceed to Lesson 0011!*

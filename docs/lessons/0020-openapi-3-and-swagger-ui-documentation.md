@@ -2,9 +2,9 @@
 icon: lucide/file-text
 ---
 
-# 0020: API Documentation with OpenAPI 3, SpringDoc & Swagger UI
+# 0020: API documentation with OpenAPI 3, SpringDoc, and Swagger UI
 
-In distributed microservice architectures, API contracts are the formal agreement between frontend apps, mobile clients, external partners, and backend services. Manually written documentation inevitably suffers from **documentation drift** — becoming outdated as code evolves.
+In distributed microservice architectures, API contracts are the formal agreement between frontend apps, mobile clients, external partners, and backend services. Manually written documentation inevitably suffers from **documentation drift**, becoming outdated as code evolves.
 
 **OpenAPI 3 (OAS3)** and **SpringDoc** solve this by generating interactive, live documentation directly from compiled Spring `@RestController` metadata and Jakarta Bean Validation constraints.
 
@@ -12,7 +12,7 @@ In this lesson, you will integrate `springdoc-openapi`, annotate endpoints and D
 
 ---
 
-## 1. SpringDoc OpenAPI 3 Architecture
+## 1. Springdoc OpenAPI 3 architecture
 
 SpringDoc inspects Spring MVC's `RequestMappingHandlerMapping`, Java reflection metadata, and Jakarta Bean Validation annotations (`@NotNull`, `@Size`, `@Pattern`) at runtime to dynamically construct an OpenAPI 3.0 specification in JSON/YAML:
 
@@ -41,7 +41,7 @@ flowchart TD
 
 ---
 
-## 2. Dependency Setup (Spring Boot 3.x)
+## 2. Dependency setup (Spring Boot 3x)
 
 Add `springdoc-openapi-starter-webmvc-ui` to your build:
 
@@ -53,7 +53,7 @@ Add `springdoc-openapi-starter-webmvc-ui` to your build:
 </dependency>
 ```
 
-### Basic Properties (`application.yml`)
+### Basic properties (`applicationyml`)
 
 ```yaml
 springdoc:
@@ -68,7 +68,7 @@ springdoc:
 
 ---
 
-## 3. Global OpenAPI Definition & JWT Security Configuration
+## 3. Global OpenAPI definition JWT security configuration
 
 To enable the **"Authorize" (Bearer Token)** button in Swagger UI:
 
@@ -111,7 +111,7 @@ public class OpenApiConfig {
 
 ---
 
-## 4. Annotating DTOs with `@Schema`
+## 4. Annotating dtos with `@Schema`
 
 `@Schema` decorates request and response payloads with field descriptions, validation ranges, default values, and realistic examples:
 
@@ -148,7 +148,7 @@ public record CreateOrderRequest(
 
 ---
 
-## 5. Annotating `@RestController` Endpoints
+## 5. Annotating `@RestController` endpoints
 
 Decorate controller methods with `@Operation`, `@ApiResponses`, and `@Parameter`:
 
@@ -225,7 +225,7 @@ public class OrderController {
 
 ---
 
-## 6. Segmenting Documentation with Grouped APIs
+## 6. Segmenting documentation with grouped APIs
 
 In enterprise systems, internal administrative endpoints should be separated from public customer endpoints. SpringDoc supports **Grouped APIs**:
 
@@ -260,7 +260,7 @@ public class ApiGroupingConfig {
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4: OpenAPI & Documentation Evolution
+## 7. Spring Boot 3 vs Spring Boot 4: OpenAPI documentation evolution
 
 ``` mermaid
 flowchart TD
@@ -279,7 +279,7 @@ flowchart TD
     SB3 ==>|API Contract Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Documentation Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -289,15 +289,15 @@ flowchart TD
 
 ---
 
-## 8. Primary Sources & Further Reading
+## 8. Primary sources and further reading
 
-- [SpringDoc Official Documentation](https://springdoc.org/) — Authoritative guide for Spring Boot 3.x integration and configuration.
-- [OpenAPI Specification v3.1.0](https://spec.openapis.org/oas/v3.1.0) — The official OpenAPI standard.
-- [Swagger UI Configuration Options](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/) — Customizing layout and theme.
+- [SpringDoc Official Documentation](https://springdoc.org/), Authoritative guide for Spring Boot 3.x integration and configuration.
+- [OpenAPI Specification v3.1.0](https://spec.openapis.org/oas/v3.1.0), The official OpenAPI standard.
+- [Swagger UI Configuration Options](https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/), Customizing layout and theme.
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: How does SpringDoc dynamically populate field validation constraints in Swagger UI?"
     **Answer**: SpringDoc automatically reflects on Jakarta Bean Validation annotations (`@NotNull`, `@Size`, `@Positive`) on DTO fields and translates them directly into OpenAPI schema constraints.
@@ -310,8 +310,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0019: Production Health & Actuator Metrics**](0019-production-health-actuator-and-metrics.md) | [**All Lessons**](index.md) | [➡️ **0021: Structured Logging & MDC**](0021-structured-logging-logback-mdc.md) |
+| [**0019: Production Health & Actuator Metrics**](0019-production-health-actuator-and-metrics.md) | [**All Lessons**](index.md) | [ **0021: Structured Logging & MDC**](0021-structured-logging-logback-mdc.md) |

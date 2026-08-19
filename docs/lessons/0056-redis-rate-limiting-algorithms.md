@@ -2,17 +2,17 @@
 icon: lucide/gauge
 ---
 
-# 0056: Rate Limiting Algorithms in Redis: Token Bucket & Sliding Window
+# 0056: Rate limiting algorithms in Redis: Token bucket and sliding window
 
 Without robust rate limiting, microservices are vulnerable to noisy neighbors, denial-of-service (DoS) bursts, cascading database overloads, and runaway client scripts.
 
-Because Spring Boot applications scale horizontally across dozens of stateless instances, in-memory local rate limiters fail to enforce global limits. **Redis** serves as the distributed source of truth for rate limiting, providing atomic execution via **Lua scripts** with sub-millisecond overhead.
+Because Spring Boot applications scale horizontally across dozens of stateless instances, in-memory local rate limiters fail to enforce global limits. **Redis** provides the distributed source of truth for rate limiting, providing atomic execution via **Lua scripts** with sub-millisecond overhead.
 
 In this lesson, you will master the 4 core rate limiting algorithms (Fixed Window, Sliding Window Log, Sliding Window Counter, and Token Bucket), author atomic Redis Lua scripts, and build a Spring Boot rate-limiting interceptor that returns RFC-compliant `429 Too Many Requests` responses.
 
 ---
 
-## 1. Rate Limiting Request Flow & Algorithms
+## 1. Rate limiting request flow algorithms
 
 ``` mermaid
 flowchart TD
@@ -45,7 +45,7 @@ flowchart TD
 
 ---
 
-## 2. Algorithm Comparison & Trade-Off Matrix
+## 2. Algorithm comparison trade-off matrix
 
 | Algorithm | Mechanism | Advantages | Drawbacks / Failure Modes |
 | :--- | :--- | :--- | :--- |
@@ -56,7 +56,7 @@ flowchart TD
 
 ---
 
-## 3. Production Token Bucket Lua Script (`token_bucket.lua`)
+## 3. Production token bucket Lua script (`token_bucketlua`)
 
 In high-concurrency environments, executing multiple sequential Redis commands (`GET`, check, `SET`) introduces race conditions. Redis **Lua scripts** execute atomically on the Redis single-threaded engine, eliminating the need for distributed locks:
 
@@ -105,7 +105,7 @@ end
 
 ---
 
-## 4. Spring Boot Token Bucket Service
+## 4. Spring Boot token bucket service
 
 ```java
 package com.example.service;
@@ -166,7 +166,7 @@ public class RateLimiterService {
 
 ---
 
-## 5. Spring MVC Interceptor & RFC 6585 Headers
+## 5. Spring mvc interceptor RFC 6585 headers
 
 ```java
 package com.example.interceptor;
@@ -219,7 +219,7 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -229,15 +229,15 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Redis Programmability & Lua Scripting](https://redis.io/docs/interact/programmability/eval-intro/) — Atomic script execution, `EVAL`, and `EVALSHA`.
+- [Redis Programmability & Lua Scripting](https://redis.io/docs/interact/programmability/eval-intro/), Atomic script execution, `EVAL`, and `EVALSHA`.
 - [RFC 6585: Additional HTTP Status Codes (429 Too Many Requests)](https://datatracker.ietf.org/doc/html/rfc6585#section-4).
 - [IETF Draft: RateLimit Header Fields for HTTP](https://datatracker.ietf.org/doc/draft-ietf-httpapi-ratelimit-headers/).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the primary drawback of the Fixed Window Counter rate limiting algorithm?"
     **Answer**: The boundary burst problem, where up to twice the allowable limit of requests can hit the service across the border of two adjacent windows.
@@ -250,10 +250,10 @@ public class RateLimitInterceptor implements HandlerInterceptor {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0055: Kafka Producer & Consumer with Spring Kafka & DLQ**](0055-kafka-producer-consumer-spring-dlq.md) | [**All Lessons**](index.md) | [➡️ **0057: Monolith vs Microservices: System Design Principles**](0057-monolith-vs-microservices-system-design.md) |
+| [**0055: Kafka Producer & Consumer with Spring Kafka & DLQ**](0055-kafka-producer-consumer-spring-dlq.md) | [**All Lessons**](index.md) | [ **0057: Monolith vs Microservices: System Design Principles**](0057-monolith-vs-microservices-system-design.md) |
 
 🎉 **Congratulations on completing Module 12: High-Performance Caching & Messaging Systems!**

@@ -2,7 +2,7 @@
 icon: lucide/boxes
 ---
 
-# 0042: Modular Monoliths with Spring Modulith: DDD & Boundary Enforcement
+# 0042: Modular monoliths with Spring Modulith: DDD and boundary enforcement
 
 For over a decade, development teams prematurely migrated from monolithic architectures to distributed microservices, only to suffer from the **"microservice tax"**: network latency, distributed transactions, deployment complexity, and high cloud infrastructure costs.
 
@@ -14,7 +14,7 @@ In this lesson, you will master Spring Modulith package conventions, enforce mod
 
 ---
 
-## 1. Monolith vs Microservices vs Modular Monolith
+## 1. Monolith vs microservices vs modular monolith
 
 ``` mermaid
 flowchart TD
@@ -62,7 +62,7 @@ flowchart TD
 
 ---
 
-## 2. Spring Modulith Package Conventions
+## 2. Spring modulith package conventions
 
 Spring Modulith derives module boundaries directly from the Java package hierarchy under your main application class:
 
@@ -82,13 +82,13 @@ src/main/java/com/example/ecommerce/
         └── StripeGateway.java    <-- Internal to 'payment' module
 ```
 
-### Module Encapsulation Rules:
+### Module encapsulation rules
 1. **Public Packages** (directly under `order`): Accessible to other modules.
 2. **Internal Packages** (`order.internal.*` or package-private classes): **Inaccessible** to other modules. If a bean in `payment` attempts to inject `OrderRepository`, Spring Modulith flags an architectural violation!
 
 ---
 
-## 3. Verifying Architectural Boundaries with Tests
+## 3. Verifying architectural boundaries with tests
 
 Spring Modulith integrates with **ArchUnit** to statically analyze the entire bean and package dependency graph:
 
@@ -130,7 +130,7 @@ org.springframework.modulith.core.Violations:
 
 ---
 
-## 4. Explicit Module Interfaces (`@NamedInterface` & `package-info.java`)
+## 4. Explicit module interfaces (`@namedinterface` `package-info.java`)
 
 To selectively expose specific sub-packages while keeping everything else private, use `package-info.java`:
 
@@ -152,7 +152,7 @@ package com.example.ecommerce.payment;
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Modulith Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Modulith evolution
 
 ``` mermaid
 flowchart TD
@@ -171,7 +171,7 @@ flowchart TD
     SB3 ==>|Compile-Time Gates & AOT Tooling| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Modulith Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -181,15 +181,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring Modulith Reference Documentation](https://docs.spring.io/spring-modulith/reference/index.html) — Official guide to module structure, verification, and documentation.
-- [Oliver Drotbohm: Modularity for Spring Applications](https://spring.io/blog/2022/10/21/introducing-spring-modulith) — The foundational design philosophy of Modular Monoliths.
-- [Domain-Driven Design (Eric Evans)](https://www.domainlanguage.com/ddd/) — Bounded contexts and ubiquitous language.
+- [Spring Modulith Reference Documentation](https://docs.spring.io/spring-modulith/reference/index.html), Official guide to module structure, verification, and documentation.
+- [Oliver Drotbohm: Modularity for Spring Applications](https://spring.io/blog/2022/10/21/introducing-spring-modulith), The foundational design philosophy of Modular Monoliths.
+- [Domain-Driven Design (Eric Evans)](https://www.domainlanguage.com/ddd/), Bounded contexts and ubiquitous language.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What major operational disadvantages of microservices does a Modular Monolith eliminate?"
     **Answer**: It eliminates inter-service network latency, complex distributed transactions (SAGA/2PC), multi-repository maintenance overhead, and distributed tracing complexity while retaining clean bounded contexts.
@@ -202,8 +202,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0041: WebSockets & STOMP Messaging**](0041-websockets-and-stomp-bidirectional-messaging.md) | [**All Lessons**](index.md) | [➡️ **0043: Transactional Event Publication**](0043-transactional-event-publication-spring-modulith.md) |
+| [**0041: WebSockets & STOMP Messaging**](0041-websockets-and-stomp-bidirectional-messaging.md) | [**All Lessons**](index.md) | [ **0043: Transactional Event Publication**](0043-transactional-event-publication-spring-modulith.md) |

@@ -12,10 +12,10 @@ This portal is structured to take you from core JVM and Spring fundamentals to d
 
 ## 🎯 Quick Navigation
 
-- 🧭 [**The Mission**](mission.md) — The guiding compass and outcomes for this workspace.
-- 🎓 [**Curriculum & Lessons**](lessons/index.md) — 9 progressive modules covering 60 in-depth topics.
-- ⚡ [**Cheatsheets**](cheatsheet/index.md) — Fast lookups, annotation tables, and command references.
-- 📚 [**References & Glossary**](references/index.md) — Canonical terminology and authoritative documentation sources.
+- 🧭 [**The Mission**](mission.md), The guiding compass and outcomes for this workspace.
+- 🎓 [**Curriculum & Lessons**](lessons/index.md), 9 progressive modules covering 60 in-depth topics.
+- ⚡ [**Cheatsheets**](cheatsheet/index.md), Fast lookups, annotation tables, and command references.
+- 📚 [**References & Glossary**](references/index.md), Canonical terminology and authoritative documentation sources.
 
 ---
 

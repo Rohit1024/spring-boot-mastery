@@ -2,15 +2,15 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting Microservices, Circuit Breaker & SAGA Pitfalls
+# Troubleshooting microservices, circuit breaker, and Saga pitfalls
 
-Distributed systems introduce complex failure dynamics: network partitions, cascading timeouts, circuit breaker flapping, ghost service discovery entries, and partial SAGA rollback failures.
+Distributed systems introduce complex failure dynamics: network partitions, cascading timeouts, circuit breaker flapping, ghost service discovery entries, and partial Saga rollback failures.
 
-This playbook provides root-cause analyses, diagnostic flowcharts, and concrete resolutions for common Spring Cloud, Resilience4j, SAGA, and Kubernetes orchestration pitfalls.
+Here are root-cause analyses, diagnostic flowcharts, and concrete resolutions for common Spring Cloud, Resilience4j, Saga, and Kubernetes orchestration pitfalls.
 
 ---
 
-## 1. Diagnostic Flow: Microservice Cascades & Failures
+## 1. Diagnostic flow: Microservice cascades and failures
 
 ``` mermaid
 flowchart TD
@@ -54,16 +54,16 @@ flowchart TD
 
 ---
 
-## 2. Pitfall 1: Circuit Breaker Tripped by Client 4xx Errors
+## 2. Pitfall 1: Circuit breaker tripped by client 4xx errors
 
-### Symptom Log
+### Symptoms
 ```text
 io.github.resilience4j.circuitbreaker.CallNotPermittedException: 
 CircuitBreaker 'paymentService' is OPEN and does not permit further calls
 ```
 
-### Root Cause
-Resilience4j records all thrown exceptions as failures by default. When legitimate clients submit invalid payment payloads (e.g. expired credit cards throwing HTTP `400 Bad Request`), the failure rate threshold quickly exceeds 50%, tripping the circuit to `OPEN` and blocking all subsequent valid payments.
+### Root cause
+Resilience4j records all thrown exceptions as failures by default. When legitimate clients submit invalid payment payloads (such as expired credit cards throwing HTTP `400 Bad Request`), the failure rate threshold quickly exceeds 50%, tripping the circuit to `OPEN` and blocking subsequent valid payments.
 
 ### Resolution
 Explicitly ignore client validation exceptions in `application.yml`:
@@ -74,11 +74,11 @@ resilience4j:
     instances:
       paymentService:
         failure-rate-threshold: 50
-        # 🔒 Ignore client validation and business rejections
+        # Ignore client validation and business rejections
         ignore-exceptions:
           - com.example.exception.InvalidPaymentPayloadException
           - com.example.exception.CardDeclinedException
-        # Record only genuine downstream server/network errors
+        # Record only genuine downstream server and network errors
         record-exceptions:
           - org.springframework.web.client.HttpServerErrorException
           - java.util.concurrent.TimeoutException
@@ -87,16 +87,16 @@ resilience4j:
 
 ---
 
-## 3. Pitfall 2: Eureka Routing Traffic to Terminated Pods ("Ghost Instances")
+## 3. Pitfall 2: Eureka routing traffic to terminated pods
 
-### Symptom Log
+### Symptoms
 ```text
 org.springframework.web.client.ResourceAccessException: 
 I/O error on POST request for "http://10.244.2.85:8080/api/v1/payments": Connect to 10.244.2.85:8080 failed: Connection refused
 ```
 
-### Root Cause
-When a pod terminates, Eureka's default settings can take up to **2–3 minutes** to remove the IP from all client caches:
+### Root cause
+When a pod terminates, Eureka's default settings can take up to 2 to 3 minutes to remove the IP from all client caches:
 1. Server lease expiration default: 90 seconds.
 2. Eureka server response cache refresh: 30 seconds.
 3. Spring Cloud LoadBalancer client cache refresh: 30 seconds.
@@ -105,13 +105,13 @@ When a pod terminates, Eureka's default settings can take up to **2–3 minutes*
 Tune Eureka heartbeat and cache expiration intervals in `application.yml`:
 
 ```yaml
-# In Microservice Client:
+# In microservice client:
 eureka:
   instance:
     lease-renewal-interval-in-seconds: 5
     lease-expiration-duration-in-seconds: 15
 
-# In Eureka Server:
+# In Eureka server:
 eureka:
   server:
     response-cache-update-interval-ms: 3000
@@ -120,19 +120,18 @@ eureka:
 
 ---
 
-## 4. Pitfall 3: SAGA Partial Compensation Failure
+## 4. Pitfall 3: Saga partial compensation failure
 
-### Symptom
-Customer's credit card was charged $150, but because the shipping service was unreachable, the order was cancelled without issuing a refund.
+### Symptoms
+A customer credit card was charged $150, but because the shipping service was unreachable, the order was cancelled without issuing a refund.
 
-### Root Cause
-The `handleOrderCancelled` compensating listener in Payment Service failed with a database lock error or network timeout and dropped the event because no retry policy or outbox table was configured.
+### Root cause
+The `handleOrderCancelled` compensating listener in payment service failed with a database lock error or network timeout and dropped the event because no retry policy or outbox table was configured.
 
 ### Resolution
-Compensating transactions **must never be dropped**. Wrap compensations inside resilient retry topics with DLQ manual alerting:
+Compensating transactions must not be dropped. Wrap compensations inside retry topics with dead letter queue alerting:
 
 ```java
-// ✅ RESOLUTION: Guaranteed Non-Blocking Compensation Retries
 @RetryableTopic(
         attempts = "5",
         backoff = @Backoff(delay = 1000, multiplier = 2.0),
@@ -147,19 +146,19 @@ public void compensatePayment(OrderCancelledEvent event, Acknowledgment ack) {
 
 ---
 
-## 5. Pitfall 4: Kubernetes Readiness Probe Cascading Outage
+## 5. Pitfall 4: Kubernetes readiness probe cascading outage
 
-### Symptom
-When PostgreSQL undergoes a 10-second failover, Kubernetes immediately marks all 20 Spring Boot application pods **Unready**, dropping all traffic from the Ingress and causing a 100% platform outage.
+### Symptoms
+When PostgreSQL undergoes a 10-second failover, Kubernetes immediately marks all 20 Spring Boot application pods unready, dropping traffic from the Ingress and causing a full platform outage.
 
-### Root Cause
-The Kubernetes `readinessProbe` was pointed to `/actuator/health` instead of the dedicated `/actuator/health/readiness` group. By default, `/actuator/health` probes all external dependencies (DB, Redis, Disk). If one backing service hiccups, Kubernetes takes down every pod.
+### Root cause
+The Kubernetes `readinessProbe` pointed to `/actuator/health` instead of the dedicated `/actuator/health/readiness` group. By default, `/actuator/health` probes all external dependencies (database, Redis, disk). If one backing service hiccups, Kubernetes takes down every pod.
 
 ### Resolution
 Use dedicated liveness and readiness probe endpoints:
 
 ```yaml
-# ✅ RESOLUTION: Point K8s probes to isolated Actuator sub-groups
+# Point K8s probes to isolated Actuator sub-groups
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness # Checks only if Spring ApplicationContext is up
@@ -172,8 +171,8 @@ livenessProbe:
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Redis Caching & Kafka Lag**](redis-cache-stampede-and-kafka-consumer-lag.md) | [**All Debugging Guides**](index.md) | [➡️ **Troubleshooting Reactive WebFlux & Spring AI**](reactive-webflux-blocking-and-spring-ai-pitfalls.md) |
+| [**Troubleshooting Redis caching and Kafka lag**](redis-cache-stampede-and-kafka-consumer-lag.md) | [**All debugging guides**](index.md) | [**Troubleshooting Reactive WebFlux and Spring AI**](reactive-webflux-blocking-and-spring-ai-pitfalls.md) |

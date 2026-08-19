@@ -2,7 +2,7 @@
 icon: lucide/layout-dashboard
 ---
 
-# 0046: Enterprise Dashboarding with Grafana: The RED & USE Metrics Methods
+# 0046: Dashboarding with Grafana: The RED and USE metric methods
 
 During a production incident, digging through raw logs or staring at 50 disjointed graphs causes cognitive overload and delays mean-time-to-resolution (MTTR). High-performing engineering teams organize their visualization around two battle-tested observability frameworks:
 
@@ -13,7 +13,7 @@ In this lesson, you will master architecting production-grade **Grafana** dashbo
 
 ---
 
-## 1. Dashboard Architecture: RED vs USE Methods
+## 1. Dashboard architecture: RED vs USE methods
 
 ``` mermaid
 flowchart TD
@@ -46,16 +46,16 @@ flowchart TD
 
 ---
 
-## 2. Implementing the RED Method Panels in Grafana
+## 2. Implementing the RED method panels in Grafana
 
-### Panel 1: Request Rate (Throughput)
+### Panel 1: Request rate (throughput)
 - **Visualization**: Time Series (Stacked Area Chart)
 - **PromQL Query**:
   ```promql
   sum(rate(http_server_requests_seconds_count{application="$application", environment="$environment"}[1m])) by (status)
   ```
 
-### Panel 2: Error Rate (5xx Failures)
+### Panel 2: Error rate (5xx failures)
 - **Visualization**: Stat / Gauge with Thresholds (Green <0.5%, Yellow >1.0%, Red >2.0%)
 - **PromQL Query**:
   ```promql
@@ -64,7 +64,7 @@ flowchart TD
    sum(rate(http_server_requests_seconds_count{application="$application"}[5m]))) * 100
   ```
 
-### Panel 3: Request Duration (P50 / P95 / P99 Latency)
+### Panel 3: Request duration (p50 / p95 / p99 latency)
 - **Visualization**: Time Series (Multigraph)
 - **PromQL Query**:
   ```promql
@@ -77,30 +77,30 @@ flowchart TD
 
 ---
 
-## 3. Implementing the USE Method Panels (JVM & Database)
+## 3. Implementing the USE method panels (JVM database)
 
-### Panel 4: JVM Heap Memory Utilization (USE: Utilization)
+### Panel 4: JVM heap memory utilization (USE: Utilization)
 ```promql
 (jvm_memory_used_bytes{application="$application", area="heap"} 
  / 
  jvm_memory_max_bytes{application="$application", area="heap"}) * 100
 ```
 
-### Panel 5: HikariCP Connection Saturation (USE: Saturation)
+### Panel 5: Hikaricp connection saturation (USE: Saturation)
 Shows threads waiting in line for a database connection:
 ```promql
 hikaricp_connections_pending{application="$application"}
 ```
 *(Any value sustained above 0 indicates database connection starvation).*
 
-### Panel 6: Garbage Collection Pause Duration (USE: Errors / Degradation)
+### Panel 6: Garbage collection pause duration (USE: Errors / degradation)
 ```promql
 sum(rate(jvm_gc_pause_seconds_sum{application="$application"}[1m])) by (action, cause)
 ```
 
 ---
 
-## 4. Dynamic Dashboard Templating with Variables
+## 4. Dynamic dashboard templating with variables
 
 To reuse a single dashboard across all microservices and cloud environments, configure Grafana **Template Variables**:
 
@@ -113,7 +113,7 @@ To reuse a single dashboard across all microservices and cloud environments, con
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Dashboarding Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Dashboarding evolution
 
 ``` mermaid
 flowchart TD
@@ -132,7 +132,7 @@ flowchart TD
     SB3 ==>|Observability-as-Code & Unified Correlated Telemetry| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Dashboard Aspect | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -142,15 +142,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [The RED Method by Tom Wilkie](https://grafana.com/blog/2018/08/02/the-red-method-how-to-instrument-your-services/) — Authoritative request monitoring philosophy.
-- [The USE Method by Brendan Gregg](https://www.brendangregg.com/usemethod.html) — Resource utilization, saturation, and error diagnostics.
-- [Grafana Documentation: Variables and Templating](https://grafana.com/docs/grafana/latest/dashboards/variables/) — Parameterizing dashboards.
+- [The RED Method by Tom Wilkie](https://grafana.com/blog/2018/08/02/the-red-method-how-to-instrument-your-services/), Authoritative request monitoring philosophy.
+- [The USE Method by Brendan Gregg](https://www.brendangregg.com/usemethod.html), Resource utilization, saturation, and error diagnostics.
+- [Grafana Documentation: Variables and Templating](https://grafana.com/docs/grafana/latest/dashboards/variables/), Parameterizing dashboards.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What three metrics comprise the RED Method, and what type of components is it designed to monitor?"
     **Answer**: Rate (throughput), Errors (failure count/percentage), and Duration (latency distribution); it is designed to monitor request-driven, user-facing services (e.g. REST, GraphQL, gRPC APIs).
@@ -163,8 +163,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0045: Production Metrics with Prometheus**](0045-production-metrics-prometheus-scraping-promql.md) | [**All Lessons**](index.md) | [➡️ **0047: OpenTelemetry & OTLP Collectors**](0047-opentelemetry-otel-tracing-and-otlp-collectors.md) |
+| [**0045: Production Metrics with Prometheus**](0045-production-metrics-prometheus-scraping-promql.md) | [**All Lessons**](index.md) | [ **0047: OpenTelemetry & OTLP Collectors**](0047-opentelemetry-otel-tracing-and-otlp-collectors.md) |

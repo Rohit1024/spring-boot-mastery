@@ -2,7 +2,7 @@
 icon: lucide/repeat
 ---
 
-# 0067: Distributed Idempotency: Duplicate Prevention with Redis `SETNX`
+# 0067: Distributed idempotency: Duplicate prevention with Redis SETNX
 
 In high-concurrency distributed systems, duplicate requests are guaranteed to occur:
 1. **Network Retries**: A client submits a payment, the server charges the card, but a network blip drops the response. The client's HTTP library retries automatically, risking a double charge.
@@ -15,7 +15,7 @@ In this lesson, you will master distributed idempotency key design, atomic Redis
 
 ---
 
-## 1. Distributed Idempotency Flow with Redis `SETNX`
+## 1. Distributed idempotency flow with Redis `SETNX`
 
 ``` mermaid
 flowchart TD
@@ -49,7 +49,7 @@ flowchart TD
 
 ---
 
-## 2. The Anatomy of an Idempotency Key
+## 2. The anatomy of an idempotency key
 
 An **Idempotency Key** is a unique client-generated token (typically a UUIDv4) attached to mutating HTTP requests:
 
@@ -69,9 +69,9 @@ Content-Type: application/json
 
 ---
 
-## 3. Custom `@Idempotent` Annotation & Aspect
+## 3. Custom `@Idempotent` annotation aspect
 
-### 1. Custom Annotation
+### 1. Custom annotation
 
 ```java
 package com.example.annotation;
@@ -98,7 +98,7 @@ public @interface Idempotent {
 
 ---
 
-### 2. Idempotency Aspect with Atomic Redis `setIfAbsent`
+### 2. Idempotency aspect with atomic Redis `setIfAbsent`
 
 ```java
 package com.example.aspect;
@@ -184,7 +184,7 @@ public class DistributedIdempotencyAspect {
 
 ---
 
-## 4. Applying Idempotency to Payment Controllers
+## 4. Applying idempotency to payment controllers
 
 ```java
 package com.example.controller;
@@ -218,7 +218,7 @@ public class PaymentController {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -228,15 +228,15 @@ public class PaymentController {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
 - [IETF Draft: The Idempotency-Key HTTP Header Field](https://datatracker.ietf.org/doc/draft-ietf-httpapi-idempotency-key-header/).
-- [Stripe API Reference: Idempotent Requests](https://stripe.com/docs/api/idempotent_requests) — Industry gold standard for payment idempotency.
+- [Stripe API Reference: Idempotent Requests](https://stripe.com/docs/api/idempotent_requests), Industry gold standard for payment idempotency.
 - [Redis Distributed Locks with Redis `SETNX`](https://redis.io/docs/manual/patterns/distributed-locks/).
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What does it mean for an API operation to be idempotent?"
     **Answer**: It means that making multiple identical requests has the exact same side effects and produces the same outcome as making a single request.
@@ -249,10 +249,10 @@ public class PaymentController {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0066: High-Scale Reads: CQRS Architecture**](0066-high-scale-reads-cqrs-architecture.md) | [**All Lessons**](index.md) | [➡️ **0068: CAP Theorem in Action: Consistency vs Availability**](0068-cap-theorem-consistency-availability-payments.md) |
+| [**0066: High-Scale Reads: CQRS Architecture**](0066-high-scale-reads-cqrs-architecture.md) | [**All Lessons**](index.md) | [ **0068: CAP Theorem in Action: Consistency vs Availability**](0068-cap-theorem-consistency-availability-payments.md) |
 
 🎉 **Lesson 0067 completed! Proceed to Lesson 0068 to master trade-offs in distributed systems with the CAP Theorem.**

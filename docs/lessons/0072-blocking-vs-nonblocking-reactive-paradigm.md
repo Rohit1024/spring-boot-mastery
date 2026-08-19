@@ -2,7 +2,7 @@
 icon: lucide/cpu
 ---
 
-# 0072: Blocking vs Non-Blocking I/O: The Reactive Paradigm at Scale
+# 0072: Blocking vs non-blocking I/O: The reactive paradigm at scale
 
 In traditional Servlet-based architectures (Spring MVC with Apache Tomcat), requests operate on a **Thread-per-Request** model. When 200 concurrent requests execute blocking I/O (such as waiting for a slow PostgreSQL query or a 3-second third-party REST call), 200 operating system threads sit idle, consuming ~1MB of stack memory each and wasting CPU cycles on heavy OS context switching.
 
@@ -12,7 +12,7 @@ In this lesson, you will master the mechanics of the Netty Event Loop vs Tomcat 
 
 ---
 
-## 1. Thread-per-Request vs Event Loop Architecture
+## 1. Thread-per-request vs event loop architecture
 
 ``` mermaid
 flowchart TD
@@ -42,7 +42,7 @@ flowchart TD
 
 ---
 
-## 2. The Reactive Streams Specification
+## 2. The reactive streams specification
 
 Reactive programming in Java is governed by the official **Reactive Streams Specification** (Java 9 `java.util.concurrent.Flow`), defined by 4 foundational interfaces:
 
@@ -72,7 +72,7 @@ public interface Processor<T, R> extends Subscriber<T>, Publisher<R> {}
 
 ---
 
-## 3. Spring MVC (with Virtual Threads) vs Spring WebFlux
+## 3. Spring mvc (with virtual threads) vs Spring WebFlux
 
 With the introduction of Java 21 Virtual Threads (Project Loom), architects often ask: *Do we still need Spring WebFlux?*
 
@@ -91,7 +91,7 @@ With the introduction of Java 21 Virtual Threads (Project Loom), architects ofte
 
 ---
 
-## 4. The Golden Rule of Reactive Programming
+## 4. The golden rule of reactive programming
 
 > [!CAUTION]
 > **NEVER BLOCK THE EVENT LOOP**: In a Netty event loop with only 8 worker threads, executing a single blocking call (`Thread.sleep()`, `jdbcTemplate.query()`, `restTemplate.getForObject()`) halts 12.5% of your entire server capacity. If 8 requests block simultaneously, the whole server freezes.
@@ -116,7 +116,7 @@ public Mono<UserDto> getUserReactive(@PathVariable Long id) {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -126,7 +126,7 @@ public Mono<UserDto> getUserReactive(@PathVariable Long id) {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
 - [Reactive Streams Standard Specification](https://www.reactive-streams.org/).
 - [Spring Framework WebFlux Reference](https://docs.spring.io/spring-framework/reference/web/webflux.html).
@@ -134,7 +134,7 @@ public Mono<UserDto> getUserReactive(@PathVariable Long id) {
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the primary difference in thread allocation between Spring MVC and Spring WebFlux?"
     **Answer**: Spring MVC allocates a dedicated thread per HTTP request (typically 200 max), while WebFlux uses a fixed non-blocking Netty event loop (1 worker thread per CPU core) to handle thousands of requests.
@@ -147,10 +147,10 @@ public Mono<UserDto> getUserReactive(@PathVariable Long id) {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0071: Cloud CI/CD: AWS CodePipeline & Beanstalk**](0071-cloud-cicd-aws-codepipeline-beanstalk.md) | [**All Lessons**](index.md) | [➡️ **0073: Project Reactor: Mono, Flux & Schedulers**](0073-project-reactor-mono-flux-schedulers.md) |
+| [**0071: Cloud CI/CD: AWS CodePipeline & Beanstalk**](0071-cloud-cicd-aws-codepipeline-beanstalk.md) | [**All Lessons**](index.md) | [ **0073: Project Reactor: Mono, Flux & Schedulers**](0073-project-reactor-mono-flux-schedulers.md) |
 
 🎉 **Lesson 0072 completed! Proceed to Lesson 0073 to master Project Reactor core types (`Mono`, `Flux`), transformation operators, and Schedulers.**

@@ -2,15 +2,15 @@
 icon: lucide/key-round
 ---
 
-# 0024: Password Hashing (BCrypt, Argon2) & User Session Management
+# 0024: Password hashing (BCrypt, Argon2) and user session management
 
-Storing user credentials and managing stateful user sessions are the two most security-sensitive tasks in any backend architecture. A simple flaw—such as using fast hashing algorithms like SHA-256 or failing to rotate session IDs on authentication—exposes user data to GPU rainbow table cracking and session fixation attacks.
+Storing user credentials and managing stateful user sessions are the two most security-sensitive tasks in any backend architecture. A simple flaw, such as using fast hashing algorithms like SHA-256 or failing to rotate session IDs on authentication, exposes user data to GPU rainbow table cracking and session fixation attacks.
 
 In this lesson, you will master cryptographic password hashing using **BCrypt** and **Argon2id**, understand Spring Security's `DelegatingPasswordEncoder`, configure stateful session fixation protections, and implement concurrent session controls.
 
 ---
 
-## 1. Fast Hashes vs Adaptive Memory-Hard Hashes
+## 1. Fast hashes vs adaptive memory-hard hashes
 
 Fast cryptographic hashes (e.g., MD5, SHA-1, SHA-256) were designed for message integrity, calculating millions of hashes per second. This speed makes them fatally vulnerable to brute-force attacks using modern GPUs and ASICs.
 
@@ -32,7 +32,7 @@ flowchart TD
     FastHash ~~~ AdaptiveHash
 ```
 
-### Comparison of Modern Password Encoders
+### Comparison of modern password encoders
 
 | Algorithm | Mechanism | Memory Hardness | Winner of Password Hashing Competition | Enterprise Recommendation |
 | :--- | :--- | :---: | :---: | :--- |
@@ -42,7 +42,7 @@ flowchart TD
 
 ---
 
-## 2. Spring Security `DelegatingPasswordEncoder`
+## 2. Spring security `DelegatingPasswordEncoder`
 
 Spring Security does not hardcode a single algorithm. Instead, it uses `DelegatingPasswordEncoder` to prefix encoded hashes with an algorithm identifier (e.g., `{bcrypt}`, `{argon2}`). This allows seamless password upgrade migrations without breaking existing user accounts.
 
@@ -58,7 +58,7 @@ flowchart TD
     Verify -->|Mismatch| Fail["BadCredentialsException ❌"]
 ```
 
-### Configuring Modern Password Encoders
+### Configuring modern password encoders
 ```java
 package com.example.security.config;
 
@@ -102,11 +102,11 @@ public class PasswordEncoderConfig {
 
 ---
 
-## 3. Session Management & Session Fixation Protection
+## 3. Session management session fixation protection
 
 In stateful web applications, the server tracks authenticated sessions via a session cookie (`JSESSIONID`).
 
-### The Session Fixation Attack & Defense
+### The session fixation attack defense
 In a **Session Fixation** attack, an attacker forces an anonymous user to browse with an attacker-known `JSESSIONID`. Once the victim logs in, if the application does not change the session ID, the attacker can hijack the authenticated session.
 
 ``` mermaid
@@ -130,15 +130,15 @@ sequenceDiagram
     App-->>Attacker: 401 Unauthorized / Anonymous (XYZ invalidated!)
 ```
 
-### Spring Security Session Fixation Strategies
+### Spring security session fixation strategies
 - `migrateSession()` *(Default)*: Creates a new HTTP session, copies all existing session attributes to the new session, and invalidates the old one.
-- `changeSessionId()`: Leverages Servlet 3.1 `HttpServletRequest.changeSessionId()` to update the ID without touching session attributes.
+- `changeSessionId()`: uses Servlet 3.1 `HttpServletRequest.changeSessionId()` to update the ID without touching session attributes.
 - `newSession()`: Creates a new clean session without copying any previous attributes.
 - `none()`: Disables fixation protection (strongly discouraged).
 
 ---
 
-## 4. Concurrent Session Control & Maximum Sessions
+## 4. Concurrent session control maximum sessions
 
 To prevent account sharing or credential abuse, Spring Security allows capping the number of active sessions per user account:
 
@@ -199,7 +199,7 @@ public class StatefulSecurityConfig {
 
 ---
 
-## 5. CSRF (Cross-Site Request Forgery) Protection
+## 5. Csrf (cross-site request forgery) protection
 
 CSRF attacks trick an authenticated user's browser into executing unwanted state-changing actions (e.g., POST `/transfer-funds`) on a trusted site where the user holds an active cookie.
 
@@ -224,13 +224,13 @@ sequenceDiagram
     end
 ```
 
-### When to Enable vs Disable CSRF:
+### When to enable vs disable csrf
 - **Enable CSRF**: For any application using browser cookies (`JSESSIONID`, session cookies) for authentication (e.g., Thymeleaf, JSP, or traditional cookie-based SPAs).
 - **Disable CSRF (`csrf.disable()`)**: For stateless REST APIs using `Authorization: Bearer <JWT>` where browsers do not automatically send tokens on cross-origin requests.
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Password & Identity Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Password identity evolution
 
 ``` mermaid
 flowchart TD
@@ -249,7 +249,7 @@ flowchart TD
     SB3 ==>|Passwordless Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Identity & Storage Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -259,15 +259,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) — Work factors, salt sizes, and memory parameters.
-- [Spring Security Password Storage Documentation](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html) — `DelegatingPasswordEncoder` and migration patterns.
-- [Spring Security Session Management Guide](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html) — Concurrent sessions, fixation defense, and session registry.
+- [OWASP Password Storage Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html), Work factors, salt sizes, and memory parameters.
+- [Spring Security Password Storage Documentation](https://docs.spring.io/spring-security/reference/features/authentication/password-storage.html), `DelegatingPasswordEncoder` and migration patterns.
+- [Spring Security Session Management Guide](https://docs.spring.io/spring-security/reference/servlet/authentication/session-management.html), Concurrent sessions, fixation defense, and session registry.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is SHA-256 unsuitable for storing user passwords in modern web applications?"
     **Answer**: SHA-256 is designed to be extremely fast for data integrity, enabling modern GPUs and ASICs to compute billions of hashes per second and rapidly crack passwords via brute-force and rainbow tables.
@@ -280,8 +280,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0023: Spring Security 6 Architecture**](0023-spring-security-6-architecture-filter-chains.md) | [**All Lessons**](index.md) | [➡️ **0025: Stateless JWT Authentication**](0025-stateless-jwt-authentication-filter.md) |
+| [**0023: Spring Security 6 Architecture**](0023-spring-security-6-architecture-filter-chains.md) | [**All Lessons**](index.md) | [ **0025: Stateless JWT Authentication**](0025-stateless-jwt-authentication-filter.md) |

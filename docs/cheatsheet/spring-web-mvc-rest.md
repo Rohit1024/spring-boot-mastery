@@ -2,30 +2,30 @@
 icon: lucide/file-code
 ---
 
-# Spring Web MVC & REST APIs Cheatsheet
+# Spring Web MVC and REST APIs cheatsheet
 
-A quick reference guide for annotations, parameter binding, HTTP status codes, Jakarta Bean Validation, and MapStruct mapping in Spring Boot 3.x.
+Reference guide for annotations, parameter binding, HTTP status codes, Jakarta Bean Validation, and MapStruct mapping in Spring Boot 3.x.
 
 ---
 
-## 1. Core Spring REST Annotations
+## 1. Core Spring REST annotations
 
 ```java
 @RestController
 @RequestMapping("/api/v1/resources")
 public class ResourceController {
 
-    // 1. GET with Path Variable
+    // 1. GET with path variable
     @GetMapping("/{id}")
     public ResponseEntity<ResourceResponse> getById(@PathVariable Long id) { ... }
 
-    // 2. GET with Query Parameters & Pagination
+    // 2. GET with query parameters and pagination
     @GetMapping
     public ResponseEntity<Page<ResourceResponse>> list(
             @RequestParam(defaultValue = "") String filter,
             @PageableDefault(size = 20) Pageable pageable) { ... }
 
-    // 3. POST with Body & Validation
+    // 3. POST with request body and validation
     @PostMapping
     public ResponseEntity<ResourceResponse> create(@Valid @RequestBody CreateRequest dto) {
         URI location = ServletUriComponentsBuilder.fromCurrentRequest()
@@ -33,7 +33,7 @@ public class ResourceController {
         return ResponseEntity.created(location).body(saved);
     }
 
-    // 4. PUT (Full Replacement)
+    // 4. PUT (Full replacement)
     @PutMapping("/{id}")
     public ResponseEntity<ResourceResponse> replace(
             @PathVariable Long id, 
@@ -49,24 +49,24 @@ public class ResourceController {
 
 ---
 
-## 2. HTTP Status Codes Cheat Table
+## 2. HTTP status codes reference table
 
-| Status Code | Meaning | When to Use |
+| Status code | Meaning | When to use |
 | :--- | :--- | :--- |
-| **`200 OK`** | Success | Standard response for successful `GET`, `PUT`, `PATCH`. |
-| **`201 Created`** | Created | Successful `POST`. Always include `Location` header URI. |
-| **`204 No Content`** | No Content | Successful `DELETE` or `PUT`/`PATCH` when no body is returned. |
-| **`400 Bad Request`** | Bad Request | Validation failures, malformed JSON, missing mandatory headers. |
-| **`401 Unauthorized`** | Unauthenticated | Missing or invalid authentication token (JWT / Session). |
-| **`403 Forbidden`** | Unauthorized | Authenticated user lacks required permissions / role. |
-| **`404 Not Found`** | Not Found | Target resource does not exist at the requested URI. |
-| **`409 Conflict`** | Conflict | Duplicate unique key or business constraint violation. |
-| **`415 Unsupported Media Type`** | Unsupported Media | Client sent `Content-Type` other than `application/json`. |
-| **`500 Internal Server Error`** | Server Error | Uncaught server-side exception (never expose stack trace!). |
+| `200 OK` | Success | Standard response for successful `GET`, `PUT`, `PATCH`. |
+| `201 Created` | Created | Successful `POST`. Always include `Location` header URI. |
+| `204 No Content` | No Content | Successful `DELETE` or update operations returning no body. |
+| `400 Bad Request` | Bad Request | Validation failures, malformed JSON, or missing mandatory headers. |
+| `401 Unauthorized` | Unauthenticated | Missing or invalid authentication token. |
+| `403 Forbidden` | Unauthorized | Authenticated user lacks required permissions or role. |
+| `404 Not Found` | Not Found | Target resource does not exist at requested URI. |
+| `409 Conflict` | Conflict | Duplicate unique key or business constraint violation. |
+| `415 Unsupported Media Type` | Unsupported Media | Client sent unsupported `Content-Type`. |
+| `500 Internal Server Error` | Server Error | Uncaught server-side exception. Never expose stack traces to clients. |
 
 ---
 
-## 3. Jakarta Bean Validation Annotations
+## 3. Jakarta Bean Validation annotations
 
 ```java
 public record UserRequest(
@@ -90,14 +90,14 @@ public record UserRequest(
     LocalDate dateOfBirth,
 
     @NotNull
-    @Valid // ⚠️ Cascades validation to nested DTO
+    @Valid // Cascades validation to nested DTO
     AddressDto address
 ) {}
 ```
 
 ---
 
-## 4. ProblemDetail (RFC 9457) Quick Template
+## 4. ProblemDetail (RFC 9457) error response template
 
 ```java
 @RestControllerAdvice
@@ -117,7 +117,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 ---
 
-## 5. MapStruct Mapper Quick Pattern
+## 5. MapStruct mapper pattern
 
 ```java
 @Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
@@ -132,9 +132,8 @@ public interface OrderMapper {
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Core & Annotations Cheatsheet**](spring-core-annotations.md) | [**All Cheatsheets**](index.md) | [➡️ **Spring Data JPA & Hibernate Cheatsheet**](spring-data-jpa-hibernate.md) |
-
+| [**Spring Core and annotations cheatsheet**](spring-core-annotations.md) | [**All cheatsheets**](index.md) | [**Spring Data JPA and Hibernate cheatsheet**](spring-data-jpa-hibernate.md) |

@@ -2,7 +2,7 @@
 icon: lucide/zap
 ---
 
-# 0044: Lightweight Concurrency: Java 21 Virtual Threads (Project Loom) in Spring Boot
+# 0044: Concurrency: Java 21 virtual threads (Project Loom) in Spring Boot
 
 For decades, Java applications scaled concurrent web requests using **OS-bound Platform Threads** (1:1 mapped to operating system kernel threads). Because each platform thread consumes ~1MB of memory and requires expensive kernel context switching, embedded servers like Tomcat capped worker thread pools at **200 threads**. When all 200 threads blocked on database queries or external REST calls, the server stalled and dropped incoming traffic.
 
@@ -14,7 +14,7 @@ In this lesson, you will master Virtual Thread internals, configure Spring Boot 
 
 ---
 
-## 1. Platform Threads vs WebFlux vs Virtual Threads
+## 1. Platform threads vs WebFlux vs virtual threads
 
 ``` mermaid
 flowchart TD
@@ -42,7 +42,7 @@ flowchart TD
 
 ---
 
-## 2. Enabling Virtual Threads in Spring Boot
+## 2. Enabling virtual threads in Spring Boot
 
 In Spring Boot 3.2+ and 4.x, enabling Virtual Threads across Tomcat, `@Async` tasks, `@Scheduled` jobs, and messaging listeners requires a single configuration property:
 
@@ -54,14 +54,14 @@ spring:
       enabled: true
 ```
 
-### What Happens Under the Hood?
+### What happens under the hood?
 1. **Embedded Tomcat**: Switches its request execution engine from a fixed `ThreadPoolExecutor` (default 200 platform threads) to `Executors.newVirtualThreadPerTaskExecutor()`. Every HTTP request runs on its own dedicated Virtual Thread!
 2. **Spring `@Async`**: Automatically uses virtual threads for asynchronous methods without custom executor bean boilerplate.
 3. **Spring MVC Controllers**: Standard blocking JDBC / JPA repository calls, `RestTemplate`, or `Thread.sleep()` unmount smoothly from the underlying carrier thread without consuming OS resources.
 
 ---
 
-## 3. The Unmounting Lifecycle During Blocking I/O
+## 3. The unmounting lifecycle during blocking i/o
 
 ``` mermaid
 sequenceDiagram
@@ -83,9 +83,9 @@ sequenceDiagram
 
 ---
 
-## 4. The Critical Pitfall: Thread Pinning (`synchronized` Blocks)
+## 4. The critical pitfall: Thread pinning (`synchronized` blocks)
 
-### ⚠️ What is Carrier Thread Pinning?
+### What is carrier thread pinning?
 A Virtual Thread is **pinned** to its OS carrier thread if it attempts a blocking I/O operation inside:
 1. A `synchronized` method or `synchronized (lock)` block.
 2. A native method / Java Native Interface (JNI) call.
@@ -105,7 +105,7 @@ flowchart TD
     BadCode ~~~ GoodCode
 ```
 
-### Detecting Pinning at Runtime
+### Detecting pinning at runtime
 Pass the JVM diagnostic flag on application startup to detect pinned threads:
 ```bash
 java -Djdk.tracePinnedThreads=full -jar app.jar
@@ -113,7 +113,7 @@ java -Djdk.tracePinnedThreads=full -jar app.jar
 
 ---
 
-## 5. Golden Rules for Virtual Threads
+## 5. Golden rules for virtual threads
 
 | Practice | Recommendation | Rationale |
 | :--- | :--- | :--- |
@@ -123,7 +123,7 @@ java -Djdk.tracePinnedThreads=full -jar app.jar
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Concurrency Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Concurrency evolution
 
 ``` mermaid
 flowchart TD
@@ -142,7 +142,7 @@ flowchart TD
     SB3 ==>|Full Framework Virtual Thread Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Concurrency Dimension | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -152,15 +152,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [JEP 444: Virtual Threads (Java 21 Official Specification)](https://openjdk.org/jeps/444) — Core design, carrier scheduler, and continuations.
-- [Spring Boot Virtual Threads Official Documentation](https://docs.spring.io/spring-boot/reference/features/spring-application.html#features.spring-application.virtual-threads) — Auto-configuration behavior.
-- [Inside Java: Embracing Virtual Threads in Spring Boot](https://inside.java/tag/loom/) — Best practices and performance benchmarks.
+- [JEP 444: Virtual Threads (Java 21 Official Specification)](https://openjdk.org/jeps/444), Core design, carrier scheduler, and continuations.
+- [Spring Boot Virtual Threads Official Documentation](https://docs.spring.io/spring-boot/reference/features/spring-application.html#features.spring-application.virtual-threads), Auto-configuration behavior.
+- [Inside Java: Embracing Virtual Threads in Spring Boot](https://inside.java/tag/loom/), Best practices and performance benchmarks.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is it an anti-pattern to create a thread pool for Virtual Threads (e.g. `Executors.newFixedThreadPool(100)`)?"
     **Answer**: Virtual threads are lightweight (~1KB) and designed to be ephemeral (created per-task and discarded immediately); pooling them adds unnecessary synchronization overhead.
@@ -173,10 +173,10 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0043: Transactional Event Publication**](0043-transactional-event-publication-spring-modulith.md) | [**All Lessons**](index.md) | [➡️ **0045: Production Metrics with Prometheus**](0045-production-metrics-prometheus-scraping-promql.md) |
+| [**0043: Transactional Event Publication**](0043-transactional-event-publication-spring-modulith.md) | [**All Lessons**](index.md) | [ **0045: Production Metrics with Prometheus**](0045-production-metrics-prometheus-scraping-promql.md) |
 
-🎉 **Congratulations on completing Module 9: Architecture Paradigms & Modern Java Features!**
+**Module 9 completed.**

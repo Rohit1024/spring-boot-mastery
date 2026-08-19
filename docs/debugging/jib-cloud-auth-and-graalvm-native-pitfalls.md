@@ -2,15 +2,15 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting Jib Multi-Cloud Authentication & GraalVM Native Compilation Pitfalls
+# Troubleshooting Jib multi-cloud authentication and GraalVM native compilation pitfalls
 
-Containerizing Spring Boot applications with Google Jib and compiling native images with GraalVM introduces unique failure modes that differ fundamentally from traditional JVM and Docker CLI workflows.
+Containerizing Spring Boot applications with Google Jib and compiling native images with GraalVM introduces failure modes that differ from traditional JVM and Docker CLI workflows.
 
-This playbook provides root-cause diagnostic workflows, reproducible test scenarios, and verified remediation steps for common Jib and GraalVM native image failures.
+Here are root-cause diagnostic workflows, test scenarios, and remediation steps for common Jib and GraalVM native image failures.
 
 ---
 
-## 1. Diagnostic Decision Tree
+## 1. Diagnostic decision tree
 
 ``` mermaid
 flowchart TD
@@ -29,21 +29,21 @@ flowchart TD
 
 ---
 
-## 2. Issue 1: Jib `401 Unauthorized` / `403 Forbidden` on Cloud Registries
+## 2. Issue 1: Jib `401 Unauthorized` / `403 Forbidden` on cloud registries
 
-### Symptoms & Error Log
+### Symptoms
 ```text
 [ERROR] Failed to execute goal com.google.cloud.tools:jib-maven-plugin:3.4.3:build on project order-service:
 [ERROR] 401 Unauthorized
 [ERROR] {"errors":[{"code":"UNAUTHORIZED","message":"authentication required"}]}
 ```
 
-### Root Causes
-1. The specified credential helper (e.g., `docker-credential-gcr` or `docker-credential-ecr-login`) is not installed or not available in the CI/CD runner's `$PATH`.
+### Root causes
+1. The specified credential helper (`docker-credential-gcr` or `docker-credential-ecr-login`) is not installed or not available in the CI/CD runner's `$PATH`.
 2. The IAM token generated via `gcloud` or `aws ecr get-login-password` expired before Jib finished uploading layers.
-3. The image path prefix is malformed (e.g., omitting the repository name or region).
+3. The image path prefix is malformed (such as omitting the repository name or region).
 
-### Diagnostic Flowchart
+### Diagnostic flowchart
 
 ``` mermaid
 sequenceDiagram
@@ -56,21 +56,21 @@ sequenceDiagram
     alt Helper Not in PATH or Not Configured
         Helper-->>Jib: Command Not Found / Empty Output
         Jib->>Registry: Anonymous PUT Request
-        Registry-->>Jib: 401 Unauthorized ❌
+        Registry-->>Jib: 401 Unauthorized
     else Helper Succeeds
         Helper-->>Jib: Returns dynamic Bearer/Basic token
         Jib->>Registry: Authorized PUT Request
-        Registry-->>Jib: 201 Created ✅
+        Registry-->>Jib: 201 Created
     end
 ```
 
 ### Resolution
-1. **Verify Credential Helper in PATH**:
+1. **Verify credential helper in PATH**:
    ```bash
    which docker-credential-gcr
    which docker-credential-ecr-login
    ```
-2. **Fallback to Direct CLI Token Injection in CI/CD**:
+2. **Inject CLI tokens directly in CI/CD**:
    ```bash
    # For Google Cloud:
    mvn compile jib:build \
@@ -85,9 +85,9 @@ sequenceDiagram
 
 ---
 
-## 3. Issue 2: Native Container Crashes: `exec /app/app: no such file or directory`
+## 3. Issue 2: Native container crashes: `exec /app/app: no such file or directory`
 
-### Symptoms & Error Log
+### Symptoms
 When running the container produced by Jib via Docker or Kubernetes:
 ```text
 standard_init_linux.go:228: exec user process caused: no such file or directory
@@ -95,9 +95,9 @@ standard_init_linux.go:228: exec user process caused: no such file or directory
 CrashLoopBackOff / ContainerFailedToStart
 ```
 
-### Root Cause
-1. **Dynamic C-Library Mismatch**: The GraalVM native binary was dynamically compiled against `glibc`, but the Jib base image was set to `gcr.io/distroless/static-debian12` or an Alpine image (which only provides `musl` libc).
-2. **Missing Executable Permissions**: The binary was copied into the container without the execute bit (`chmod +x` / `mode 755`).
+### Root causes
+1. **Dynamic C library mismatch**: The GraalVM native binary was dynamically compiled against `glibc`, but the Jib base image was set to `gcr.io/distroless/static-debian12` or an Alpine image (which only provides `musl` libc).
+2. **Missing executable permissions**: The binary was copied into the container without the execute bit (`mode 755`).
 
 ### Resolution
 In your `pom.xml` Jib configuration:
@@ -134,9 +134,9 @@ In your `pom.xml` Jib configuration:
 
 ---
 
-## 4. Issue 3: GraalVM Runtime `NoSuchMethodException` / `ClassNotFoundException`
+## 4. Issue 3: GraalVM runtime `NoSuchMethodException` / `ClassNotFoundException`
 
-### Symptoms & Error Log
+### Symptoms
 The application compiles natively without errors, but throws reflection exceptions during runtime HTTP requests:
 
 ```text
@@ -145,8 +145,8 @@ java.lang.NoSuchMethodException: com.example.dto.OrderRequest.<init>()
     at com.fasterxml.jackson.databind.deser.std.StdValueInstantiator.createUsingDefault
 ```
 
-### Root Cause
-Under the **Closed-World Assumption**, GraalVM eliminated constructors or methods accessed dynamically via Jackson reflection because no explicit reachability hint was registered.
+### Root cause
+Under the closed-world assumption, GraalVM eliminates constructors or methods accessed dynamically via Jackson reflection because no explicit reachability hint was registered.
 
 ### Resolution
 Register the DTO class with Spring Boot AOT:
@@ -167,20 +167,20 @@ public class NativeReflectionConfig {
 
 ---
 
-## 5. Issue 4: CI/CD Runner Killed: `Exit Code 137` (OOMKilled)
+## 5. Issue 4: CI/CD runner killed: `Exit Code 137` (OOMKilled)
 
-### Symptoms & Error Log
+### Symptoms
 ```text
 [INFO] [native-image-plugin] Compiling [order-service] to [order-service]...
 /usr/bin/mvn: line 12: 14201 Killed
 Process exited with code 137
 ```
 
-### Root Cause
-The GraalVM static analysis phase is memory-intensive and attempts to consume all available host RAM. In virtualized CI runners (GitHub Actions with 7GB RAM limit), the Linux kernel OOM-killer terminates the process.
+### Root cause
+The GraalVM static analysis phase consumes substantial RAM. In virtualized CI runners with strict limits (GitHub Actions with 7GB RAM limit), the Linux kernel OOM killer terminates the process.
 
 ### Resolution
-Cap the GraalVM compiler's maximum heap and configure parallel thread limits in `pom.xml`:
+Cap the GraalVM compiler maximum heap and configure parallel thread limits in `pom.xml`:
 
 ```xml
 <configuration>
@@ -196,8 +196,8 @@ Cap the GraalVM compiler's maximum heap and configure parallel thread limits in 
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Security Filter Chains & JWT**](security-filter-chain-and-jwt-pitfalls.md) | [**All Debugging Guides**](index.md) | [➡️ **Spring Batch & Scheduler Troubleshooting**](spring-batch-and-scheduler-locking-pitfalls.md) |
+| [**Troubleshooting security filter chains and JWT**](security-filter-chain-and-jwt-pitfalls.md) | [**All debugging guides**](index.md) | [**Spring Batch and scheduler troubleshooting**](spring-batch-and-scheduler-locking-pitfalls.md) |

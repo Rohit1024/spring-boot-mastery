@@ -2,7 +2,7 @@
 icon: lucide/mail-check
 ---
 
-# 0065: Guaranteed Message Delivery: Transactional Outbox Pattern with PostgreSQL & Kafka
+# 0065: Guaranteed message delivery: Transactional Outbox pattern with PostgreSQL and Kafka
 
 When developing distributed event-driven microservices, developers frequently encounter the fatal **Dual-Write Problem**:
 
@@ -22,7 +22,7 @@ In this lesson, you will master the dual-write dilemma, implement an Outbox enti
 
 ---
 
-## 1. Transactional Outbox Architecture
+## 1. Transactional outbox architecture
 
 ``` mermaid
 flowchart TD
@@ -57,7 +57,7 @@ flowchart TD
 
 ---
 
-## 2. The PostgreSQL Outbox Schema
+## 2. The PostgreSQL outbox schema
 
 Create the dedicated `outbox_events` table:
 
@@ -78,7 +78,7 @@ CREATE INDEX idx_outbox_pending ON outbox_events(status, created_at) WHERE statu
 
 ---
 
-## 3. Atomic Entity & Outbox Persistence
+## 3. Atomic entity outbox persistence
 
 ```java
 package com.example.service;
@@ -137,7 +137,7 @@ public class OrderApplicationService {
 
 ---
 
-## 4. Concurrent Polling Publisher with `SKIP LOCKED`
+## 4. Concurrent polling publisher with `SKIP locked
 
 When running multiple instances of `order-service`, workers must not pick up the same outbox rows. PostgreSQL `FOR UPDATE SKIP LOCKED` allows workers to lock different batches concurrently without blocking each other:
 
@@ -166,7 +166,7 @@ public interface OutboxRepository extends JpaRepository<OutboxEvent, UUID> {
 }
 ```
 
-### The Scheduled Outbox Relay Worker
+### The scheduled outbox relay worker
 
 ```java
 package com.example.worker;
@@ -219,18 +219,18 @@ public class OutboxMessageRelayWorker {
 
 ---
 
-## 5. Polling Publisher vs Debezium CDC
+## 5. Polling publisher vs debezium cdc
 
 | Dimension | Scheduled Polling Publisher | Debezium Change Data Capture (CDC) |
 | :--- | :--- | :--- |
 | **Mechanism** | Application polls SQL table via `SELECT ... SKIP LOCKED`. | Kafka Connect engine tails PostgreSQL Write-Ahead Log (WAL). |
-| **Latency** | Polling interval dependent (100–500ms). | Near real-time (< 10ms). |
+| **Latency** | Polling interval dependent (100-500ms). | Near real-time (< 10ms). |
 | **Database Overhead** | Regular SQL query CPU and index lookups. | Minimal zero-query WAL streaming overhead. |
 | **Operational Stack** | Pure Java / Spring Boot application code. | Requires Kafka Connect cluster and Debezium connector plugins. |
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -240,15 +240,15 @@ public class OutboxMessageRelayWorker {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Microservices Patterns: Transactional Outbox — Chris Richardson](https://microservices.io/patterns/data/transactional-outbox.html).
-- [Debezium Official Documentation](https://debezium.io/documentation/reference/stable/architecture.html) — Outbox event routing and WAL streaming.
+- [Microservices Patterns: Transactional Outbox, Chris Richardson](https://microservices.io/patterns/data/transactional-outbox.html).
+- [Debezium Official Documentation](https://debezium.io/documentation/reference/stable/architecture.html), Outbox event routing and WAL streaming.
 - [Spring Modulith Transactional Event Publication](https://docs.spring.io/spring-modulith/reference/events.html#publication-registry).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the Dual-Write problem in microservices?"
     **Answer**: The risk of data inconsistency when an application attempts to write to both a database and a message broker without distributed transaction guarantees.
@@ -261,10 +261,10 @@ public class OutboxMessageRelayWorker {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0064: Distributed Transactions: SAGA Pattern**](0064-distributed-transactions-saga-pattern.md) | [**All Lessons**](index.md) | [➡️ **0066: High-Scale Reads: CQRS Architecture**](0066-high-scale-reads-cqrs-architecture.md) |
+| [**0064: Distributed Transactions: SAGA Pattern**](0064-distributed-transactions-saga-pattern.md) | [**All Lessons**](index.md) | [ **0066: High-Scale Reads: CQRS Architecture**](0066-high-scale-reads-cqrs-architecture.md) |
 
 🎉 **Lesson 0065 completed! Proceed to Lesson 0066 to master read/write segregation with the CQRS pattern.**

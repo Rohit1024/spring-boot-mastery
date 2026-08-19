@@ -2,7 +2,7 @@
 icon: lucide/shield-check
 ---
 
-# 0008: Spring Bean Validation (`@Valid`, Custom Validators & Constraint Annotations)
+# 0008: Spring bean validation (@Valid, custom validators, and constraint annotations)
 
 Never trust incoming user input. Enterprise applications must sanitize and validate request payloads at the HTTP entry boundary before triggering expensive database queries or business operations.
 
@@ -10,7 +10,7 @@ In this lesson, we master **Jakarta Bean Validation (Hibernate Validator)** in S
 
 ---
 
-## 1. The Validation Pipeline in Spring MVC
+## 1. The validation pipeline in Spring mvc
 
 When a client sends a JSON payload to an endpoint annotated with `@Valid` or `@Validated`, Spring MVC coordinates with the Jakarta Validation engine before invoking your controller method:
 
@@ -42,7 +42,7 @@ sequenceDiagram
 
 ---
 
-## 2. Standard Jakarta Constraint Annotations
+## 2. Standard Jakarta constraint annotations
 
 Adding `spring-boot-starter-validation` brings in the Hibernate Validator reference implementation:
 
@@ -67,7 +67,7 @@ Adding `spring-boot-starter-validation` brings in the Hibernate Validator refere
 
 ---
 
-## 3. `@Valid` vs `@Validated` & Validation Groups
+## 3. `@Valid` vs `@Validated` validation groups
 
 ``` mermaid
 flowchart TD
@@ -86,7 +86,7 @@ flowchart TD
     Jakarta ~~~ Spring
 ```
 
-### Using Validation Groups (Create vs Update Scenarios)
+### Using validation groups (create vs update scenarios)
 
 Often, a field like `id` must be `null` on resource creation, but mandatory on updates:
 
@@ -115,7 +115,7 @@ public class UserDto {
 }
 ```
 
-### In Controller:
+### In controller
 ```java
 @PostMapping
 public ResponseEntity<Void> create(@Validated(UserDto.OnCreate.class) @RequestBody UserDto dto) {
@@ -132,7 +132,7 @@ public ResponseEntity<Void> update(@Validated(UserDto.OnUpdate.class) @RequestBo
 
 ---
 
-## 4. Validating Nested Object Graphs
+## 4. Validating nested object graphs
 
 To validate nested child objects inside a parent DTO, you **must** place `@Valid` on the field or collection:
 
@@ -163,7 +163,7 @@ public class OrderItemDto {
 
 ---
 
-## 5. Authoring Custom Constraint Annotations
+## 5. Authoring custom constraint annotations
 
 When built-in annotations aren't enough (e.g., verifying allowed phone formats, enum values, or tax IDs), create a custom constraint annotation and validator.
 
@@ -175,7 +175,7 @@ flowchart TD
     Result -->|false| Fail["❌ Throw Violation"]
 ```
 
-### Step 1: Define the Annotation
+### Step 1: Define the annotation
 ```java
 package com.example.demo.validation;
 
@@ -217,7 +217,7 @@ public class PhoneNumberValidator implements ConstraintValidator<ValidPhoneNumbe
 }
 ```
 
-### Step 3: Use it in DTO
+### Step 3: USE it in DTO
 ```java
 public record RegisterCustomerRequest(
     @NotBlank String name,
@@ -227,7 +227,7 @@ public record RegisterCustomerRequest(
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Validation Engine Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Validation engine evolution
 
 ``` mermaid
 flowchart TD
@@ -246,7 +246,7 @@ flowchart TD
     SB3 ==>|Validation Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Validation Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -256,15 +256,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Hibernate Validator Official Reference Guide](https://docs.jboss.org/hibernate/validator/8.0/reference/en-US/html_single/) — Jakarta Validation reference implementation documentation.
-- [Spring Framework Validation Documentation](https://docs.spring.io/spring-framework/reference/core/validation.html) — Spring's integration with Bean Validation.
-- [Jakarta Bean Validation 3.1 Specification](https://jakarta.ee/specifications/bean-validation/3.1/) — Standard specification.
+- [Hibernate Validator Official Reference Guide](https://docs.jboss.org/hibernate/validator/8.0/reference/en-US/html_single/), Jakarta Validation reference implementation documentation.
+- [Spring Framework Validation Documentation](https://docs.spring.io/spring-framework/reference/core/validation.html), Spring's integration with Bean Validation.
+- [Jakarta Bean Validation 3.1 Specification](https://jakarta.ee/specifications/bean-validation/3.1/), Standard specification.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What happens if you omit `@Valid` on a nested `List<OrderItemDto>` field inside a parent `OrderRequestDto`?"
     **Answer**: Hibernate Validator will only check the `@NotNull` and `@Size` on the list itself, completely skipping validation on the internal `OrderItemDto` objects.
@@ -277,10 +277,9 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0007: Building RESTful CRUD APIs**](0007-building-restful-crud-apis.md) | [**All Lessons**](index.md) | [➡️ **0009: Global Exception Handling with @RestControllerAdvice**](0009-global-exception-handling.md) |
+| [**0007: Building RESTful CRUD APIs**](0007-building-restful-crud-apis.md) | [**All Lessons**](index.md) | [ **0009: Global Exception Handling with @RestControllerAdvice**](0009-global-exception-handling.md) |
 
-💬 *Ready to handle validation errors gracefully? Proceed to Global Exception Handling!*

@@ -2,15 +2,15 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting Redis Cache Stampede & Kafka Consumer Lag Pitfalls
+# Troubleshooting Redis cache stampede and Kafka consumer lag pitfalls
 
-In high-throughput distributed systems, caching layer failures and message queue pipeline stalls can rapidly cause cascading system-wide outages.
+In high-throughput distributed systems, caching layer failures and message queue pipeline stalls can cause cascading outages.
 
-This playbook provides root-cause analyses, diagnostic flows, and battle-tested mitigations for Redis Cache Stampedes, Kafka `CommitFailedException` rebalance storms, and poison pill deserialization deadlocks.
+Here are root-cause analyses, diagnostic flows, and mitigations for Redis cache stampedes, Kafka `CommitFailedException` rebalance storms, and poison pill deserialization deadlocks.
 
 ---
 
-## 1. Diagnostic Flow: Cache & Consumer Failures
+## 1. Diagnostic flow: Cache and consumer failures
 
 ``` mermaid
 flowchart TD
@@ -54,19 +54,19 @@ flowchart TD
 
 ---
 
-## 2. Pitfall 1: Redis Cache Stampede (Thundering Herd)
+## 2. Pitfall 1: Redis cache stampede (Thundering herd)
 
-### Symptom Log & Metrics
-PostgreSQL connection pool exhausted (`CannotGetJdbcConnectionException`) immediately after a hot key (e.g. `products::top_deals`) expires in Redis under 20,000 req/sec.
+### Symptoms
+PostgreSQL connection pool exhausted (`CannotGetJdbcConnectionException`) immediately after a hot key (such as `products::top_deals`) expires in Redis under high traffic.
 
-### Root Cause
-When the hot key expires, 2,000 concurrent threads simultaneously experience a cache miss. Each thread executes the expensive DB query independently and writes identical data back to Redis.
+### Root cause
+When the hot key expires, multiple concurrent threads simultaneously experience a cache miss. Each thread executes the expensive database query independently and writes identical data back to Redis.
 
 ### Resolution
-Enable Spring's built-in single-JVM synchronization lock or implement a distributed mutex with Redis `SETNX`:
+Enable Spring single-JVM synchronization lock or implement a distributed mutex with Redis `SETNX`:
 
 ```java
-// ✅ RESOLUTION 1: JVM-Level Synchronization Lock
+// JVM-level synchronization lock
 @Cacheable(value = "products", key = "#id", sync = true)
 public ProductDto getProductById(Long id) {
     return productRepository.findById(id).map(ProductDto::from).orElseThrow();
@@ -74,7 +74,7 @@ public ProductDto getProductById(Long id) {
 ```
 
 ```java
-// ✅ RESOLUTION 2: Distributed Key Expiration Jitter
+// Distributed key expiration jitter
 @Bean
 public RedisCacheConfiguration defaultCacheConfig() {
     return RedisCacheConfiguration.defaultCacheConfig()
@@ -85,17 +85,17 @@ public RedisCacheConfiguration defaultCacheConfig() {
 
 ---
 
-## 3. Pitfall 2: Kafka Consumer Rebalance Storms (`CommitFailedException`)
+## 3. Pitfall 2: Kafka consumer rebalance storms (`CommitFailedException`)
 
-### Symptom Log
+### Symptoms
 ```text
 org.apache.kafka.clients.consumer.CommitFailedException: 
 Offset commit cannot be completed since the group has already rebalanced and assigned the partitions to another member. 
 This means that the time between consecutive calls to poll() was longer than the configured max.poll.interval.ms.
 ```
 
-### Root Cause
-The consumer polled a batch of 500 records. Because each record required a 1,000ms external API call or database write, total batch execution took 500 seconds—far exceeding the default `max.poll.interval.ms` (300 seconds / 5 minutes). Kafka considered the consumer dead, evicted it from the group, triggered a cluster rebalance, and re-delivered the same 500 records to another consumer, triggering an endless rebalance storm.
+### Root cause
+The consumer polled a batch of 500 records. Because each record required a 1,000ms external API call or database write, total batch execution took 500 seconds, exceeding the default `max.poll.interval.ms` (300 seconds / 5 minutes). Kafka considered the consumer dead, evicted it from the group, triggered a cluster rebalance, and re-delivered the same 500 records to another consumer, triggering a rebalance storm.
 
 ### Resolution
 Tune batch size and poll timeout in `application.yml`:
@@ -116,17 +116,17 @@ spring:
 
 ---
 
-## 4. Pitfall 3: Kafka Poison Pill Deserialization Deadlock
+## 4. Pitfall 3: Kafka poison pill deserialization deadlock
 
-### Symptom Log
+### Symptoms
 ```text
 org.apache.kafka.common.errors.SerializationException: 
 Error deserializing key/value for partition order-events-0 at offset 14221
 Caused by: com.fasterxml.jackson.core.JsonParseException: Unexpected character ('<' (code 60))
 ```
 
-### Root Cause
-An upstream service sent an HTML error response or corrupted payload. The standard `JsonDeserializer` throws an exception directly inside `KafkaConsumer.poll()`. Because the record is never passed to `@KafkaListener`, the offset is never acknowledged, and on the next poll, Kafka attempts to deserialize the exact same invalid record, deadlocking the consumer forever.
+### Root cause
+An upstream service sent an HTML error response or corrupted payload. The standard `JsonDeserializer` throws an exception directly inside `KafkaConsumer.poll()`. Because the record is never passed to `@KafkaListener`, the offset is never acknowledged. On the next poll, Kafka attempts to deserialize the exact same invalid record, deadlocking the consumer.
 
 ### Resolution
 Wrap deserializers inside `ErrorHandlingDeserializer`:
@@ -145,8 +145,8 @@ spring:
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Spring Boot Testing & Testcontainers**](spring-boot-testing-and-testcontainers-pitfalls.md) | [**All Debugging Guides**](index.md) | [➡️ **Troubleshooting Microservices & SAGA**](microservices-circuit-breaker-and-distributed-transaction-pitfalls.md) |
+| [**Troubleshooting Spring Boot testing and Testcontainers**](spring-boot-testing-and-testcontainers-pitfalls.md) | [**All debugging guides**](index.md) | [**Troubleshooting microservices and Saga**](microservices-circuit-breaker-and-distributed-transaction-pitfalls.md) |

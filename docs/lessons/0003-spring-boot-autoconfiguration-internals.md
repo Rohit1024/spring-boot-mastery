@@ -2,11 +2,11 @@
 icon: lucide/cpu
 ---
 
-# 0003: Spring Boot Under the Hood: Auto-Configuration & Starters
+# 0003: Spring Boot under the hood: Auto-configuration and starters
 
 Before Spring Boot, configuring a Spring application required writing hundreds of lines of XML or verbose `@Configuration` classes just to set up a `DispatcherServlet`, a `DataSource`, or an `ObjectMapper`.
 
-In this lesson, we demystify the magic of Spring Boot: **how `@SpringBootApplication` boots up**, how **Auto-Configuration** inspects your classpath, and how **`@Conditional` annotations** enable seamless custom overrides.
+Spring Boot replaces manual configuration with auto-configuration. This lesson covers how `@SpringBootApplication` boots, how auto-configuration scans the classpath, and how `@Conditional` annotations let you override defaults.
 
 ---
 
@@ -36,9 +36,9 @@ flowchart TD
 
 ---
 
-## 2. How Auto-Configuration Works Internally
+## 2. How auto-configuration works internally
 
-Auto-configuration is not magic—it is a deterministic, two-phase process:
+Auto-configuration is not magic, it is a deterministic, two-phase process:
 
 ``` mermaid
 sequenceDiagram
@@ -61,13 +61,13 @@ sequenceDiagram
     App->>Ctx: 6. ApplicationContext Ready!
 ```
 
-### The Import Discovery File
+### The import discovery file
 In Spring Boot 3.x, all auto-configurations are registered in:
 `META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
 
 ---
 
-## 3. The `@Conditional` Annotation Family
+## 3. The `@Conditional` annotation family
 
 Spring Boot's auto-configuration relies on conditional bean registration. Here are the core conditional triggers:
 
@@ -80,7 +80,7 @@ Spring Boot's auto-configuration relies on conditional bean registration. Here a
 
 ---
 
-## 4. Real-World Deep Dive: Inside `JacksonAutoConfiguration`
+## 4. Real-world deep dive: Inside `JacksonAutoConfiguration`
 
 Let's see how Spring Boot auto-configures the JSON `ObjectMapper`:
 
@@ -98,7 +98,7 @@ public class JacksonAutoConfiguration {
 }
 ```
 
-### How You Override Default Behavior
+### How you override default behavior
 Because Spring Boot uses `@ConditionalOnMissingBean`, you can completely override the default `ObjectMapper` simply by declaring your own `@Bean`:
 
 ```java
@@ -118,11 +118,11 @@ public class CustomJacksonConfig {
 
 ---
 
-## 5. Building Your Own Custom Auto-Configuration
+## 5. Building your own custom auto-configuration
 
 Imagine your company requires an audit logging client auto-configured in every microservice.
 
-### Step 1: Define the Service
+### Step 1: Define the service
 ```java
 public class AuditClient {
     private final String serviceName;
@@ -137,7 +137,7 @@ public class AuditClient {
 }
 ```
 
-### Step 2: Write the Auto-Configuration with Conditions
+### Step 2: Write the auto-configuration with conditions
 ```java
 @AutoConfiguration
 @ConditionalOnProperty(name = "company.audit.enabled", havingValue = "true", matchIfMissing = true)
@@ -158,7 +158,7 @@ com.company.audit.AuditAutoConfiguration
 
 ---
 
-## 6. Inspecting the Condition Evaluation Report
+## 6. Inspecting the condition evaluation report
 
 To see why an auto-configuration ran or was skipped, run your app with `--debug` or inspect `/actuator/conditions`:
 
@@ -185,7 +185,7 @@ Negative matches:
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4: Auto-Configuration Evolution
+## 7. Spring Boot 3 vs Spring Boot 4: Auto-configuration evolution
 
 Spring Boot 4 optimizes auto-configuration discovery for instant startup times and native images:
 
@@ -206,7 +206,7 @@ flowchart TD
     SB3 ==>|Build-Time Acceleration| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Auto-Configuration Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -217,14 +217,14 @@ flowchart TD
 
 ---
 
-## 8. Primary Source & Further Reading
+## 8. Primary sources and further reading
 
-- [Spring Boot Reference: Creating Your Own Auto-Configuration](https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html) — Official guide on conditional loading.
+- [Spring Boot Reference: Creating Your Own Auto-Configuration](https://docs.spring.io/spring-boot/reference/features/developing-auto-configuration.html), Official guide on conditional loading.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: What is the primary purpose of `@ConditionalOnMissingBean` in Spring Boot's internal starters?"
     **Answer**: It registers default framework beans while allowing developers to provide their own custom bean overrides seamlessly.
@@ -237,10 +237,9 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0002: Dependency Injection Strategies**](0002-dependency-injection-strategies.md) | [**All Lessons**](index.md) | [**0004: Aspect-Oriented Programming (AOP)** ➡️](0004-aspect-oriented-programming-aop.md) |
+| [**0002: Dependency Injection Strategies**](0002-dependency-injection-strategies.md) | [**All Lessons**](index.md) | [**0004: Aspect-Oriented Programming (AOP)**](0004-aspect-oriented-programming-aop.md) |
 
-💬 *Have questions on auto-configuration or conditional evaluation? Ask anytime!*

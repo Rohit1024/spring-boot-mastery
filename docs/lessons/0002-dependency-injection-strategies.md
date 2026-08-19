@@ -2,13 +2,13 @@
 icon: lucide/git-merge
 ---
 
-# 0002: Dependency Injection Strategies & Resolving Ambiguities
+# 0002: Dependency injection strategies and resolving ambiguities
 
-In [Lesson 0001](0001-spring-ioc-and-bean-lifecycle.md), we saw how the Spring IoC container instantiates and manages Beans. Now, we dive into **Dependency Injection (DI)**: the mechanism Spring uses to wire those beans together, the three injection flavors, and how to elegantly resolve injection collisions when multiple candidates exist.
+Dependency injection is how Spring wires beans together. This lesson covers constructor, setter, and field injection, along with techniques to resolve bean naming collisions when multiple candidates match.
 
 ---
 
-## 1. The Three Injection Flavors: Architectural Comparison
+## 1. The three injection flavors: Architectural comparison
 
 Spring supports three ways to inject dependencies into a bean:
 
@@ -25,7 +25,7 @@ flowchart TD
     F --> F_Cons["Violates encapsulation<br/>Hides dependencies<br/>Requires reflection to test<br/>Masks circular dependencies"]
 ```
 
-### Option 1: Constructor Injection (The Industry Standard)
+### Option 1: Constructor injection (the industry standard)
 
 ```java
 @Service
@@ -54,7 +54,7 @@ public class OrderService {
     }
     ```
 
-### Option 2: Setter Injection (Optional Dependencies)
+### Option 2: Setter injection (optional dependencies)
 
 ```java
 @Service
@@ -69,7 +69,7 @@ public class ReportService {
 }
 ```
 
-### Option 3: Field Injection (Why It's an Anti-Pattern)
+### Option 3: Field injection (why its an anti-pattern)
 
 ```java
 @Service
@@ -86,7 +86,7 @@ public class UserService {
 
 ---
 
-## 2. Resolving Ambiguity: `@Primary` vs `@Qualifier`
+## 2. Resolving ambiguity: `@Primary` vs `@Qualifier`
 
 When an interface has multiple implementation beans in the `ApplicationContext`, Spring needs explicit instructions on which bean to inject.
 
@@ -98,13 +98,13 @@ flowchart TD
     PG -.->|implements| C["CryptoGateway<br/>@Qualifier(&quot;cryptoGateway&quot;)"]
 ```
 
-### The Problem: `NoUniqueBeanDefinitionException`
+### The problem: `NoUniqueBeanDefinitionException`
 If you attempt to inject `PaymentGateway` without disambiguation, Spring fails startup with:
 `No qualifying bean of type 'PaymentGateway' available: expected single matching bean but found 3: stripeGateway, payPalGateway, cryptoGateway`.
 
 ---
 
-### Solution A: Designate Default with `@Primary`
+### Solution a: Designate default with `@Primary`
 
 `@Primary` gives precedence to a specific bean when no qualifier is specified:
 
@@ -121,7 +121,7 @@ public class PayPalGateway implements PaymentGateway {
 
 ---
 
-### Solution B: Exact Pinpointing with `@Qualifier`
+### Solution b: Exact pinpointing with `@Qualifier`
 
 Use `@Qualifier` to explicitly target a specific bean name at the injection site:
 
@@ -143,7 +143,7 @@ public class OrderService {
 
 ---
 
-## 3. Advanced Pattern: Dynamic Strategy Collection Injection
+## 3. Advanced pattern: Dynamic strategy collection injection
 
 Did you know Spring can inject **all beans** implementing an interface directly into a `List` or a `Map`? This allows you to build an open-closed **Strategy Pattern** without any factory boilerplate!
 
@@ -162,7 +162,7 @@ sequenceDiagram
     Stripe-->>Client: Payment Confirmation
 ```
 
-### Implementation Example:
+### Implementation example
 
 ```java
 @Service
@@ -186,7 +186,7 @@ public class PaymentRouterService {
 
 ---
 
-## 4. Spring Bean Wiring Decision Tree
+## 4. Spring bean wiring decision tree
 
 ``` mermaid
 flowchart TD
@@ -208,7 +208,7 @@ flowchart TD
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Dependency Injection Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Dependency injection evolution
 
 The DI container evolves significantly in **Spring Boot 4 / Spring Framework 7**:
 
@@ -229,7 +229,7 @@ flowchart TD
     SB3 ==>|Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -263,14 +263,14 @@ public record OrderProcessingService(
 
 ---
 
-## 6. Primary Source & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring Framework Reference: Dependencies & Injection Mechanics](https://docs.spring.io/spring-framework/reference/core/beans/dependencies.html) — Official documentation on dependency resolution.
+- [Spring Framework Reference: Dependencies & Injection Mechanics](https://docs.spring.io/spring-framework/reference/core/beans/dependencies.html), Official documentation on dependency resolution.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why does constructor injection guarantee fail-fast behavior compared to field injection?"
     **Answer**: Constructor injection prevents creating an incomplete object, failing immediately during initial instantiation if any dependency is absent.
@@ -283,10 +283,9 @@ public record OrderProcessingService(
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0001: IoC Container & Lifecycle**](0001-spring-ioc-and-bean-lifecycle.md) | [**All Lessons**](index.md) | [**0003: Auto-Configuration & Starters** ➡️](0003-spring-boot-autoconfiguration-internals.md) |
+| [**0001: IoC Container & Lifecycle**](0001-spring-ioc-and-bean-lifecycle.md) | [**All Lessons**](index.md) | [**0003: Auto-Configuration & Starters**](0003-spring-boot-autoconfiguration-internals.md) |
 
-💬 *Have questions on dependency wiring or strategy mapping? Ask anytime!*

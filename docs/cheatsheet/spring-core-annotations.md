@@ -1,38 +1,38 @@
-# Spring Core & Annotations Cheatsheet
+# Spring Core and annotations cheatsheet
 
-A quick reference guide for core Spring Framework annotations and container concepts.
+Reference guide for core Spring Framework annotations and container concepts.
 
-## Stereotype Annotations
+## Stereotype annotations
 
-| Annotation | Layer / Purpose | Notes |
+| Annotation | Layer and purpose | Notes |
 | :--- | :--- | :--- |
-| `@Component` | General-purpose managed Spring Bean | Root annotation for all stereotypes |
-| `@Service` | Service / Business Logic Layer | Semantic alias for `@Component` |
-| `@Repository` | Data Access / DAO Layer | Translates DB exceptions into Spring `DataAccessException` |
-| `@Controller` | Web Layer (Spring MVC) | Returns view templates or handles web navigation |
-| `@RestController`| Web Layer (REST API) | Combines `@Controller` + `@ResponseBody` |
-| `@Configuration` | Java Config class defining `@Bean`s | Proxied via CGLIB by default (`proxyBeanMethods = true`) |
-| `@Bean` | Method-level Bean declaration | Explicitly produces a Spring Bean into `ApplicationContext` |
+| `@Component` | Managed Spring bean | Root annotation for all stereotypes |
+| `@Service` | Service and business logic layer | Semantic alias for `@Component` |
+| `@Repository` | Data access and DAO layer | Translates DB exceptions into Spring `DataAccessException` |
+| `@Controller` | Web layer (Spring MVC) | Returns view templates or handles web navigation |
+| `@RestController`| Web layer (REST API) | Combines `@Controller` + `@ResponseBody` |
+| `@Configuration` | Java configuration class defining beans | Proxied via CGLIB by default (`proxyBeanMethods = true`) |
+| `@Bean` | Method-level bean declaration | Explicitly produces a Spring bean into `ApplicationContext` |
 
-## Dependency Injection Annotations
+## Dependency injection annotations
 
 | Annotation | Usage |
 | :--- | :--- |
-| `@Autowired` | Injects matching bean by type (Optional on single constructor since Spring 4.3) |
-| `@Qualifier("beanName")` | Resolves ambiguity when multiple beans of the same type exist |
-| `@Primary` | Designates default bean when multiple candidates exist |
-| `@Value("${property.key:defaultValue}")` | Injects values from `application.properties` or environment |
+| `@Autowired` | Injects matching bean by type. Optional on single constructor since Spring 4.3. |
+| `@Qualifier("beanName")` | Resolves ambiguity when multiple beans of the same type exist. |
+| `@Primary` | Designates default bean when multiple candidates exist. |
+| `@Value("${property.key:defaultValue}")` | Injects values from `application.properties` or environment. |
 
-## Lifecycle Annotations
+## Lifecycle annotations
 
-| Annotation | Execution Phase |
+| Annotation | Execution phase |
 | :--- | :--- |
-| `@PostConstruct` | Runs immediately after dependency injection is complete |
-| `@PreDestroy` | Runs immediately before the bean is destroyed / context shuts down |
-| `@Scope("prototype")` | Specifies scope: `singleton` (default), `prototype`, `request`, `session` |
-| `@Lazy` | Defers bean initialization until first access |
+| `@PostConstruct` | Runs immediately after dependency injection is complete. |
+| `@PreDestroy` | Runs immediately before the bean is destroyed or context shuts down. |
+| `@Scope("prototype")` | Specifies scope: `singleton` (default), `prototype`, `request`, `session`. |
+| `@Lazy` | Defers bean initialization until first access. |
 
-## Quick Snippet: Clean Constructor Injection Pattern
+## Constructor injection pattern
 
 ```java
 @Service
@@ -53,9 +53,8 @@ public class PaymentProcessingService {
 
 ---
 
-## 🧭 Navigation
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| *(First Cheatsheet)* | [**All Cheatsheets**](index.md) | [➡️ **Spring Web MVC & REST Cheatsheet**](spring-web-mvc-rest.md) |
-
+| First cheatsheet | [**All cheatsheets**](index.md) | [**Spring Web MVC and REST APIs cheatsheet**](spring-web-mvc-rest.md) |

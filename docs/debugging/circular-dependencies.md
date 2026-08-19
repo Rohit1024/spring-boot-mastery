@@ -2,15 +2,15 @@
 icon: lucide/refresh-cw
 ---
 
-# Diagnosing Circular Dependencies in Spring Boot
+# Diagnosing circular dependencies in Spring Boot
 
-One of the most common startup failures when designing services with constructor injection is the **Circular Dependency Exception**.
+One of the most common startup failures when designing services with constructor injection is the circular dependency exception.
 
 ---
 
-## 1. The Symptoms: `BeanCurrentlyInCreationException`
+## 1. The symptoms: `BeanCurrentlyInCreationException`
 
-During application startup, the JVM terminates with a crash report similar to:
+During application startup, the JVM terminates with a crash report:
 
 ```text
 ***************************
@@ -29,9 +29,9 @@ The dependencies of some of the beans in the application context form a cycle:
 
 ---
 
-## 2. Root Cause Mechanics
+## 2. Root cause mechanics
 
-When both classes use strict **Constructor Injection**, Spring is caught in an impossible instantiation deadlock:
+When both classes use constructor injection, Spring cannot instantiate either bean because each requires the other to already exist:
 
 ``` mermaid
 sequenceDiagram
@@ -44,13 +44,13 @@ sequenceDiagram
     O->>Ctx: 2. Requests PaymentService instance
     Ctx->>P: 3. Needs to construct PaymentService
     P->>Ctx: 4. Requests OrderService instance
-    Note over Ctx: 5. DEADLOCK! Neither instance exists yet!
+    Note over Ctx: 5. Deadlock. Neither instance exists yet.
     Ctx--xCtx: 6. Throws BeanCurrentlyInCreationException
 ```
 
 ---
 
-## 3. The Three Resolution Strategies
+## 3. Three resolution strategies
 
 ``` mermaid
 flowchart TD
@@ -63,28 +63,28 @@ flowchart TD
 
 ---
 
-### Strategy 1: Extract Shared Logic into a Third Service (Recommended)
+### Strategy 1: Extract shared logic into a third service
 
-In 90% of cases, circular dependency indicates **poor separation of concerns** where responsibilities are tangled.
+In most cases, a circular dependency indicates poor separation of concerns where responsibilities are tangled.
 
 ``` mermaid
 flowchart LR
-    subgraph Before["Anti-Pattern: Circular Tangling"]
+    subgraph Before["Anti-pattern: Circular tangling"]
         A1[OrderService] <--> B1[PaymentService]
     end
 
-    subgraph After["Clean Design: Unidirectional Flow"]
+    subgraph After["Clean design: Unidirectional flow"]
         A2[OrderService] --> N[NotificationService]
         B2[PaymentService] --> N
         A2 --> B2
     end
 ```
 
-**Refactoring Step**: Extract the shared functionality (e.g. notification, validation, receipt generation) into a dedicated service.
+Extract the shared work (notification, validation, or receipt generation) into a dedicated service.
 
 ---
 
-### Strategy 2: Decouple with Spring Events
+### Strategy 2: Decouple with Spring events
 
 Instead of `PaymentService` calling `OrderService.markCompleted()`, publish an application event:
 
@@ -106,16 +106,16 @@ public class OrderService {
 
     @EventListener
     public void onPaymentCompleted(PaymentCompletedEvent event) {
-        // Update order status without directly referencing PaymentService
+        // Update order status without referencing PaymentService directly.
     }
 }
 ```
 
 ---
 
-### Strategy 3: `@Lazy` Annotation (Workaround)
+### Strategy 3: `@Lazy` annotation
 
-If refactoring is not immediately feasible, mark one of the constructor parameters with `@Lazy`. Spring injects a lightweight proxy placeholder instead of the eager instance, breaking the circular construction loop:
+If refactoring is not immediately practical, mark one of the constructor parameters with `@Lazy`. Spring injects a proxy placeholder instead of the eager instance, breaking the circular construction loop:
 
 ```java
 @Service
@@ -131,17 +131,16 @@ public class OrderService {
 
 ---
 
-## 4. Diagnostic Checklist
+## 4. Diagnostic checklist
 
-- [ ] Check if `spring.main.allow-circular-references=true` is enabled in `application.properties` (Avoid enabling this in production; it masks bad design).
+- [ ] Check if `spring.main.allow-circular-references=true` is enabled in `application.properties`. Avoid enabling this in production because it masks structural design flaws.
 - [ ] Inspect the dependency graph to find which methods from Class A are called by Class B.
-- [ ] Evaluate if an event (`ApplicationEventPublisher`) or a dedicated coordinator service eliminates direct bidirectional references.
+- [ ] Evaluate if an event via `ApplicationEventPublisher` or a dedicated coordinator service eliminates direct bidirectional references.
 
 ---
 
-## 🧭 Navigation
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| *(First Guide)* | [**All Debugging Guides**](index.md) | [➡️ **Troubleshooting REST API Exceptions**](rest-validation-exception-debugging.md) |
-
+| First guide | [**All debugging guides**](index.md) | [**Troubleshooting REST API exceptions**](rest-validation-exception-debugging.md) |

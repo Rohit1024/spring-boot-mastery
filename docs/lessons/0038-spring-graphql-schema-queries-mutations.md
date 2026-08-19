@@ -2,7 +2,7 @@
 icon: lucide/network
 ---
 
-# 0038: Spring for GraphQL: Schema Design, Queries, Mutations & GraphiQL
+# 0038: Spring for GraphQL: Schema design, queries, mutations, and GraphiQL
 
 While REST APIs have been the de facto standard for web services, they suffer from two major client integration bottlenecks: **over-fetching** (retrieving 50 fields when the client UI only needs 2) and **under-fetching** (requiring 4 sequential HTTP requests to assemble a single mobile view).
 
@@ -12,7 +12,7 @@ In this lesson, you will master GraphQL schema design (`schema.graphqls`), map q
 
 ---
 
-## 1. REST vs GraphQL Architectural Paradigm
+## 1. REST vs GraphQL architectural paradigm
 
 ``` mermaid
 flowchart TD
@@ -41,7 +41,7 @@ flowchart TD
 
 ---
 
-## 2. Schema-First Design (`schema.graphqls`)
+## 2. Schema-first design (`schemagraphqls`)
 
 In Spring for GraphQL, the contract is strictly defined in `src/main/resources/graphql/schema.graphqls`:
 
@@ -106,7 +106,7 @@ input CreateOrderInput {
 
 ---
 
-## 3. Spring Boot Controller Mappings (`@QueryMapping` & `@MutationMapping`)
+## 3. Spring Boot controller mappings (`@querymapping` `@MutationMapping`)
 
 Spring Boot binds schema fields directly to controller methods matching the schema operation name:
 
@@ -162,7 +162,7 @@ public class OrderGraphQLController {
 
 ---
 
-## 4. GraphiQL Interactive IDE & Configuration
+## 4. GraphiQL interactive ide configuration
 
 Spring Boot provides the **GraphiQL** browser IDE for interactive query authoring, schema exploration, and documentation inspection.
 
@@ -206,7 +206,7 @@ query GetOrderDetails {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: GraphQL Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: GraphQL evolution
 
 ``` mermaid
 flowchart TD
@@ -225,7 +225,7 @@ flowchart TD
     SB3 ==>|Schema Modernization & Loom Resolvers| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | GraphQL Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -235,15 +235,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring for GraphQL Official Reference Documentation](https://docs.spring.io/spring-graphql/reference/index.html) — Core architecture, controllers, schema mapping, and GraphiQL setup.
-- [GraphQL Official Specification](https://spec.graphql.org/) — Type system, execution algorithm, and validation rules.
-- [GraphQL Java Documentation](https://www.graphql-java.com/documentation/overview/) — Low-level engine powering Spring for GraphQL.
+- [Spring for GraphQL Official Reference Documentation](https://docs.spring.io/spring-graphql/reference/index.html), Core architecture, controllers, schema mapping, and GraphiQL setup.
+- [GraphQL Official Specification](https://spec.graphql.org/), Type system, execution algorithm, and validation rules.
+- [GraphQL Java Documentation](https://www.graphql-java.com/documentation/overview/), Low-level engine powering Spring for GraphQL.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the fundamental difference between over-fetching in REST and declarative fetching in GraphQL?"
     **Answer**: Over-fetching occurs when a fixed REST endpoint returns large payloads containing unnecessary fields; GraphQL lets the client explicitly specify only the exact subset of fields required.
@@ -256,8 +256,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0037: Quartz Scheduler & ShedLock**](0037-quartz-scheduler-and-shedlock-distributed-locking.md) | [**All Lessons**](index.md) | [➡️ **0039: Batch Mapping & Subscriptions**](0039-graphql-batch-mapping-dataloaders-subscriptions.md) |
+| [**0037: Quartz Scheduler & ShedLock**](0037-quartz-scheduler-and-shedlock-distributed-locking.md) | [**All Lessons**](index.md) | [ **0039: Batch Mapping & Subscriptions**](0039-graphql-batch-mapping-dataloaders-subscriptions.md) |

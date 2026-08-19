@@ -2,13 +2,13 @@
 icon: lucide/shield
 ---
 
-# Spring Security 6, JWT & OAuth2 Cheatsheet
+# Spring Security 6, JWT, and OAuth2 cheatsheet
 
-A rapid-reference guide for modern Spring Security 6 component-based configuration, `SecurityFilterChain` bean declarations, SpEL method authorization, JJWT generation/validation, and OAuth2 Client properties.
+Reference guide for Spring Security 6 component-based configuration, `SecurityFilterChain` bean declarations, SpEL method authorization, JJWT token operations, and OAuth2 client properties.
 
 ---
 
-## 1. Modern Stateless `SecurityFilterChain` Bean
+## 1. Stateless `SecurityFilterChain` configuration
 
 ```java
 @Configuration
@@ -40,7 +40,7 @@ public class SecurityConfig {
 
 ---
 
-## 2. Password Encoder Configuration (Argon2id + BCrypt)
+## 2. Password encoder configuration (Argon2id and BCrypt)
 
 ```java
 @Configuration
@@ -62,11 +62,11 @@ public class PasswordConfig {
 
 ---
 
-## 3. Method Security & SpEL Expressions (`@PreAuthorize`)
+## 3. Method security and SpEL expressions (`@PreAuthorize`)
 
 Enable with `@EnableMethodSecurity(prePostEnabled = true)`:
 
-| SpEL Expression | Security Enforcement Check |
+| SpEL expression | Security enforcement check |
 | :--- | :--- |
 | `@PreAuthorize("hasRole('ADMIN')")` | Checks for `ROLE_ADMIN` authority. |
 | `@PreAuthorize("hasAnyRole('USER', 'EDITOR')")` | Checks for either `ROLE_USER` or `ROLE_EDITOR`. |
@@ -77,10 +77,10 @@ Enable with `@EnableMethodSecurity(prePostEnabled = true)`:
 
 ---
 
-## 4. JJWT 0.12+ Token Generation & Parsing
+## 4. JJWT 0.12+ token generation and parsing
 
 ```java
-// 1. Generate Token with Claims & Expiration:
+// 1. Generate token with claims and expiration:
 SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 String jwt = Jwts.builder()
     .subject(username)
@@ -90,7 +90,7 @@ String jwt = Jwts.builder()
     .signWith(key)
     .compact();
 
-// 2. Parse & Validate Token Claims:
+// 2. Parse and validate token claims:
 Claims claims = Jwts.parser()
     .verifyWith(key)
     .build()
@@ -103,7 +103,7 @@ Date expiration = claims.getExpiration();
 
 ---
 
-## 5. Spring Boot OAuth2 Client Properties (`application.yml`)
+## 5. Spring Boot OAuth2 client properties (`application.yml`)
 
 ```yaml
 spring:
@@ -124,8 +124,8 @@ spring:
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Spring Observability & Logging Cheatsheet**](spring-observability-devtools.md) | [**All Cheatsheets**](index.md) | [➡️ **Packaging, Jib & Native Cheatsheet**](spring-boot-jib-docker-native.md) |
+| [**Spring observability, Actuator, and logging cheatsheet**](spring-observability-devtools.md) | [**All cheatsheets**](index.md) | [**Spring Boot packaging, Jib, and GraalVM native cheatsheet**](spring-boot-jib-docker-native.md) |

@@ -88,7 +88,7 @@ Curated, high-signal technical and architectural interview questions for Senior 
 - **Step Partitioning vs Multi-Threaded Steps**: Contrast local Master-Worker Step Partitioning with Multi-Threaded Steps in terms of thread isolation, database partitioning, and checkpoint restartability.
 - **Multi-Instance `@Scheduled` Collision**: Why does standard Spring `@Scheduled` cause catastrophic race conditions when running in a multi-pod Kubernetes deployment?
 - **ShedLock Distributed Locking**: How does ShedLock coordinate distributed task execution via relational tables (`shedlock`) or Redis? Explain the importance of `lockAtMostFor` and `lockAtLeastFor`.
-- **Clustered Quartz Failover**: How does Quartz Scheduler leverage shared database tables (`QRTZ_*`) to provide cluster failover and misfire handling across surviving server nodes?
+- **Clustered Quartz Failover**: How does Quartz Scheduler use shared database tables (`QRTZ_*`) to provide cluster failover and misfire handling across surviving server nodes?
 
 ---
 

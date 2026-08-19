@@ -2,7 +2,7 @@
 icon: lucide/package
 ---
 
-# 0028: Packaging Paradigms: Fat JAR vs Layered JAR vs Multi-Stage Dockerfile
+# 0028: Packaging paradigms: Fat JAR vs layered JAR vs multi-stage Dockerfile
 
 In modern cloud and Kubernetes environments, how you package your Spring Boot application directly dictates your CI/CD pipeline build speed, container registry bandwidth consumption, startup latency, and container attack surface.
 
@@ -10,7 +10,7 @@ Spring Boot revolutionized Java packaging with the self-contained **Fat JAR (Ube
 
 ---
 
-## 1. Fat JAR Mechanics: `JarLauncher` & Nested Archives
+## 1. Fat jar mechanics: `JarLauncher` nested archives
 
 Standard Java `java.exe` classloaders cannot load classes from nested JAR files inside a parent JAR archive. Spring Boot solves this via its custom loader architecture in `spring-boot-maven-plugin` / `spring-boot-gradle-plugin`:
 
@@ -38,7 +38,7 @@ flowchart TD
     FatJAR ~~~ BootInfStructure
 ```
 
-### Manifest Header Configuration
+### Manifest header configuration
 When you run `java -jar app.jar`, the JVM executes `org.springframework.boot.loader.launch.JarLauncher`, which establishes the `LaunchedURLClassLoader` and delegates execution to your application's actual `@SpringBootApplication` `Start-Class`.
 
 ```properties
@@ -54,7 +54,7 @@ Spring-Boot-Layers-Index: BOOT-INF/layers.idx
 
 ---
 
-## 2. The Docker Caching Problem with Fat JARs
+## 2. The Docker caching problem with fat jars
 
 When deploying via standard Dockerfiles, copying the entire `app.jar` as a single layer forces Docker to invalidate and re-upload the entire 120MB layer on every 1-line code commit:
 
@@ -81,7 +81,7 @@ flowchart TD
 
 ---
 
-## 3. Spring Boot Layered JARs (`layertools`)
+## 3. Spring Boot layered jars (`layertools`)
 
 Spring Boot automatically generates `BOOT-INF/layers.idx`, classifying files into four distinct layers sorted by change frequency:
 
@@ -90,7 +90,7 @@ Spring Boot automatically generates `BOOT-INF/layers.idx`, classifying files int
 3. **`snapshot-dependencies`**: Internal multi-module snapshot libraries. *Changes occasionally.*
 4. **`application`**: Your project classes, compiled controllers, and `application.yml`. *Changes on every commit.*
 
-### Extracting Layers with `jarmode`
+### Extracting layers with `jarmode`
 ```bash
 # Inspect available layers:
 java -Djarmode=layertools -jar target/app.jar list
@@ -101,7 +101,7 @@ java -Djarmode=layertools -jar target/app.jar extract
 
 ---
 
-## 4. Production Multi-Stage Dockerfile
+## 4. Production multi-stage dockerfile
 
 A production-grade Dockerfile uses a multi-stage build to compile, extract layers, and run the container under an unprivileged non-root user with minimal attack surface:
 
@@ -144,7 +144,7 @@ ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS org.springframework.boot.loader.la
 
 ---
 
-## 5. Base Image Matrix & Security Trade-Offs
+## 5. Base image matrix security trade-offs
 
 | Base Image | Size (Uncompressed) | Shell & Package Manager | Vulnerability Risk (CVE) | Recommended Use |
 | :--- | :---: | :---: | :---: | :--- |
@@ -155,7 +155,7 @@ ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS org.springframework.boot.loader.la
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Packaging Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Packaging evolution
 
 ``` mermaid
 flowchart TD
@@ -174,7 +174,7 @@ flowchart TD
     SB3 ==>|Packaging Streamlining| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Packaging Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -184,15 +184,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Boot Reference Guide: Layering Docker Images](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html) — Official documentation on layer extraction.
-- [Google Container Tools: Distroless Images](https://github.com/GoogleContainerTools/distroless) — Hardened container base images without package managers.
-- [Java Virtual Machine Container Ergonomics](https://docs.oracle.com/en/java/javase/21/troubleshoot/troubleshoot-jvm-docker.html) — Managing cgroups memory limits and JVM heap sizing.
+- [Spring Boot Reference Guide: Layering Docker Images](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html), Official documentation on layer extraction.
+- [Google Container Tools: Distroless Images](https://github.com/GoogleContainerTools/distroless), Hardened container base images without package managers.
+- [Java Virtual Machine Container Ergonomics](https://docs.oracle.com/en/java/javase/21/troubleshoot/troubleshoot-jvm-docker.html), Managing cgroups memory limits and JVM heap sizing.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why does copying a monolithic Fat JAR into a Docker container negate Docker layer caching benefits?"
     **Answer**: Any code change invalidates the entire single JAR layer, forcing CI/CD runners and container registries to re-build and re-upload all 100MB+ of unchanged third-party dependencies.
@@ -205,8 +205,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0027: Google OAuth2 & OIDC**](0027-google-oauth2-and-openid-connect-oidc.md) | [**All Lessons**](index.md) | [➡️ **0029: Daemonless Containerization with Jib**](0029-daemonless-containerization-google-jib.md) |
+| [**0027: Google OAuth2 & OIDC**](0027-google-oauth2-and-openid-connect-oidc.md) | [**All Lessons**](index.md) | [ **0029: Daemonless Containerization with Jib**](0029-daemonless-containerization-google-jib.md) |

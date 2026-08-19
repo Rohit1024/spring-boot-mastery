@@ -2,19 +2,19 @@
 icon: lucide/mail-check
 ---
 
-# 0043: Decoupling Modules with Transactional Event Publication
+# 0043: Decoupling modules with transactional event publication
 
 When building modular monoliths, coupling modules together through direct synchronous service injection (e.g. `OrderService` calling `PaymentService` and `EmailNotificationService`) violates Domain-Driven Design (DDD) boundaries and bundles unrelated operations into a single fragile database transaction.
 
 Standard Spring `@EventListener` promises asynchronous event decoupling, but introduces a fatal **dual-write failure risk**: if the JVM crashes right after committing the database transaction, in-memory events are permanently lost.
 
-Spring Modulith solves this with the **Transactional Event Publication Registry**—an outbox pattern built directly into your modular monolith that guarantees **at-least-once transactional event delivery**.
+Spring Modulith solves this with the **Transactional Event Publication Registry**, an outbox pattern built directly into your modular monolith that guarantees **at-least-once transactional event delivery**.
 
 In this lesson, you will master publishing domain events, consuming them with `@ApplicationModuleListener`, and managing persistent event outbox tables.
 
 ---
 
-## 1. Synchronous Coupling vs Transactional Events
+## 1. Synchronous coupling vs transactional events
 
 ``` mermaid
 flowchart TD
@@ -42,11 +42,11 @@ flowchart TD
 
 ---
 
-## 2. Setting Up the Event Publication Registry
+## 2. Setting up the event publication registry
 
 Spring Modulith provides auto-configured starter modules for relational databases:
 
-### Maven Dependency (`pom.xml`)
+### Maven dependency (`pomxml`)
 ```xml
 <dependency>
     <groupId>org.springframework.modulith</groupId>
@@ -54,7 +54,7 @@ Spring Modulith provides auto-configured starter modules for relational database
 </dependency>
 ```
 
-### Automatic Table Initialization (`event_publication`)
+### Automatic table initialization (`event_publication`)
 Spring Modulith creates the outbox table automatically:
 
 ```sql
@@ -70,11 +70,11 @@ CREATE TABLE event_publication (
 
 ---
 
-## 3. Publishing Domain Events from an Application Module
+## 3. Publishing domain events from an application module
 
 Domain events are immutable Java Records representing facts that have occurred in the domain:
 
-### `OrderPlacedEvent.java` (Domain Event)
+### `OrderPlacedEvent.java` (domain event)
 ```java
 package com.example.ecommerce.order;
 
@@ -87,7 +87,7 @@ public record OrderPlacedEvent(
 ) {}
 ```
 
-### `OrderService.java` (Publishing Event)
+### `OrderService.java` (publishing event)
 ```java
 package com.example.ecommerce.order;
 
@@ -124,14 +124,14 @@ public class OrderService {
 
 ---
 
-## 4. Consuming Events with `@ApplicationModuleListener`
+## 4. Consuming events with `@ApplicationModuleListener`
 
 The `@ApplicationModuleListener` annotation simplifies asynchronous event handling by automatically combining:
 - `@Async` (Executes in a separate thread pool or Virtual Thread).
 - `@Transactional(propagation = Propagation.REQUIRES_NEW)` (Dedicated transaction for the listener).
 - `@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)` (Only fires if the publishing transaction committed successfully).
 
-### `PaymentModuleListener.java` (In `payment` module)
+### `PaymentModuleListener.java` (in `payment` module)
 ```java
 package com.example.ecommerce.payment;
 
@@ -158,7 +158,7 @@ public class PaymentModuleListener {
 
 ---
 
-## 5. Incomplete Event Resubmission & Crash Recovery
+## 5. Incomplete event resubmission crash recovery
 
 If a consuming listener throws an unhandled exception or the server crashes midway, the event remains in `event_publication` with `completion_date = NULL`.
 
@@ -189,7 +189,7 @@ public class EventResubmissionConfig {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Event Registry Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Event registry evolution
 
 ``` mermaid
 flowchart TD
@@ -208,7 +208,7 @@ flowchart TD
     SB3 ==>|Loom Concurrency & High-Speed Outbox| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Event Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -218,15 +218,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Modulith: Working with Events Reference](https://docs.spring.io/spring-modulith/reference/events.html) — Event publication registry, listener semantics, and transactional guarantees.
-- [Transactional Outbox Pattern by Chris Richardson](https://microservices.io/patterns/data/transactional-outbox.html) — Core theory and architecture.
-- [Baeldung: Spring Modulith Deep Dive](https://www.baeldung.com/spring-modulith) — Practical guides on events and module testing.
+- [Spring Modulith: Working with Events Reference](https://docs.spring.io/spring-modulith/reference/events.html), Event publication registry, listener semantics, and transactional guarantees.
+- [Transactional Outbox Pattern by Chris Richardson](https://microservices.io/patterns/data/transactional-outbox.html), Core theory and architecture.
+- [Baeldung: Spring Modulith Deep Dive](https://www.baeldung.com/spring-modulith), Practical guides on events and module testing.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What catastrophic failure occurs when using standard Spring `@Async` `@EventListener` without an outbox registry?"
     **Answer**: If the server crashes after the database transaction commits but before the asynchronous in-memory event listener executes, the event is permanently lost with no record in the database.
@@ -239,8 +239,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0042: Spring Modulith Modular Monoliths**](0042-spring-modulith-modular-monoliths-ddd.md) | [**All Lessons**](index.md) | [➡️ **0044: Java 21 Virtual Threads (Loom)**](0044-java-virtual-threads-project-loom-spring-boot.md) |
+| [**0042: Spring Modulith Modular Monoliths**](0042-spring-modulith-modular-monoliths-ddd.md) | [**All Lessons**](index.md) | [ **0044: Java 21 Virtual Threads (Loom)**](0044-java-virtual-threads-project-loom-spring-boot.md) |

@@ -2,7 +2,7 @@
 icon: lucide/globe
 ---
 
-# 0027: Third-Party Authentication with Google OAuth2 & OpenID Connect (OIDC)
+# 0027: Third-party authentication with Google OAuth2 and OpenID Connect (OIDC)
 
 Forcing users to create and remember yet another password increases registration friction and burdens systems with credential storage compliance. **OAuth 2.0** and **OpenID Connect (OIDC 1.0)** allow applications to securely delegate authentication to trusted identity providers (IdPs) like Google, GitHub, and Okta.
 
@@ -10,7 +10,7 @@ In this lesson, you will master the OAuth 2.0 Authorization Code Flow with PKCE,
 
 ---
 
-## 1. OAuth 2.0 vs OpenID Connect (OIDC)
+## 1. Oauth 20 vs openid connect (OIDC)
 
 Understanding the distinction between OAuth 2.0 and OIDC is essential:
 
@@ -33,7 +33,7 @@ flowchart TD
 
 ---
 
-## 2. Authorization Code Flow with PKCE Sequence
+## 2. Authorization code flow with pkce sequence
 
 The **Authorization Code Flow with Proof Key for Code Exchange (PKCE)** is the gold standard for secure social login:
 
@@ -62,9 +62,9 @@ sequenceDiagram
 
 ---
 
-## 3. Configuring Spring Boot OAuth2 Client
+## 3. Configuring Spring Boot OAuth2 client
 
-### Dependencies (`pom.xml`)
+### Dependencies (`pomxml`)
 ```xml
 <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -76,7 +76,7 @@ sequenceDiagram
 </dependency>
 ```
 
-### Configuration (`application.yml`)
+### Configuration (`applicationyml`)
 ```yaml
 spring:
   security:
@@ -95,7 +95,7 @@ spring:
 
 ---
 
-## 4. Auto-Provisioning Users in Database on Social Login
+## 4. Auto-provisioning users in database on social login
 
 When a user signs in via Google for the first time, your application must persist a corresponding local user record in PostgreSQL to track application-specific relationships (e.g., orders, roles, subscriptions).
 
@@ -172,7 +172,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
 ---
 
-## 5. Bridging OAuth2 Social Login to Stateless SPA / Mobile JWT
+## 5. Bridging OAuth2 social login to stateless spa / mobile JWT
 
 For Single-Page Apps (React/Vue/Angular) or Mobile Apps, you do not want stateful cookies upon OAuth2 login completion. Instead, use a custom `AuthenticationSuccessHandler` to generate a JWT and redirect to the frontend:
 
@@ -247,7 +247,7 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: OAuth2 & OIDC Identity Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: OAuth2 OIDC identity evolution
 
 ``` mermaid
 flowchart TD
@@ -266,7 +266,7 @@ flowchart TD
     SB3 ==>|Identity Federation Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | OAuth2 & OIDC Capability | Spring Boot 3.x (Security 6) | Spring Boot 4.x (Security 7) |
 | :--- | :--- | :--- |
@@ -276,15 +276,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Security 6 OAuth 2.0 Client Documentation](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/index.html) — Client registrations, authorization code requests, and token exchange.
-- [RFC 7636: Proof Key for Code Exchange (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636) — Preventing authorization code interception attacks.
-- [OpenID Connect Core 1.0 Specification](https://openid.net/specs/openid-connect-core-1_0.html) — Standard claims, ID tokens, and validation rules.
+- [Spring Security 6 OAuth 2.0 Client Documentation](https://docs.spring.io/spring-security/reference/servlet/oauth2/client/index.html), Client registrations, authorization code requests, and token exchange.
+- [RFC 7636: Proof Key for Code Exchange (PKCE)](https://datatracker.ietf.org/doc/html/rfc7636), Preventing authorization code interception attacks.
+- [OpenID Connect Core 1.0 Specification](https://openid.net/specs/openid-connect-core-1_0.html), Standard claims, ID tokens, and validation rules.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the key functional difference between OAuth 2.0 and OpenID Connect (OIDC 1.0)?"
     **Answer**: OAuth 2.0 is a delegated authorization framework that issues access tokens for API calls, whereas OIDC 1.0 is an authentication layer built on top of OAuth 2.0 that provides identity tokens (`id_token`) and user profile claims.
@@ -297,10 +297,10 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0026: Role & Permission Access Control**](0026-role-and-permission-based-access-control-rbac.md) | [**All Lessons**](index.md) | [➡️ **0028: Packaging Paradigms (JAR & Docker)**](0028-packaging-paradigms-jar-docker-layering.md) |
+| [**0026: Role & Permission Access Control**](0026-role-and-permission-based-access-control-rbac.md) | [**All Lessons**](index.md) | [ **0028: Packaging Paradigms (JAR & Docker)**](0028-packaging-paradigms-jar-docker-layering.md) |
 
 🎉 **Congratulations on completing Module 5: Spring Security 6, OAuth2 & Identity!**

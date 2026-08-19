@@ -2,7 +2,7 @@
 icon: lucide/activity
 ---
 
-# 0019: Production Health, Actuator Metrics & Prometheus Observability
+# 0019: Production health, Actuator metrics, and Prometheus observability
 
 In modern microservices and Kubernetes clusters, software must be **observable by default**. If your service begins leaking memory, starving database connections, or degrading response times, operations engineers and automated orchestration systems must detect it before customers do.
 
@@ -10,7 +10,7 @@ In modern microservices and Kubernetes clusters, software must be **observable b
 
 ---
 
-## 1. The Actuator Observability Architecture
+## 1. The actuator observability architecture
 
 Actuator exposes operational endpoints over HTTP and JMX, providing real-time visibility into the running JVM, Spring `ApplicationContext`, thread pools, and connected infrastructure:
 
@@ -36,7 +36,7 @@ flowchart TD
 
 ---
 
-## 2. Dependency & Endpoint Configuration
+## 2. Dependency endpoint configuration
 
 Add `spring-boot-starter-actuator` and the `micrometer-registry-prometheus` bridge:
 
@@ -57,7 +57,7 @@ Add `spring-boot-starter-actuator` and the `micrometer-registry-prometheus` brid
 </dependencies>
 ```
 
-### Production Endpoint Exposure (`application.yml`)
+### Production endpoint exposure (`applicationyml`)
 
 By default, only `/health` is exposed over HTTP for security reasons. Configure which endpoints to publish:
 
@@ -81,7 +81,7 @@ management:
 
 ---
 
-## 3. Kubernetes Probes: Liveness vs Readiness
+## 3. Kubernetes probes: Liveness vs readiness
 
 Kubernetes relies on two distinct health signals to manage pod lifecycles:
 
@@ -116,7 +116,7 @@ sequenceDiagram
 
 ---
 
-## 4. Custom Health Indicators
+## 4. Custom health indicators
 
 When your service depends on external third-party APIs (e.g. Stripe, PayPal, SendGrid), implement `HealthIndicator` to include them in health checks:
 
@@ -174,11 +174,11 @@ public class PaymentGatewayHealthIndicator implements HealthIndicator {
 
 ---
 
-## 5. Custom Business Metrics with Micrometer
+## 5. Custom business metrics with Micrometer
 
 **Micrometer** is the vendor-neutral metrics facade for JVM applications (the "SLF4J for metrics"). It translates measurements into dimensional formats for Prometheus, Datadog, InfluxDB, and New Relic.
 
-### Core Meter Types:
+### Core meter types
 - **`Counter`**: Monotonically increasing value (e.g. `orders_placed_total`).
 - **`Timer`**: Measures execution duration and latency distributions (e.g. `checkout_duration_seconds`).
 - **`Gauge`**: Value that can go up and down (e.g. `active_websocket_connections`).
@@ -239,7 +239,7 @@ public class OrderCheckoutService {
 
 ---
 
-## 6. Prometheus Scrape Output Format
+## 6. Prometheus scrape output format
 
 Navigating to `GET /actuator/prometheus` yields dimensional metrics scraped by Prometheus:
 
@@ -258,7 +258,7 @@ business_checkout_latency_seconds_count{application="order-service",environment=
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4: Observability & Metrics Evolution
+## 7. Spring Boot 3 vs Spring Boot 4: Observability metrics evolution
 
 ``` mermaid
 flowchart TD
@@ -277,7 +277,7 @@ flowchart TD
     SB3 ==>|Telemetry Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Observability Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -287,15 +287,15 @@ flowchart TD
 
 ---
 
-## 8. Primary Sources & Further Reading
+## 8. Primary sources and further reading
 
-- [Spring Boot Actuator Reference](https://docs.spring.io/spring-boot/reference/actuator/index.html) — Endpoints, metrics, and security.
-- [Micrometer Core Documentation](https://micrometer.io/docs/concepts) — Concepts of Counters, Timers, Gauges, and percentiles.
-- [Kubernetes Pod Lifecycle: Container Probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes) — Liveness and readiness probe mechanics.
+- [Spring Boot Actuator Reference](https://docs.spring.io/spring-boot/reference/actuator/index.html), Endpoints, metrics, and security.
+- [Micrometer Core Documentation](https://micrometer.io/docs/concepts), Concepts of Counters, Timers, Gauges, and percentiles.
+- [Kubernetes Pod Lifecycle: Container Probes](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes), Liveness and readiness probe mechanics.
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: What is the fundamental operational difference between Kubernetes Liveness and Readiness probes?"
     **Answer**: Liveness probes trigger pod restarts when the internal JVM state is unrecoverable, while Readiness probes temporarily remove pods from traffic routing when dependencies are unavailable.
@@ -308,8 +308,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0018: Spring Boot DevTools & LiveReload**](0018-spring-boot-devtools-and-livereload.md) | [**All Lessons**](index.md) | [➡️ **0020: OpenAPI 3 & Swagger UI Documentation**](0020-openapi-3-and-swagger-ui-documentation.md) |
+| [**0018: Spring Boot DevTools & LiveReload**](0018-spring-boot-devtools-and-livereload.md) | [**All Lessons**](index.md) | [ **0020: OpenAPI 3 & Swagger UI Documentation**](0020-openapi-3-and-swagger-ui-documentation.md) |

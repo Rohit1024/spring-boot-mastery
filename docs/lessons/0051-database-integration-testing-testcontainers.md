@@ -2,7 +2,7 @@
 icon: lucide/database
 ---
 
-# 0051: Database Integration Testing with Testcontainers
+# 0051: Database integration testing with Testcontainers
 
 For years, developers used in-memory databases like **H2** for integration testing. While fast, H2 creates a dangerous **false sense of security**: H2 lacks PostgreSQL `JSONB` operators, spatial functions, window partition nuances, and concurrency isolation semantics. Code that passes on H2 frequently crashes in production PostgreSQL or MySQL environments.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring Testcontainers with Spring Boot, con
 
 ---
 
-## 1. Testcontainers Integration Architecture
+## 1. Testcontainers integration architecture
 
 ``` mermaid
 flowchart TD
@@ -42,7 +42,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 Add Testcontainers and Spring Boot's Testcontainers support dependencies:
 
@@ -66,7 +66,7 @@ Add Testcontainers and Spring Boot's Testcontainers support dependencies:
 
 ---
 
-## 3. Modern Database Slicing with `@ServiceConnection`
+## 3. Modern database slicing with `@ServiceConnection`
 
 Starting in **Spring Boot 3.1+**, `@ServiceConnection` completely eliminates verbose `@DynamicPropertySource` boilerplate. It automatically discovers the container's dynamic port and configures `spring.datasource.*` properties:
 
@@ -125,7 +125,7 @@ class OrderRepositoryTest {
 
 ---
 
-## 4. Legacy Pattern: `@DynamicPropertySource` (Spring Boot 3.0)
+## 4. Legacy pattern: `@DynamicPropertySource` (Spring Boot 30)
 
 If you need custom connection parameters or use older Spring Boot 3.0 versions:
 
@@ -140,7 +140,7 @@ static void configureProperties(DynamicPropertyRegistry registry) {
 
 ---
 
-## 5. Reusable Singleton Containers Pattern
+## 5. Reusable singleton containers pattern
 
 Restarting Docker containers for every individual test class adds massive time overhead. By defining a **Singleton Abstract Base Class**, one PostgreSQL container is reused across your entire test suite:
 
@@ -167,7 +167,7 @@ public abstract class AbstractIntegrationTest {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Testcontainers Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Testcontainers evolution
 
 ``` mermaid
 flowchart TD
@@ -186,24 +186,24 @@ flowchart TD
     SB3 ==>|Snapshot State Restores & Auto-Discovered Service Connections| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Testcontainers Aspect | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
 | **Container Wiring** | `@ServiceConnection` required explicit field annotations on static containers. | **Auto-Discovered Service Connections**: Auto-detects container types without manual annotations. |
-| **Test Execution Speed** | Container startup took ~3–5s per container. | **Instant Snapshot Restoring**: Resets database state via instant Docker filesystem snapshots in under 100ms. |
+| **Test Execution Speed** | Container startup took ~3-5s per container. | **Instant Snapshot Restoring**: Resets database state via instant Docker filesystem snapshots in under 100ms. |
 | **Local Development** | Spring Boot Testcontainers Desktop dev mode. | **Unified DevServices**: Seamless sharing of container instances between `mvn spring-boot:run` and unit tests. |
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Testcontainers Official Documentation](https://java.testcontainers.org/) — Database containers, modules, and Docker lifecycle.
-- [Spring Boot Testcontainers Reference](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.testcontainers) — `@ServiceConnection` and Dynamic Property injection.
+- [Testcontainers Official Documentation](https://java.testcontainers.org/), Database containers, modules, and Docker lifecycle.
+- [Spring Boot Testcontainers Reference](https://docs.spring.io/spring-boot/docs/current/reference/html/features.html#features.testing.testcontainers), `@ServiceConnection` and Dynamic Property injection.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is testing against real PostgreSQL using Testcontainers superior to using an in-memory H2 database?"
     **Answer**: In-memory H2 lacks native PostgreSQL capabilities (e.g. JSONB columns, exact constraint syntax, window partition dialects, and concurrency locking semantics), hiding bugs that emerge in production.
@@ -216,10 +216,10 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0050: REST API Testing with MockMvc**](0050-integration-testing-rest-apis-mockmvc.md) | [**All Lessons**](index.md) | [➡️ **0052: Spring Cache Abstraction with Redis**](0052-spring-cache-abstraction-redis.md) |
+| [**0050: REST API Testing with MockMvc**](0050-integration-testing-rest-apis-mockmvc.md) | [**All Lessons**](index.md) | [ **0052: Spring Cache Abstraction with Redis**](0052-spring-cache-abstraction-redis.md) |
 
 🎉 **Congratulations on completing Module 11: Enterprise Testing & Quality Assurance!**

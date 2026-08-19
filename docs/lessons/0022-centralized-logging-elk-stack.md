@@ -2,7 +2,7 @@
 icon: lucide/search
 ---
 
-# 0022: Centralized Logging with ELK Stack (Elasticsearch, Logstash, Kibana) & Filebeat
+# 0022: Centralized logging with the ELK stack (Elasticsearch, Logstash, Kibana) and Filebeat
 
 In a distributed microservices ecosystem consisting of dozens of independent services across Kubernetes nodes, inspecting individual container logs via SSH or `kubectl logs` is completely unscalable. 
 
@@ -10,7 +10,7 @@ The **ELK Stack (Elasticsearch, Logstash, Kibana)** is the enterprise gold stand
 
 ---
 
-## 1. The Centralized Logging Pipeline Architecture
+## 1. The centralized logging pipeline architecture
 
 ``` mermaid
 flowchart TD
@@ -44,7 +44,7 @@ flowchart TD
 
 ---
 
-## 2. Direct TCP Socket Streaming from Logback
+## 2. Direct tcp socket streaming from Logback
 
 Rather than writing to disk and relying on a separate agent, Spring Boot can stream JSON log events directly over TCP to Logstash using `LogstashTcpSocketAppender`:
 
@@ -57,7 +57,7 @@ Rather than writing to disk and relying on a separate agent, Spring Boot can str
 </dependency>
 ```
 
-### `logback-spring.xml` (TCP Appender)
+### `logback-spring.xml` (tcp appender)
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
@@ -87,7 +87,7 @@ Rather than writing to disk and relying on a separate agent, Spring Boot can str
 
 ---
 
-## 3. Logstash Pipeline Configuration (`logstash.conf`)
+## 3. Logstash pipeline configuration (`logstashconf`)
 
 Logstash receives TCP payloads on port `5000`, parses incoming JSON, and ships documents in bulk to Elasticsearch:
 
@@ -117,7 +117,7 @@ output {
 
 ---
 
-## 4. Local Observability Stack (`docker-compose.yml`)
+## 4. Local observability stack (`docker-composeyml`)
 
 You can spin up an entire local ELK stack alongside your Spring Boot microservice in one command:
 
@@ -170,7 +170,7 @@ networks:
 
 ---
 
-## 5. Querying Logs in Kibana with KQL
+## 5. Querying logs in Kibana with kql
 
 Once the stack is running, access Kibana at `http://localhost:5601` and navigate to **Discover**.
 
@@ -187,7 +187,7 @@ sequenceDiagram
     Kibana-->>SRE: Displays Unified Request Timeline & Stack Traces
 ```
 
-### High-Yield KQL (Kibana Query Language) Cheat-Sheet:
+### High-yield kql (Kibana query language) cheat-sheet
 
 | Query Intent | KQL Syntax |
 | :--- | :--- |
@@ -199,7 +199,7 @@ sequenceDiagram
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Centralized Logging Pipeline Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Centralized logging pipeline evolution
 
 ``` mermaid
 flowchart TD
@@ -216,7 +216,7 @@ flowchart TD
     SB3 ~~~ SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Shipping Pipeline Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -226,20 +226,20 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Elasticsearch Reference Guide](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html) — Indices, mappings, and inverted index search architecture.
-- [Logstash TCP Socket Documentation](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html) — Ingesting network socket telemetry.
-- [Kibana Query Language (KQL) Guide](https://www.elastic.co/guide/en/kibana/current/kuery-query.html) — Mastering syntax for filtering and aggregation.
+- [Elasticsearch Reference Guide](https://www.elastic.co/guide/en/elasticsearch/reference/current/index.html), Indices, mappings, and inverted index search architecture.
+- [Logstash TCP Socket Documentation](https://www.elastic.co/guide/en/logstash/current/plugins-inputs-tcp.html), Ingesting network socket telemetry.
+- [Kibana Query Language (KQL) Guide](https://www.elastic.co/guide/en/kibana/current/kuery-query.html), Mastering syntax for filtering and aggregation.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the main advantage of shipping structured JSON logs directly to Logstash via TCP compared to tailing text files?"
     **Answer**: Direct TCP streaming avoids file I/O latency, eliminates custom regex parsing steps in Logstash, and enables pre-indexed JSON field ingestion directly into Elasticsearch.
 
-??? question "Question 2: How does a shared `traceId` in MDC facilitate debugging in a distributed microservices ELK dashboard?"
+??? question "Question 2: How does a shared `traceId` in MDC help debugging in a distributed microservices ELK dashboard?"
     **Answer**: By searching for the single `traceId` in Kibana, engineers see the entire chronological journey of a request across all participating microservices in a single unified view.
 
 ??? question "Question 3: What does the `reconnectionDelay` and `ringBufferSize` setting in `LogstashTcpSocketAppender` provide?"
@@ -247,10 +247,10 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0021: Structured Logging & MDC**](0021-structured-logging-logback-mdc.md) | [**All Lessons**](index.md) | [➡️ **0023: Spring Security 6 Architecture**](0023-spring-security-6-architecture-filter-chains.md) |
+| [**0021: Structured Logging & MDC**](0021-structured-logging-logback-mdc.md) | [**All Lessons**](index.md) | [ **0023: Spring Security 6 Architecture**](0023-spring-security-6-architecture-filter-chains.md) |
 
 🎉 **Congratulations on completing Module 4: Observability, Tooling & API Docs!**

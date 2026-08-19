@@ -2,7 +2,7 @@
 icon: lucide/layers
 ---
 
-# 0013: Spring Data JPA: Repositories, Derived Query Methods, Pagination & JPQL vs Native Queries
+# 0013: Spring Data JPA: Repositories, derived query methods, pagination, and JPQL vs native queries
 
 Writing raw JPQL or managing `EntityManager` transactions for basic CRUD operations quickly becomes repetitive. **Spring Data JPA** eliminates this boilerplate by providing runtime repository proxy generation, derived query parsing, and powerful pagination abstractions.
 
@@ -10,7 +10,7 @@ In this lesson, you will master the repository hierarchy, derived query method s
 
 ---
 
-## 1. The Spring Data Repository Hierarchy
+## 1. The Spring data repository hierarchy
 
 Spring Data JPA provides a structured hierarchy of generic repository interfaces. Understanding this hierarchy allows you to choose the most focused abstraction for your domain needs:
 
@@ -48,7 +48,7 @@ classDiagram
     PagingAndSortingRepository <|-- JpaRepository
 ```
 
-### How Spring Data Creates Repositories Under the Hood
+### How Spring data creates repositories under the hood
 
 When your application starts up:
 1. Spring Data scans for interfaces extending `Repository`.
@@ -75,11 +75,11 @@ sequenceDiagram
 
 ---
 
-## 2. Derived Query Methods: Magic from Method Names
+## 2. Derived query methods: Magic from method names
 
 Spring Data JPA contains a query generation parser that inspects repository method names and automatically derives the corresponding JPQL query at application startup.
 
-### Query Keyword Vocabulary:
+### Query keyword vocabulary
 
 ```java
 public interface UserRepository extends JpaRepository<User, Long> {
@@ -112,7 +112,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ---
 
-## 3. JPQL vs Native SQL: When to Use Which
+## 3. JPQL vs native SQL: When to USE which
 
 When derived methods cannot express complex joins, aggregations, or subqueries, use the `@Query` annotation.
 
@@ -120,10 +120,10 @@ When derived methods cannot express complex joins, aggregations, or subqueries, 
 flowchart TD
     QType{"Need custom query?"}
     QType -->|Object-oriented, DB-agnostic| JPQL["✍️ JPQL Query<br/>Operates on Entity classes & fields"]
-    QType -->|DB-specific features: JSONB, CTEs, Window functions| Native["⚡ Native SQL<br/><code>nativeQuery = true</code>"]
+    QType -->|DB-specific syntax: JSONB, CTEs, window functions| Native["⚡ Native SQL<br/><code>nativeQuery = true</code>"]
 ```
 
-### JPQL (Jakarta Persistence Query Language)
+### JPQL (Jakarta persistence query language)
 
 JPQL operates on **Java entity objects and attributes**, not database tables and columns:
 
@@ -136,7 +136,7 @@ List<User> findSuspiciousUsers(@Param("status") UserStatus status,
 - **Pros**: Portable across database dialects (Postgres, MySQL, Oracle); type-checked against entity model.
 - **Cons**: Cannot access proprietary database functions directly without custom dialect registration.
 
-### Native SQL Queries
+### Native SQL queries
 
 Native queries execute raw SQL directly against the underlying database engine:
 
@@ -155,7 +155,7 @@ List<User> findRecentDarkModeUsers();
 
 ---
 
-## 4. High-Performance Pagination: `Page<T>` vs `Slice<T>`
+## 4. High-performance pagination: `Page<T>` vs `Slice<T>`
 
 When querying large datasets, you must never return unpaginated lists. Spring Data JPA provides `Pageable` and two distinct return abstractions: `Page<T>` and `Slice<T>`.
 
@@ -166,13 +166,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 }
 ```
 
-### The Architectural Difference:
+### The architectural difference
 
 | Feature | `Page<T>` | `Slice<T>` |
 | :--- | :--- | :--- |
 | **SQL Executed** | `SELECT ... LIMIT X OFFSET Y` <br/>**PLUS** `SELECT COUNT(*) FROM ...` | `SELECT ... LIMIT (X + 1) OFFSET Y` (No count query!) |
 | **Total Pages / Items** | ✅ `getTotalElements()`, `getTotalPages()` | ❌ Unknown |
-| **Has Next Page?** | ✅ `hasNext()` | ✅ `hasNext()` |
+| **Has Next Page?** | Yes (`hasNext()`) | Yes (`hasNext()`) |
 | **Ideal Use Case** | Classic desktop pagination with page numbers (`1, 2, 3... 45`) | Infinite scroll, mobile apps, high-throughput microservices |
 
 ``` mermaid
@@ -200,7 +200,7 @@ sequenceDiagram
 
 ---
 
-## 5. High-Efficiency Projections: Record-Based DTOs
+## 5. High-efficiency projections: Record-based dtos
 
 Fetching complete entities when you only need a few columns wastes memory, CPU serialization time, and network bandwidth.
 
@@ -225,7 +225,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Spring Data JPA Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Spring data JPA evolution
 
 ``` mermaid
 flowchart TD
@@ -244,7 +244,7 @@ flowchart TD
     SB3 ==>|Query Performance Optimization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Repository Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -254,15 +254,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Data JPA Official Reference Documentation](https://docs.spring.io/spring-data/jpa/reference/) — Authoritative guide for repository query methods, projections, and paging.
-- [Spring Data Common: Query Methods](https://docs.spring.io/spring-data/commons/reference/repositories/query-methods.html) — Query creation keywords and syntax tree.
-- [Vlad Mihalcea: The Best Way to Map a DTO Projection](https://vladmihalcea.com/the-best-way-to-map-a-projection-query-to-a-dto-with-jpa-and-hibernate/) — Performance benchmarks comparing projections.
+- [Spring Data JPA Official Reference Documentation](https://docs.spring.io/spring-data/jpa/reference/), Authoritative guide for repository query methods, projections, and paging.
+- [Spring Data Common: Query Methods](https://docs.spring.io/spring-data/commons/reference/repositories/query-methods.html), Query creation keywords and syntax tree.
+- [Vlad Mihalcea: The Best Way to Map a DTO Projection](https://vladmihalcea.com/the-best-way-to-map-a-projection-query-to-a-dto-with-jpa-and-hibernate/), Performance benchmarks comparing projections.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why does `Slice<T>` query for `pageSize + 1` elements instead of running a `COUNT(*)` query?"
     **Answer**: By requesting one extra row (`limit + 1`), Spring Data checks if another page exists (`hasNext()`) without incurring the heavy performance penalty of a full database `COUNT(*)` scan.
@@ -275,8 +275,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0012: JDBC vs Hibernate ORM Internals**](0012-jdbc-vs-hibernate-orm-internals.md) | [**All Lessons**](index.md) | [➡️ **0014: Entity Relationships, Lazy Loading & N+1 Problem**](0014-entity-relationships-lazy-loading-n-plus-1.md) |
+| [**0012: JDBC vs Hibernate ORM Internals**](0012-jdbc-vs-hibernate-orm-internals.md) | [**All Lessons**](index.md) | [ **0014: Entity Relationships, Lazy Loading & N+1 Problem**](0014-entity-relationships-lazy-loading-n-plus-1.md) |

@@ -2,15 +2,15 @@
 icon: lucide/layers
 ---
 
-# 0005: Spring Profiles & Multi-Environment Configuration
+# 0005: Spring profiles and multi-environment configuration
 
 Enterprise applications must run seamlessly across multiple deployment stages: **local developer machines (`dev`), integration environments (`stage`), and live clusters (`prod`)**.
 
-In this lesson, we explore **Spring Profiles**, configuration loading precedence, type-safe **`@ConfigurationProperties`**, and how to activate profile-specific beans cleanly.
+Applications must adjust configurations between local development, staging, and production. This lesson covers Spring profiles, configuration precedence, and type-safe `@ConfigurationProperties` binding.
 
 ---
 
-## 1. Why Profiles Matter
+## 1. Why profiles matter
 
 A single hard-coded configuration cannot serve all environments:
 
@@ -39,12 +39,12 @@ flowchart TD
 
 ---
 
-## 2. Configuration File Structure
+## 2. Configuration file structure
 
 Spring Boot automatically searches for profile-specific configuration files following the naming convention:
 `application-{profile}.properties` (or `.yml`).
 
-### Directory Layout
+### Directory layout
 ```text
 src/main/resources/
 ├── application.yml         # Shared base defaults across all environments
@@ -53,7 +53,7 @@ src/main/resources/
 └── application-prod.yml    # Production overrides (prod profile)
 ```
 
-### Multi-Document YAML Format (Clean Alternative)
+### Multi-document yaml format (clean alternative)
 You can combine all profiles into a single `application.yml` file using document separators (`---`):
 
 ```yaml
@@ -92,7 +92,7 @@ logging:
 
 ---
 
-## 3. Activating Profiles in Different Environments
+## 3. Activating profiles in different environments
 
 Spring Boot gives you multiple ways to activate profiles depending on where your code runs:
 
@@ -105,7 +105,7 @@ Spring Boot gives you multiple ways to activate profiles depending on where your
 
 ---
 
-## 4. Property Resolution Order (Precedence)
+## 4. Property resolution order (precedence)
 
 When a property is defined in multiple places, Spring Boot resolves them using a strict precedence order (higher overwrites lower):
 
@@ -119,7 +119,7 @@ flowchart TD
 
 ---
 
-## 5. Profile-Specific Bean Registration with `@Profile`
+## 5. Profile-specific bean registration with `@Profile`
 
 You can conditionally register beans based on active profiles:
 
@@ -132,7 +132,7 @@ flowchart TD
     ProfileCheck -->|prod| SES["AwsSesNotificationService<br/><i>(Sends real email via AWS SES)</i>"]
 ```
 
-### Code Example:
+### Code example
 
 ```java
 public interface NotificationService {
@@ -167,11 +167,11 @@ public class AwsSesNotificationService implements NotificationService {
 
 ---
 
-## 6. Type-Safe Configuration with `@ConfigurationProperties`
+## 6. Type-safe configuration with `@ConfigurationProperties`
 
 Instead of scattering `@Value` annotations across your codebase, use type-safe configuration classes:
 
-### The Configuration Class:
+### The configuration class
 ```java
 @Configuration
 @ConfigurationProperties(prefix = "app.payment")
@@ -190,7 +190,7 @@ public class PaymentGatewayProperties {
 }
 ```
 
-### The Matching YAML:
+### The matching yaml
 ```yaml
 app:
   payment:
@@ -201,7 +201,7 @@ app:
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4: Configuration & Environment Evolution
+## 7. Spring Boot 3 vs Spring Boot 4: Configuration environment evolution
 
 ``` mermaid
 flowchart TD
@@ -220,7 +220,7 @@ flowchart TD
     SB3 ==>|Cloud-Native Streamlining| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Configuration Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -248,15 +248,15 @@ public record PaymentGatewayProperties(
 
 ---
 
-## 8. Primary Source & Further Reading
+## 8. Primary sources and further reading
 
-- [Spring Boot Reference: Profiles](https://docs.spring.io/spring-boot/reference/features/profiles.html) — Official documentation on profiles and activation.
-- [Spring Boot Reference: Externalized Configuration](https://docs.spring.io/spring-boot/reference/features/external-config.html) — Complete 17-level property resolution hierarchy.
+- [Spring Boot Reference: Profiles](https://docs.spring.io/spring-boot/reference/features/profiles.html), Official documentation on profiles and activation.
+- [Spring Boot Reference: Externalized Configuration](https://docs.spring.io/spring-boot/reference/features/external-config.html), Complete 17-level property resolution hierarchy.
 - Related Cheatsheet: [Spring Core & Annotations Cheatsheet](../cheatsheet/spring-core-annotations.md)
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: Which source takes precedence if the same property is set in `application-prod.yml` and an OS Environment Variable?"
     **Answer**: OS Environment Variables take precedence over profile-specific configuration files, allowing container overrides at runtime.
@@ -269,10 +269,9 @@ public record PaymentGatewayProperties(
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0004: Aspect-Oriented Programming (AOP)**](0004-aspect-oriented-programming-aop.md) | [**All Lessons**](index.md) | [➡️ **0006: Servlet Architecture vs DispatcherServlet**](0006-servlet-architecture-and-dispatcherservlet.md) |
+| [**0004: Aspect-Oriented Programming (AOP)**](0004-aspect-oriented-programming-aop.md) | [**All Lessons**](index.md) | [ **0006: Servlet Architecture vs DispatcherServlet**](0006-servlet-architecture-and-dispatcherservlet.md) |
 
-💬 *Have any questions on Module 1? Ask anytime!*

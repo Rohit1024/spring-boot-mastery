@@ -2,9 +2,9 @@
 icon: lucide/plug-zap
 ---
 
-# 0081: MCP (Model Context Protocol) Server & Tool Integration with Spring AI
+# 0081: Model Context Protocol (MCP) server and tool integration with Spring AI
 
-Traditional LLMs are isolated within their parameter weights—they cannot query live inventory databases, cancel a customer's order, or execute internal microservice APIs directly.
+Traditional LLMs are isolated within their parameter weights, they cannot query live inventory databases, cancel a customer's order, or execute internal microservice APIs directly.
 
 Initially, developers built proprietary function-calling wrappers for each provider. **The Model Context Protocol (MCP)**, open-sourced by Anthropic and adopted across the AI industry, provides a universal, standardized open protocol connecting AI models to external tools, resources, and live data sources (the *"USB-C for AI integrations"*).
 
@@ -12,7 +12,7 @@ In this lesson, you will master the architecture of MCP (Hosts, Clients, Servers
 
 ---
 
-## 1. Model Context Protocol (MCP) Architecture
+## 1. Model context protocol (MCP) architecture
 
 ``` mermaid
 flowchart TD
@@ -54,7 +54,7 @@ flowchart TD
 
 ---
 
-## 2. Spring AI Function Calling Basics
+## 2. Spring AI function calling basics
 
 Before MCP, Spring AI introduced declarative Function Calling by registering standard `java.util.function.Function` beans annotated with `@Description`:
 
@@ -89,7 +89,7 @@ public class AiToolConfig {
 }
 ```
 
-### Invoking Tools via `ChatClient`
+### Invoking tools via `ChatClient`
 
 ```java
 @Service
@@ -115,11 +115,11 @@ public class CustomerSupportBotService {
 
 ---
 
-## 3. Building an Enterprise Spring AI MCP Server
+## 3. Building an enterprise Spring AI MCP server
 
 With Spring AI's native MCP integration, you can expose your entire Spring Boot microservice as an **MCP Server** accessible by any MCP client (including Claude Desktop, Cursor IDE, or other Spring Boot AI clients):
 
-### Maven Dependencies (`pom.xml`)
+### Maven dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -128,7 +128,7 @@ With Spring AI's native MCP integration, you can expose your entire Spring Boot 
 </dependency>
 ```
 
-### Exposing Executable MCP Tools with `@Tool`
+### Exposing executable MCP tools with `@Tool`
 
 ```java
 package com.example.mcp.tools;
@@ -168,7 +168,7 @@ public class OrderMcpToolSet {
 
 ---
 
-## 4. Configuring MCP Transports: STDIO vs SSE
+## 4. Configuring MCP transports: Stdio vs SSE
 
 Spring AI MCP supports two universal transport mechanisms in `application.yml`:
 
@@ -191,7 +191,7 @@ spring:
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -201,15 +201,15 @@ spring:
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Model Context Protocol (MCP) Specification](https://modelcontextprotocol.io/) — Anthropic's official MCP standard.
+- [Model Context Protocol (MCP) Specification](https://modelcontextprotocol.io/), Anthropic's official MCP standard.
 - [Spring AI MCP Reference Documentation](https://docs.spring.io/spring-ai/reference/api/mcp.html).
 - [Spring AI Function Calling Guide](https://docs.spring.io/spring-ai/reference/api/chatclient.html#_function_calling).
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the primary purpose of the Model Context Protocol (MCP)?"
     **Answer**: To provide an open, standardized protocol connecting AI models to external tools, databases, and microservices regardless of the specific LLM vendor.
@@ -222,30 +222,30 @@ spring:
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0080: RAG with Vector Stores & Embeddings**](0080-rag-vector-stores-embeddings-spring-ai.md) | [**All Lessons**](index.md) | 🏆 **Curriculum Completed! Review Cheatsheets & Debugging Guides** |
+| [**0080: RAG with Vector Stores & Embeddings**](0080-rag-vector-stores-embeddings-spring-ai.md) | [**All Lessons**](index.md) | 🏆 **Curriculum Completed! Review Cheatsheets & Debugging Guides** |
 
 ---
 
-# 🎓 Congratulations! You Have Mastered the Entire Spring Boot Masterclass Curriculum!
+## Course completion
 
 You have completed all **14 Modules (81 Lessons)** spanning:
-1. **Spring Core Fundamentals & IoC** (Lessons 0001–0005)
-2. **RESTful Web Services & Spring MVC** (Lessons 0006–0011)
-3. **Persistence Mastery: Hibernate & Spring Data JPA** (Lessons 0012–0017)
-4. **Observability, Logging & OpenAPI** (Lessons 0018–0022)
-5. **Spring Security 6, OAuth2 & JWT** (Lessons 0023–0027)
-6. **Packaging & Containerizing: Jib & GraalVM Native** (Lessons 0028–0032)
-7. **Batch Processing, Quartz & ShedLock** (Lessons 0033–0037)
-8. **Alternative Protocols: GraphQL, gRPC & WebSockets** (Lessons 0038–0041)
-9. **Architecture Paradigms: Modulith & Virtual Threads** (Lessons 0042–0044)
-10. **Vendor-Neutral Observability: Prometheus & OTel** (Lessons 0045–0047)
-11. **Enterprise Testing: JUnit 5, Mockito & Testcontainers** (Lessons 0048–0051)
-12. **High-Performance Caching & Messaging: Redis & Kafka** (Lessons 0052–0056)
-13. **Microservices, Kubernetes & Cloud CI/CD** (Lessons 0057–0071)
-14. **Reactive Programming (WebFlux) & Spring AI** (Lessons 0072–0081)
+1. **Spring Core Fundamentals & IoC** (Lessons 0001-0005)
+2. **RESTful Web Services & Spring MVC** (Lessons 0006-0011)
+3. **Persistence Mastery: Hibernate & Spring Data JPA** (Lessons 0012-0017)
+4. **Observability, Logging & OpenAPI** (Lessons 0018-0022)
+5. **Spring Security 6, OAuth2 & JWT** (Lessons 0023-0027)
+6. **Packaging & Containerizing: Jib & GraalVM Native** (Lessons 0028-0032)
+7. **Batch Processing, Quartz & ShedLock** (Lessons 0033-0037)
+8. **Alternative Protocols: GraphQL, gRPC & WebSockets** (Lessons 0038-0041)
+9. **Architecture Paradigms: Modulith & Virtual Threads** (Lessons 0042-0044)
+10. **Vendor-Neutral Observability: Prometheus & OTel** (Lessons 0045-0047)
+11. **Enterprise Testing: JUnit 5, Mockito & Testcontainers** (Lessons 0048-0051)
+12. **High-Performance Caching & Messaging: Redis & Kafka** (Lessons 0052-0056)
+13. **Microservices, Kubernetes & Cloud CI/CD** (Lessons 0057-0071)
+14. **Reactive Programming (WebFlux) & Spring AI** (Lessons 0072-0081)
 
 Explore the [**Architecture & Command Cheatsheets**](../cheatsheet/index.md), review [**Diagnostic Debugging Playbooks**](../debugging/index.md), and test yourself against [**Senior / Staff Interview Questions**](../interview/index.md)!

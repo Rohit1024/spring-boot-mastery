@@ -2,15 +2,15 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting Spring Boot Testing & Testcontainers Pitfalls
+# Troubleshooting Spring Boot testing and Testcontainers pitfalls
 
-A robust test suite is the single greatest asset for production software, but poorly architected tests can severely degrade developer velocity. Test suites that take 45 minutes to run, crash unpredictably in CI/CD pipelines, or pass locally against H2 only to fail in production PostgreSQL create severe bottlenecks.
+Slow or brittle test suites degrade developer velocity. Test suites that take 45 minutes to run, crash unpredictably in CI/CD pipelines, or pass locally against H2 only to fail in production PostgreSQL create bottlenecks.
 
-This playbook provides root-cause diagnostic workflows, reproducible scenarios, and production-tested solutions for Spring Boot testing, Mockito, MockMvc, and Testcontainers failures.
+Here are diagnostic workflows and fixes for Spring Boot testing, Mockito, MockMvc, and Testcontainers failures.
 
 ---
 
-## 1. Diagnostic Decision Tree
+## 1. Diagnostic decision tree
 
 ``` mermaid
 flowchart TD
@@ -27,28 +27,28 @@ flowchart TD
 
 ---
 
-## 2. Issue 1: Test Execution Slowness & Context Cache Thrashing
+## 2. Issue 1: Test execution slowness and context cache thrashing
 
-### Symptoms & Root Cause
-A test suite containing 100 test classes takes over 25 minutes to execute. Looking at logs, Spring's banner prints dozens of times, indicating the `ApplicationContext` is being repeatedly destroyed and recreated.
+### Symptoms and root cause
+A test suite containing 100 test classes takes over 25 minutes to execute. Looking at logs, Spring banner prints dozens of times, indicating the `ApplicationContext` is being repeatedly destroyed and recreated.
 
 ``` mermaid
 flowchart TD
-    subgraph AntiPattern["❌ Context Thrashing Anti-Pattern"]
+    subgraph AntiPattern["Context thrashing anti-pattern"]
         TestA["TestClassA (@MockitoBean OrderService)"]
         Dirties["@DirtiesContext / Unique Mock Config"]
         TestB["TestClassB (@MockitoBean PaymentService)"]
         
-        TestA --> Dirties -->|Context Cache Evicted!| Rebuild["Re-boots full Spring Context (Slow!)"]
+        TestA --> Dirties -->|Context Cache Evicted| Rebuild["Re-boots full Spring Context (Slow)"]
         Rebuild --> TestB
     end
 
-    subgraph BestPractice["✅ Reused Cached Context"]
+    subgraph BestPractice["Reused cached context"]
         Test1["TestClass1"]
         SharedContext[("Shared Cached ApplicationContext")]
         Test2["TestClass2"]
         
-        Test1 --> SharedContext -->|Zero Reboots! Instant Execution!| Test2
+        Test1 --> SharedContext -->|Zero Reboots| Test2
     end
 
     AntiPattern ~~~ BestPractice
@@ -56,13 +56,13 @@ flowchart TD
 
 ### Resolution
 1. **Eliminate `@DirtiesContext`**: Rely on transactional rollbacks (`@Transactional` on test classes) to clean database state rather than destroying the entire JVM Spring context.
-2. **Standardize Context Overrides**: Group beans into a shared base test configuration rather than declaring unique `@MockitoBean` configurations in every individual test file.
+2. **Standardize context overrides**: Group beans into a shared base test configuration rather than declaring unique `@MockitoBean` configurations in every individual test file.
 
 ---
 
-## 3. Issue 2: Testcontainers Docker Daemon Connection Failure in CI/CD
+## 3. Issue 2: Testcontainers Docker daemon connection failure in CI/CD
 
-### Symptoms & Error Log
+### Symptoms
 Tests execute successfully on local developer laptops, but fail immediately in GitLab CI, GitHub Actions, or Jenkins with:
 
 ```text
@@ -71,7 +71,7 @@ Caused by: com.github.dockerjava.api.exception.DockerClientException:
 Could not find a valid Docker environment. Please see logs and check configuration
 ```
 
-### Root Cause
+### Root cause
 The CI/CD runner container lacks permissions or access to the host Docker daemon socket (`/var/run/docker.sock`).
 
 ### Resolution
@@ -91,25 +91,23 @@ jobs:
       - name: Run Tests with Testcontainers
         run: mvn clean test
 ```
-*(On local Docker Desktop, ensure "Allow default Docker socket" is enabled in settings).*
 
 ---
 
-## 4. Issue 3: MockMvc JSON Path Assertion Failures on Numbers
+## 4. Issue 3: MockMvc JSON path assertion failures on numbers
 
-### Symptoms & Error Log
+### Symptoms
 ```text
 java.lang.AssertionError: JSON path "$.totalAmount" expected:<1200.00> but was:<1200.0>
 ```
 
-### Root Cause
+### Root cause
 Jackson serializes `BigDecimal` with trailing zeros stripped or formatted as double floating-point numbers unless explicit formatting or Hamcrest `closeTo` / `comparesEqualTo` is used.
 
 ### Resolution
 Use Hamcrest numeric matchers:
 
 ```java
-// ✅ MATCHES NUMERIC VALUE REGARDLESS OF TRAILING ZERO FORMATTING
 mockMvc.perform(get("/api/v1/orders/1"))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.totalAmount", closeTo(1200.00, 0.001)));
@@ -117,8 +115,8 @@ mockMvc.perform(get("/api/v1/orders/1"))
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Prometheus & OpenTelemetry**](prometheus-scraping-and-opentelemetry-collector-pitfalls.md) | [**All Debugging Guides**](index.md) | [➡️ **Troubleshooting Redis Caching & Kafka Lag**](redis-cache-stampede-and-kafka-consumer-lag.md) |
+| [**Troubleshooting Prometheus and OpenTelemetry**](prometheus-scraping-and-opentelemetry-collector-pitfalls.md) | [**All debugging guides**](index.md) | [**Troubleshooting Redis caching and Kafka lag**](redis-cache-stampede-and-kafka-consumer-lag.md) |

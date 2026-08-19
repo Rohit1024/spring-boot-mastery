@@ -2,9 +2,9 @@
 icon: lucide/database-zap
 ---
 
-# 0052: Spring Cache Abstraction with Redis
+# 0052: Spring Cache abstraction with Redis
 
-High-throughput applications spend substantial CPU cycles and database I/O executing identical database queries. Direct disk or index lookups introduce latency (10–100ms) that degrades throughput under heavy traffic.
+High-throughput applications spend substantial CPU cycles and database I/O executing identical database queries. Direct disk or index lookups introduce latency (10-100ms) that degrades throughput under heavy traffic.
 
 **Redis** is an in-memory, key-value data structure store capable of sub-millisecond read/write latencies. **Spring Cache Abstraction** decouples caching logic from business logic using transparent method annotations (`@Cacheable`, `@CachePut`, `@CacheEvict`), managed by a unified `CacheManager`.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring `RedisCacheManager` with JSON serial
 
 ---
 
-## 1. Spring Cache Architecture with Redis
+## 1. Spring cache architecture with Redis
 
 ``` mermaid
 flowchart TD
@@ -53,7 +53,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 Include Spring Data Redis and the Lettuce driver connection pool:
 
@@ -74,7 +74,7 @@ Include Spring Data Redis and the Lettuce driver connection pool:
 
 ---
 
-## 3. Production `RedisCacheManager` Configuration
+## 3. Production `RedisCacheManager` configuration
 
 By default, Spring Boot serializes cache values using Java standard serialization (`JdkSerializationRedisSerializer`), producing unreadable binary payloads and fragile class-versioning issues. In production, configure `GenericJackson2JsonRedisSerializer` with dynamic per-cache TTLs:
 
@@ -123,7 +123,7 @@ public class RedisConfig {
 
 ---
 
-## 4. Cache Annotations: `@Cacheable`, `@CachePut` & `@CacheEvict`
+## 4. Cache annotations: `@Cacheable`, `@CachePut` `@CacheEvict`
 
 ```java
 package com.example.service;
@@ -202,7 +202,7 @@ public class ProductService {
 
 ---
 
-## 5. Caching Strategies & Distributed Pitfalls
+## 5. Caching strategies distributed pitfalls
 
 | Caching Pattern / Pitfall | Mechanism | Mitigation / Best Practice |
 | :--- | :--- | :--- |
@@ -214,7 +214,7 @@ public class ProductService {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -224,15 +224,15 @@ public class ProductService {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Cache Abstraction Documentation](https://docs.spring.io/spring-framework/reference/integration/cache.html) — Annotations, SpEL expressions, and `CacheManager` lifecycle.
-- [Spring Data Redis Reference Manual](https://docs.spring.io/spring-data/redis/reference/) — Lettuce drivers, `RedisCacheConfiguration`, and custom serializers.
-- [Redis Official Documentation](https://redis.io/docs/) — Data structures, expiration semantics, and Redis Cluster topology.
+- [Spring Cache Abstraction Documentation](https://docs.spring.io/spring-framework/reference/integration/cache.html), Annotations, SpEL expressions, and `CacheManager` lifecycle.
+- [Spring Data Redis Reference Manual](https://docs.spring.io/spring-data/redis/reference/), Lettuce drivers, `RedisCacheConfiguration`, and custom serializers.
+- [Redis Official Documentation](https://redis.io/docs/), Data structures, expiration semantics, and Redis Cluster topology.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the difference in behavior between `@Cacheable` and `@CachePut`?"
     **Answer**: `@Cacheable` skips method execution if the key exists in cache, whereas `@CachePut` always executes the method and updates the cache with the new return value.
@@ -245,10 +245,10 @@ public class ProductService {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0051: Database Integration Testing with Testcontainers**](0051-database-integration-testing-testcontainers.md) | [**All Lessons**](index.md) | [➡️ **0053: Redis Pub/Sub Messaging for Real-Time Event Fanout**](0053-redis-pub-sub-messaging.md) |
+| [**0051: Database Integration Testing with Testcontainers**](0051-database-integration-testing-testcontainers.md) | [**All Lessons**](index.md) | [ **0053: Redis Pub/Sub Messaging for Real-Time Event Fanout**](0053-redis-pub-sub-messaging.md) |
 
 🎉 **Lesson 0052 completed! Proceed to Lesson 0053 to master real-time distributed messaging with Redis Pub/Sub.**

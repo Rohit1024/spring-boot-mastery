@@ -2,7 +2,7 @@
 icon: lucide/database
 ---
 
-# 0075: Non-Blocking Persistence with R2DBC & Reactive Redis
+# 0075: Non-blocking persistence with R2DBC and Reactive Redis
 
 For years, building end-to-end reactive microservices with relational databases was impossible because the **Java Database Connectivity (JDBC)** standard was designed around blocking socket I/O. Using Hibernate or standard JPA in a WebFlux app blocks Netty event loop threads and destroys system concurrency.
 
@@ -12,7 +12,7 @@ In this lesson, you will master Spring Data R2DBC repositories, programmatic que
 
 ---
 
-## 1. End-to-End Non-Blocking Data Pipeline Architecture
+## 1. End-to-end non-blocking data pipeline architecture
 
 ``` mermaid
 flowchart TD
@@ -47,7 +47,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 Include Spring Data R2DBC, PostgreSQL R2DBC driver, and Reactive Redis:
 
@@ -66,7 +66,7 @@ Include Spring Data R2DBC, PostgreSQL R2DBC driver, and Reactive Redis:
 </dependency>
 ```
 
-### Configuration (`application.yml`)
+### Configuration (`applicationyml`)
 
 ```yaml
 spring:
@@ -88,7 +88,7 @@ spring:
 
 ---
 
-## 3. R2DBC Entity & Reactive Repository
+## 3. R2DBC entity reactive repository
 
 > [!NOTE]
 > **R2DBC vs JPA**: R2DBC entities do **not** use JPA `@Entity` or Hibernate annotations. Use Spring Data's `@Table`, `@Id`, and `@Column` annotations. There is no lazy-loading or dirty checking in R2DBC.
@@ -121,7 +121,7 @@ public class Product {
 }
 ```
 
-### Reactive Repository Interface
+### Reactive repository interface
 
 ```java
 package com.example.repository;
@@ -145,7 +145,7 @@ public interface ProductR2dbcRepository extends R2dbcRepository<Product, Long> {
 
 ---
 
-## 4. Reactive Caching with `ReactiveRedisTemplate`
+## 4. Reactive caching with `ReactiveRedisTemplate`
 
 Implement a pure reactive Cache-Aside pattern:
 
@@ -208,7 +208,7 @@ public class ProductReactiveService {
 
 ---
 
-## 5. Dynamic Queries with `DatabaseClient`
+## 5. Dynamic queries with `DatabaseClient`
 
 For complex dynamic filters or multi-table aggregations where derived queries are insufficient:
 
@@ -250,7 +250,7 @@ public class ProductSearchService {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -260,7 +260,7 @@ public class ProductSearchService {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
 - [R2DBC Official Specification & Drivers](https://r2dbc.io/).
 - [Spring Data R2DBC Reference Documentation](https://docs.spring.io/spring-data/r2dbc/reference/).
@@ -268,7 +268,7 @@ public class ProductSearchService {
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why cannot JPA/Hibernate be used directly inside a high-throughput Spring WebFlux application?"
     **Answer**: Because JPA is built on blocking JDBC APIs that block Netty event loop threads, rapidly starving worker threads and crashing throughput.
@@ -281,10 +281,10 @@ public class ProductSearchService {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0074: Building Reactive REST APIs with Spring WebFlux**](0074-building-reactive-rest-apis-spring-webflux.md) | [**All Lessons**](index.md) | [➡️ **0076: Real-Time Streaming with Server-Sent Events (SSE)**](0076-realtime-streaming-server-sent-events-sse.md) |
+| [**0074: Building Reactive REST APIs with Spring WebFlux**](0074-building-reactive-rest-apis-spring-webflux.md) | [**All Lessons**](index.md) | [ **0076: Real-Time Streaming with Server-Sent Events (SSE)**](0076-realtime-streaming-server-sent-events-sse.md) |
 
 🎉 **Lesson 0075 completed! Proceed to Lesson 0076 to master real-time live data streaming with Server-Sent Events (SSE).**

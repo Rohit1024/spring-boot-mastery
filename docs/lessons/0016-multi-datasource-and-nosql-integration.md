@@ -2,15 +2,15 @@
 icon: lucide/database-zap
 ---
 
-# 0016: Multi-DataSource Architecture & NoSQL Integration (PostgreSQL + MySQL + MongoDB)
+# 0016: Multi-DataSource architecture and NoSQL integration (PostgreSQL, MySQL, MongoDB)
 
-Modern enterprise architectures rarely rely on a single database engine. Real-world systems frequently adopt **Polyglot Persistence** — persisting core transactional ledger records in PostgreSQL, querying analytics/reporting from MySQL replicas, and ingesting high-throughput unstructured event payloads into MongoDB.
+Modern enterprise architectures rarely rely on a single database engine. Real-world systems frequently adopt **Polyglot Persistence**, persisting core transactional ledger records in PostgreSQL, querying analytics/reporting from MySQL replicas, and ingesting high-throughput unstructured event payloads into MongoDB.
 
 In this lesson, you will configure **Multiple Relational DataSources** in Spring Boot 3.x, implement **Dynamic Read/Write Replica Routing** with `AbstractRoutingDataSource`, and seamlessly integrate **Spring Data MongoDB** alongside JPA.
 
 ---
 
-## 1. Polyglot Persistence Architecture
+## 1. Polyglot persistence architecture
 
 ``` mermaid
 flowchart TD
@@ -34,7 +34,7 @@ flowchart TD
 
 ---
 
-## 2. Configuring Multiple Relational DataSources
+## 2. Configuring multiple relational datasources
 
 When you define more than one DataSource, Spring Boot disables its automatic DataSource configuration. You must explicitly configure:
 1. `DataSource` (HikariCP pool)
@@ -62,7 +62,7 @@ spring:
 
 ---
 
-### Step 1: Configure Primary DataSource (PostgreSQL)
+### Step 1: Configure primary datasource (PostgreSQL)
 
 ```java
 package com.example.demo.config;
@@ -126,7 +126,7 @@ public class PrimaryDataSourceConfig {
 
 ---
 
-### Step 2: Configure Secondary DataSource (MySQL)
+### Step 2: Configure secondary datasource (MySQL)
 
 ```java
 package com.example.demo.config;
@@ -187,7 +187,7 @@ public class SecondaryDataSourceConfig {
 
 ---
 
-## 3. Dynamic Read/Write Replica Routing (`AbstractRoutingDataSource`)
+## 3. Dynamic read/write replica routing (`abstractroutingdatasource`)
 
 In high-scale architectures with master-replica database clusters, write mutations must go to the **Master (Writer)** database, while read-only transactions can be routed to **Read Replicas (Readers)**:
 
@@ -231,11 +231,11 @@ public class TransactionRoutingDataSource extends AbstractRoutingDataSource {
 
 ---
 
-## 4. Coexisting with NoSQL: Spring Data MongoDB
+## 4. Coexisting with nosql: Spring data MongoDB
 
 When combining relational JPA with MongoDB, Spring Boot allows both repository types to run side-by-side seamlessly.
 
-### MongoDB Document Definition:
+### MongoDB document definition
 
 ```java
 package com.example.demo.document;
@@ -255,7 +255,7 @@ public record AuditEventDocument(
 ) {}
 ```
 
-### MongoDB Repository:
+### MongoDB repository
 
 ```java
 package com.example.demo.repository.mongo;
@@ -271,7 +271,7 @@ public interface AuditEventRepository extends MongoRepository<AuditEventDocument
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Multi-Database & Vector Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Multi-database vector evolution
 
 ``` mermaid
 flowchart TD
@@ -290,7 +290,7 @@ flowchart TD
     SB3 ==>|Polyglot Cloud Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Architecture Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -300,15 +300,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring Boot Reference: Two DataSources](https://docs.spring.io/spring-boot/reference/data/sql.html#data.sql.datasource.two-datasources) — Multi-datasource configuration guidelines.
-- [Spring Data MongoDB Reference](https://docs.spring.io/spring-data/mongodb/reference/) — Complete documentation for MongoDB repositories and templates.
-- [Baeldung: Dynamic Datasource Routing](https://www.baeldung.com/spring-abstract-routing-data-source) — Routing with `AbstractRoutingDataSource`.
+- [Spring Boot Reference: Two DataSources](https://docs.spring.io/spring-boot/reference/data/sql.html#data.sql.datasource.two-datasources), Multi-datasource configuration guidelines.
+- [Spring Data MongoDB Reference](https://docs.spring.io/spring-data/mongodb/reference/), Complete documentation for MongoDB repositories and templates.
+- [Baeldung: Dynamic Datasource Routing](https://www.baeldung.com/spring-abstract-routing-data-source), Routing with `AbstractRoutingDataSource`.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why does Spring Boot require explicit `EntityManagerFactory` and `TransactionManager` beans when configuring two DataSources?"
     **Answer**: Multiple DataSources cause Spring Boot's automatic single-datasource autoconfiguration to back off; explicit beans assign each repository package to its corresponding database and transaction manager.
@@ -321,8 +321,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0015: Transaction Management & Propagation**](0015-transaction-management-and-propagation.md) | [**All Lessons**](index.md) | [➡️ **0017: Entity Auditing & Hibernate Envers**](0017-entity-auditing-and-spring-data-envers.md) |
+| [**0015: Transaction Management & Propagation**](0015-transaction-management-and-propagation.md) | [**All Lessons**](index.md) | [ **0017: Entity Auditing & Hibernate Envers**](0017-entity-auditing-and-spring-data-envers.md) |

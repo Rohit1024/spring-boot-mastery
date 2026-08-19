@@ -2,18 +2,18 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting Hibernate N+1 Queries & `LazyInitializationException`
+# Troubleshooting Hibernate N+1 queries and `LazyInitializationException`
 
-Two of the most frequent and costly production defects in Spring Boot applications using JPA/Hibernate are **undetected N+1 query storms** and the infamous `org.hibernate.LazyInitializationException: could not initialize proxy - no Session`.
+Two frequent production defects in Spring Boot applications using JPA/Hibernate are undetected N+1 query storms and `org.hibernate.LazyInitializationException: could not initialize proxy - no Session`.
 
-This debugging playbook provides root-cause diagrams, logging configurations, and bulletproof remediation patterns.
+Here is how to diagnose and fix both problems.
 
 ---
 
 ## 1. Issue 1: `LazyInitializationException: could not initialize proxy - no Session`
 
-### The Symptom
-When serializing an entity in the Controller layer or accessing a lazy relationship outside of a `@Transactional` service boundary, your application crashes with:
+### Symptoms
+When serializing an entity in the controller layer or accessing a lazy relationship outside of a `@Transactional` service boundary, the application crashes with:
 
 ```text
 org.hibernate.LazyInitializationException: could not initialize proxy [com.example.demo.domain.Customer#101] - no Session
@@ -23,7 +23,7 @@ org.hibernate.LazyInitializationException: could not initialize proxy [com.examp
     at com.example.demo.controller.OrderController.getOrder(OrderController.java:34)
 ```
 
-### Root Cause Architecture
+### Root cause architecture
 
 ``` mermaid
 sequenceDiagram
@@ -42,24 +42,24 @@ sequenceDiagram
     DB-->>PC: Order row (customer_id = 101)
     Note over PC: Injects ByteBuddy CGLIB Proxy for Customer
     PC-->>Service: Managed Order Entity
-    Note over Service,PC: Transaction Commits -> Session CLOSED!
+    Note over Service,PC: Transaction Commits -> Session CLOSED
     Service-->>Controller: Returns Detached Order Entity
 
     Controller->>Controller: order.getCustomer().getName()
-    Note over Controller: Customer is an uninitialized proxy!<br/>Session is already CLOSED!<br/>💥 Throws LazyInitializationException!
+    Note over Controller: Customer is an uninitialized proxy.<br/>Session is already CLOSED.<br/>Throws LazyInitializationException.
     Controller-->>Client: 500 Internal Server Error
 ```
 
 ---
 
-### The Anti-Pattern: `spring.jpa.open-in-view=true` (OSIV)
+### The OSIV trap (`spring.JPA.open-in-view=true`)
 
-Many tutorials recommend setting `spring.jpa.open-in-view=true` (Open Session In View). **Do NOT do this in production!**
-- **Why OSIV is dangerous**: It holds database connections open across the entire HTTP request-response cycle, including template rendering, JSON serialization, and slow client network transfers. Under moderate traffic, your database connection pool (HikariCP) is exhausted within seconds, bringing down the entire microservice!
+Many tutorials recommend setting `spring.jpa.open-in-view=true`. Avoid this in production.
+- **Why OSIV is dangerous**: It holds database connections open across the entire HTTP request cycle, including template rendering, JSON serialization, and slow client network transfers. Under moderate traffic, connection pools (HikariCP) exhaust quickly, bringing down the service.
 
 ---
 
-### The Production Resolutions
+### Production resolutions
 
 #### Solution A: JPQL `JOIN FETCH`
 Fetch the necessary relationships inside the service boundary:
@@ -68,7 +68,7 @@ Fetch the necessary relationships inside the service boundary:
 Optional<Order> findByIdWithCustomer(@Param("id") Long id);
 ```
 
-#### Solution B: DTO Projections (Recommended)
+#### Solution B: DTO projections (Recommended)
 Map the required fields directly into a record DTO within the `@Transactional` boundary:
 ```java
 @Transactional(readOnly = true)
@@ -81,12 +81,12 @@ public OrderResponse getOrderById(Long id) {
 
 ---
 
-## 2. Issue 2: Silent N+1 Query Storms
+## 2. Issue 2: Silent N+1 query storms
 
-### The Symptom
+### Symptoms
 Database CPU spikes to 100%, latency climbs to several seconds, and HikariCP connection timeouts occur under load.
 
-### Enabling Diagnostic SQL Logging
+### Enabling diagnostic SQL logging
 
 To expose hidden N+1 queries in development, add the following to `application.yml`:
 
@@ -100,21 +100,21 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        generate_statistics: true # Prints query execution count and execution metrics
+        generate_statistics: true # Prints query execution count and metrics
 ```
 
-### Diagnostic Output Example:
+### Diagnostic output example
 ```text
 DEBUG org.hibernate.SQL: SELECT o.id, o.order_number FROM orders o
 DEBUG org.hibernate.SQL: SELECT c.id, c.name FROM customers c WHERE c.id = ?
 DEBUG org.hibernate.SQL: SELECT c.id, c.name FROM customers c WHERE c.id = ?
 DEBUG org.hibernate.SQL: SELECT c.id, c.name FROM customers c WHERE c.id = ?
-... (Repeated 200 times for 200 orders!)
+... (Repeated 200 times for 200 orders)
 ```
 
 ---
 
-### Diagnostic Flowchart & Resolution Matrix
+### Diagnostic flowchart and resolution matrix
 
 ``` mermaid
 flowchart TD
@@ -127,8 +127,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting REST API Exceptions**](rest-validation-exception-debugging.md) | [**All Debugging Guides**](index.md) | [➡️ **Transaction Rollback & Proxy Pitfalls**](transaction-rollback-and-proxy-pitfalls.md) |
+| [**Troubleshooting REST API exceptions**](rest-validation-exception-debugging.md) | [**All debugging guides**](index.md) | [**Transaction rollback and proxy pitfalls**](transaction-rollback-and-proxy-pitfalls.md) |

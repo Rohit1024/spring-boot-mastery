@@ -2,7 +2,7 @@
 icon: lucide/sliders
 ---
 
-# 0061: Centralized Configuration with Spring Cloud Config Server & Dynamic Bus Refresh
+# 0061: Centralized configuration with Spring Cloud Config Server and dynamic bus refresh
 
 In a microservices ecosystem with dozens of services deployed across `dev`, `stage`, and `prod` environments, managing scattered `application.yml` files becomes an operational nightmare. Updating a feature flag or rotating a database password should never require rebuilding and redeploying container images across the cluster.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring the Config Server, connecting Config
 
 ---
 
-## 1. Centralized Configuration & Bus Refresh Flow
+## 1. Centralized configuration bus refresh flow
 
 ``` mermaid
 flowchart TD
@@ -57,9 +57,9 @@ flowchart TD
 
 ---
 
-## 2. Setting Up Spring Cloud Config Server
+## 2. Setting up Spring Cloud config server
 
-### Dependencies (`pom.xml`)
+### Dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -72,7 +72,7 @@ flowchart TD
 </dependency>
 ```
 
-### Application Bootstrap
+### Application bootstrap
 
 ```java
 package com.example.configserver;
@@ -90,7 +90,7 @@ public class ConfigServerApplication {
 }
 ```
 
-### Server Configuration (`application.yml`)
+### Server configuration (`applicationyml`)
 
 ```yaml
 server:
@@ -114,11 +114,11 @@ spring:
 
 ---
 
-## 3. Client Integration with `spring.config.import`
+## 3. Client integration with `spring.config.import`
 
 In Spring Boot 3.x, bootstrap properties are unified into standard `application.yml` via the `spring.config.import` directive:
 
-### Client Dependencies (`pom.xml`)
+### Client dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -135,7 +135,7 @@ In Spring Boot 3.x, bootstrap properties are unified into standard `application.
 </dependency>
 ```
 
-### Client Configuration (`application.yml`)
+### Client configuration (`applicationyml`)
 
 ```yaml
 spring:
@@ -156,7 +156,7 @@ management:
 
 ---
 
-## 4. Dynamic Reloading with `@RefreshScope`
+## 4. Dynamic reloading with `@RefreshScope`
 
 Beans annotated with `@RefreshScope` are lazily recreated upon receiving a refresh event, dynamically injecting modified configuration properties without dropping user connections:
 
@@ -190,7 +190,7 @@ public class OrderPricingService {
 
 ---
 
-## 5. Cluster-Wide Dynamic Refresh via Spring Cloud Bus
+## 5. Cluster-wide dynamic refresh via Spring Cloud bus
 
 When running 20 instances of `order-service`, calling individual `/actuator/refresh` on each IP is impossible. **Spring Cloud Bus** links instances via a Kafka or RabbitMQ event topic:
 
@@ -208,7 +208,7 @@ curl -X POST http://api-gateway:8080/actuator/busrefresh
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -218,15 +218,15 @@ curl -X POST http://api-gateway:8080/actuator/busrefresh
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Cloud Config Official Reference](https://docs.spring.io/spring-cloud-config/reference/) — Git, Vault, and File backend setups.
-- [Spring Cloud Bus Documentation](https://docs.spring.io/spring-cloud-bus/reference/) — Event broadcasting with Kafka and RabbitMQ.
+- [Spring Cloud Config Official Reference](https://docs.spring.io/spring-cloud-config/reference/), Git, Vault, and File backend setups.
+- [Spring Cloud Bus Documentation](https://docs.spring.io/spring-cloud-bus/reference/), Event broadcasting with Kafka and RabbitMQ.
 - [Spring Boot Externalized Configuration](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.files.configtree).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the purpose of `@RefreshScope` in a Spring Cloud microservice?"
     **Answer**: It marks a Spring bean to be dynamically re-instantiated with new property values when a refresh event occurs, avoiding the need to restart the JVM.
@@ -239,10 +239,10 @@ curl -X POST http://api-gateway:8080/actuator/busrefresh
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0060: API Gateway Routing & Security with Spring Cloud Gateway**](0060-api-gateway-routing-security-spring-cloud.md) | [**All Lessons**](index.md) | [➡️ **0062: Distributed Tracing with Micrometer & Zipkin**](0062-distributed-tracing-micrometer-zipkin.md) |
+| [**0060: API Gateway Routing & Security with Spring Cloud Gateway**](0060-api-gateway-routing-security-spring-cloud.md) | [**All Lessons**](index.md) | [ **0062: Distributed Tracing with Micrometer & Zipkin**](0062-distributed-tracing-micrometer-zipkin.md) |
 
 🎉 **Lesson 0061 completed! Proceed to Lesson 0062 to master distributed tracing with Micrometer Tracing and Zipkin/Tempo.**

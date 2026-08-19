@@ -2,7 +2,7 @@
 icon: lucide/shield-alert
 ---
 
-# 0035: Fault Tolerance in Spring Batch: Skip, Retry & Rollback Policies
+# 0035: Fault tolerance in Spring Batch: Skip, retry, and rollback policies
 
 In large-scale production batch jobs processing millions of records, errors are inevitable. A corrupted CSV row, an invalid email format, a transient database deadlock, or a temporary third-party API timeout will occur.
 
@@ -12,7 +12,7 @@ In this lesson, you will master Spring Batch's **Fault Tolerance subsystem**: co
 
 ---
 
-## 1. Fault Tolerance Decision Model: Abort vs Skip vs Retry
+## 1. Fault tolerance decision model: Abort vs skip vs retry
 
 ``` mermaid
 flowchart TD
@@ -33,7 +33,7 @@ flowchart TD
 
 ---
 
-## 2. Configuring Skip Policies (`skip` & `skipLimit`)
+## 2. Configuring skip policies (`skip` `skipLimit`)
 
 A Skip Policy allows Spring Batch to discard bad records and continue processing the remaining chunk without rolling back the entire job:
 
@@ -92,7 +92,7 @@ public class FaultTolerantBatchConfig {
 
 ---
 
-## 3. Configuring Retry with Exponential Backoff
+## 3. Configuring retry with exponential backoff
 
 For transient database deadlocks or network hiccups, retrying the operation with backoff prevents unnecessary job termination:
 
@@ -113,7 +113,7 @@ import org.springframework.web.client.ResourceAccessException;
 
 ---
 
-## 4. Auditing Skipped Records: `SkipListener`
+## 4. Auditing skipped records: `SkipListener`
 
 Never discard bad records silently! A `SkipListener` logs discarded items to an audit dead-letter database table or Kafka topic for remediation:
 
@@ -164,7 +164,7 @@ public class CustomerSkipListener implements SkipListener<CustomerCsvRecord, Cus
 
 ---
 
-## 5. Rollback Control: `noRollback`
+## 5. Rollback control: `noRollback`
 
 By default, any unhandled exception in a chunk triggers a transaction rollback. If certain business exceptions should NOT invalidate already processed items in the current transaction, mark them with `noRollback`:
 
@@ -175,7 +175,7 @@ By default, any unhandled exception in a chunk triggers a transaction rollback. 
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Fault Tolerance Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Fault tolerance evolution
 
 ``` mermaid
 flowchart TD
@@ -194,7 +194,7 @@ flowchart TD
     SB3 ==>|Resilience & Virtual Threading| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Fault Tolerance Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -204,15 +204,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Batch Fault Tolerance Documentation](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing.html#faultTolerance) — Official guide to skip, retry, and rollback configuration.
-- [Spring Retry Official Repository](https://github.com/spring-projects/spring-retry) — Backoff policies and retry templates.
-- [Baeldung: Spring Batch Skip and Retry](https://www.baeldung.com/spring-batch-skip-retry) — Hands-on examples of resilient batch steps.
+- [Spring Batch Fault Tolerance Documentation](https://docs.spring.io/spring-batch/reference/step/chunk-oriented-processing.html#faultTolerance), Official guide to skip, retry, and rollback configuration.
+- [Spring Retry Official Repository](https://github.com/spring-projects/spring-retry), Backoff policies and retry templates.
+- [Baeldung: Spring Batch Skip and Retry](https://www.baeldung.com/spring-batch-skip-retry), Hands-on examples of resilient batch steps.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What happens if the number of skipped records exceeds the configured `skipLimit(50)`?"
     **Answer**: Spring Batch terminates the step by throwing `SkipLimitExceededException` and marks the `JobExecution` status as `FAILED` in the `BATCH_JOB_EXECUTION` database table.
@@ -225,8 +225,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0034: Chunk-Oriented Processing**](0034-chunk-oriented-processing-readers-writers.md) | [**All Lessons**](index.md) | [➡️ **0036: Multi-Threaded Steps & Partitioning**](0036-multithreaded-steps-and-partitioning.md) |
+| [**0034: Chunk-Oriented Processing**](0034-chunk-oriented-processing-readers-writers.md) | [**All Lessons**](index.md) | [ **0036: Multi-Threaded Steps & Partitioning**](0036-multithreaded-steps-and-partitioning.md) |

@@ -2,7 +2,7 @@
 icon: lucide/server
 ---
 
-# 0007: Building RESTful CRUD APIs with Controllers, RequestMapping & HTTP Status Codes
+# 0007: Building RESTful CRUD APIs with controllers, RequestMapping, and HTTP status codes
 
 REST (Representational State Transfer) is the foundation of modern web and microservice communication. 
 
@@ -10,7 +10,7 @@ In this lesson, we master **Spring MVC REST controllers**, request parameter bin
 
 ---
 
-## 1. REST Architectural Foundations
+## 1. REST architectural foundations
 
 A RESTful API organizes operations around **Resources** identified by standardized URI paths (nouns, plural, hierarchical), acted upon using standard **HTTP Verbs**:
 
@@ -35,7 +35,7 @@ flowchart TD
 
 ---
 
-## 2. HTTP Method Semantics: Safety & Idempotency
+## 2. Http method semantics: Safety idempotency
 
 Understanding **Safety** and **Idempotency** is critical for building resilient distributed systems and handling network retries:
 
@@ -63,7 +63,7 @@ stateDiagram-v2
 
 ---
 
-## 3. Spring MVC Controller Annotations
+## 3. Spring mvc controller annotations
 
 Spring makes REST endpoint definition declarative:
 
@@ -83,11 +83,11 @@ flowchart TD
 
 ---
 
-## 4. Production-Ready REST CRUD Controller
+## 4. Production-ready REST CRUD controller
 
-Here is an enterprise-grade implementation of a `ProductController` showcasing clean parameter binding, pagination, `ResponseEntity<T>`, and `Location` URI headers:
+Here is an enterprise-grade implementation of a `ProductController` showing clean parameter binding, pagination, `ResponseEntity<T>`, and `Location` URI headers:
 
-### Data Transfer Objects (DTOs)
+### Data transfer objects (dtos)
 ```java
 package com.example.demo.dto;
 
@@ -98,7 +98,7 @@ public record UpdateProductRequest(String name, String description, BigDecimal p
 public record ProductResponse(Long id, String sku, String name, String description, BigDecimal price, Integer stockQuantity) {}
 ```
 
-### The REST Controller
+### The REST controller
 ```java
 package com.example.demo.controller;
 
@@ -173,7 +173,7 @@ public class ProductController {
 
 ---
 
-## 5. Best Practices for Enterprise REST APIs
+## 5. Best practices for enterprise REST APIs
 
 1. **Plural Nouns for Resources**: Use `/api/v1/users`, `/api/v1/orders` (never `/api/v1/getUser` or `/api/v1/deleteOrder`).
 2. **Explicit API Versioning**: Include the major version in the URI path (`/api/v1/...`) to prevent breaking external clients during contract changes.
@@ -182,7 +182,7 @@ public class ProductController {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: REST API & Client Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: REST API client evolution
 
 ``` mermaid
 flowchart TD
@@ -201,7 +201,7 @@ flowchart TD
     SB3 ==>|Client Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | REST API Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -231,15 +231,15 @@ public interface UserClient {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Framework Reference: REST Controllers](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller.html) — Controller mappings, parameters, and return types.
-- [RESTful Web Services Architectural Principles (Roy Fielding)](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm) — The original dissertation defining REST constraints.
-- [MDN Web Docs: HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) — Comprehensive HTTP status code specifications.
+- [Spring Framework Reference: REST Controllers](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller.html), Controller mappings, parameters, and return types.
+- [RESTful Web Services Architectural Principles (Roy Fielding)](https://www.ics.uci.edu/~fielding/pubs/dissertation/rest_arch_style.htm), The original dissertation defining REST constraints.
+- [MDN Web Docs: HTTP Status Codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status), Comprehensive HTTP status code specifications.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the semantic difference between the `@Controller` and `@RestController` annotations?"
     **Answer**: `@RestController` combines `@Controller` and `@ResponseBody`, ensuring all method return values are automatically serialized into the HTTP response body as JSON.
@@ -252,10 +252,9 @@ public interface UserClient {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0006: Servlet Architecture vs DispatcherServlet**](0006-servlet-architecture-and-dispatcherservlet.md) | [**All Lessons**](index.md) | [➡️ **0008: Spring Bean Validation**](0008-spring-bean-validation.md) |
+| [**0006: Servlet Architecture vs DispatcherServlet**](0006-servlet-architecture-and-dispatcherservlet.md) | [**All Lessons**](index.md) | [ **0008: Spring Bean Validation**](0008-spring-bean-validation.md) |
 
-💬 *Ready to protect your APIs against invalid payloads? Proceed to Bean Validation!*

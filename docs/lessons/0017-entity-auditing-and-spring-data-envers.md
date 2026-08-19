@@ -2,15 +2,15 @@
 icon: lucide/history
 ---
 
-# 0017: Entity Auditing with JPA & Historical Revision Tracking with Hibernate Envers
+# 0017: Entity auditing with JPA and revision tracking with Hibernate Envers
 
-In enterprise and fintech applications, tracking **who changed what, and when** is not just an architectural best practice — it is a strict legal and regulatory compliance requirement (SOC 2, ISO 27001, HIPAA, GDPR).
+In enterprise and fintech applications, tracking **who changed what, and when** is not just an architectural best practice, it is a strict legal and regulatory compliance requirement (SOC 2, ISO 27001, HIPAA, GDPR).
 
 In this lesson, you will implement automated entity auditing using **Spring Data JPA Auditing** (`@CreatedDate`, `@LastModifiedBy`, `AuditorAware`), capture full immutable historical deltas with **Hibernate Envers** (`@Audited`), and implement modern **Soft Deletes** in Hibernate 6.x.
 
 ---
 
-## 1. JPA Auditing vs Hibernate Envers
+## 1. JPA auditing vs Hibernate Envers
 
 Understanding the scope of both tools is critical for proper system design:
 
@@ -32,9 +32,9 @@ flowchart TD
 
 ---
 
-## 2. Setting Up Spring Data JPA Auditing
+## 2. Setting up Spring data JPA auditing
 
-### Step 1: Create a Reusable Auditable Base Entity
+### Step 1: Create a reusable auditable base entity
 
 ```java
 package com.example.demo.domain;
@@ -78,7 +78,7 @@ public abstract class AuditableBaseEntity {
 
 ---
 
-### Step 2: Implement `AuditorAware` (Integrating with Spring Security)
+### Step 2: Implement `AuditorAware` (integrating with Spring security)
 
 Spring Data needs to know who the "current user" is. We resolve this from the `SecurityContext`:
 
@@ -113,7 +113,7 @@ public class JpaAuditingConfig {
 
 ---
 
-## 3. Historical Versioning with Hibernate Envers
+## 3. Historical versioning with Hibernate Envers
 
 When an entity is annotated with `@Audited`, Hibernate Envers automatically provisions shadow audit tables (`orders_aud` and `revinfo`) to track every revision.
 
@@ -168,7 +168,7 @@ public class Order extends AuditableBaseEntity {
 
 ---
 
-## 4. Querying Historical Revisions with `AuditReader`
+## 4. Querying historical revisions with `AuditReader`
 
 You can query the exact state of an entity at any historical revision or timestamp using `AuditReader`:
 
@@ -210,7 +210,7 @@ public class OrderHistoryService {
 
 ---
 
-## 5. Modern Soft Deletes in Hibernate 6.x
+## 5. Modern soft deletes in Hibernate 6x
 
 In enterprise systems, physical `DELETE` statements are often forbidden. Hibernate 6.x provides `@SQLDelete` and `@SQLRestriction`:
 
@@ -236,7 +236,7 @@ public class User extends AuditableBaseEntity {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Auditing & Temporal Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Auditing temporal evolution
 
 ``` mermaid
 flowchart TD
@@ -255,25 +255,25 @@ flowchart TD
     SB3 ==>|Audit & Compliance Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Auditing Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
-| **Historical Versioning** | Relied on application-managed shadow `_AUD` tables via Envers triggers. | **Native Temporal Tables (SQL:2011)**: Integrates with database-native temporal table features (`AS OF SYSTEM TIME`). |
+| **Historical Versioning** | Relied on application-managed shadow `_AUD` tables via Envers triggers. | **Native Temporal Tables (SQL:2011)**: Integrates with database-native temporal table support (`AS OF SYSTEM TIME`). |
 | **Audit Context Enrichment** | Limited to username / principal extracted via `AuditorAware`. | **Distributed Context Auditing**: Automatically binds active W3C `traceId`, `spanId`, and client tenant into audit entities. |
 | **Soft Delete Annotations** | Hibernate 6 `@SQLDelete` and `@SQLRestriction`. | **Declarative `@SoftDelete` Annotation**: Built-in first-class soft delete annotation in Hibernate 7 / Jakarta Persistence 3.2. |
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Data JPA: Auditing](https://docs.spring.io/spring-data/jpa/reference/auditing.html) — Configuring `AuditingEntityListener` and `AuditorAware`.
-- [Hibernate Envers User Guide](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#envers) — Revision tables, metadata, and `AuditReader` queries.
-- [Vlad Mihalcea: How to Audit Entities with Hibernate Envers](https://vladmihalcea.com/hibernate-envers-audit-log-entity-change/) — Best practices for enterprise change logging.
+- [Spring Data JPA: Auditing](https://docs.spring.io/spring-data/jpa/reference/auditing.html), Configuring `AuditingEntityListener` and `AuditorAware`.
+- [Hibernate Envers User Guide](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#envers), Revision tables, metadata, and `AuditReader` queries.
+- [Vlad Mihalcea: How to Audit Entities with Hibernate Envers](https://vladmihalcea.com/hibernate-envers-audit-log-entity-change/), Best practices for enterprise change logging.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the key difference between Spring Data JPA Auditing and Hibernate Envers?"
     **Answer**: Spring Data JPA Auditing only maintains the current modification timestamps and actor, while Hibernate Envers captures full immutable revision deltas in shadow audit tables for every update.
@@ -286,11 +286,11 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0016: Multi-DataSource & NoSQL Integration**](0016-multi-datasource-and-nosql-integration.md) | [**All Lessons**](index.md) | [➡️ **0018: Spring Boot DevTools & LiveReload**](0018-spring-boot-devtools-and-livereload.md) |
+| [**0016: Multi-DataSource & NoSQL Integration**](0016-multi-datasource-and-nosql-integration.md) | [**All Lessons**](index.md) | [ **0018: Spring Boot DevTools & LiveReload**](0018-spring-boot-devtools-and-livereload.md) |
 
-🎉 **Congratulations on completing Module 3: Persistence Mastery — Hibernate, JPA & R2DBC!**
+🎉 **Congratulations on completing Module 3: Persistence Mastery, Hibernate, JPA & R2DBC!**
 

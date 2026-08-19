@@ -2,17 +2,17 @@
 icon: lucide/container
 ---
 
-# 0069: Containerization: Dockerfile Multi-Stage Builds & Docker Compose
+# 0069: Containerization: Dockerfile multi-stage builds and Docker Compose
 
 Deploying fat JARs directly onto cloud virtual machines creates environment inconsistencies ("works on my machine") and complicates dependency updates.
 
 In enterprise production, applications are packaged as lightweight, immutable **OCI/Docker container images**. Naive Dockerfiles bundle full Maven JDKs and source files into the runtime image, resulting in bloated 800MB+ images with severe security vulnerabilities.
 
-In this lesson, you will master writing secure 3-stage multi-stage Dockerfiles leveraging Spring Boot Layered JARs, running containers as non-root users, and orchestrating full microservice stacks (PostgreSQL, Kafka, Redis, Zipkin) using Docker Compose.
+In this lesson, you will master writing secure 3-stage multi-stage Dockerfiles using Spring Boot Layered JARs, running containers as non-root users, and orchestrating full microservice stacks (PostgreSQL, Kafka, Redis, Zipkin) using Docker Compose.
 
 ---
 
-## 1. Multi-Stage Build & Layered JAR Pipeline
+## 1. Multi-stage build layered jar pipeline
 
 ``` mermaid
 flowchart TD
@@ -54,7 +54,7 @@ flowchart TD
 
 ---
 
-## 2. Production Hardened Multi-Stage `Dockerfile`
+## 2. Production hardened multi-stage `Dockerfile`
 
 ```dockerfile
 # ==========================================
@@ -87,7 +87,7 @@ RUN java -Djarmode=layertools -jar app.jar extract
 FROM eclipse-temurin:21-jre-alpine AS runtime
 WORKDIR /app
 
-# 🔒 Security: Create non-root system group and user
+# Security: Create non-root system group and user
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
 # Copy layers in order of lowest to highest modification frequency
@@ -107,7 +107,7 @@ ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS org.springframework.boot.loader.la
 
 ---
 
-## 3. Local Microservices Stack with `docker-compose.yml`
+## 3. Local microservices stack with `docker-compose.yml`
 
 This unified Docker Compose environment orchestrates PostgreSQL, Redis, Apache Kafka (KRaft mode), Zipkin, and your Spring Boot application:
 
@@ -212,7 +212,7 @@ networks:
 
 ---
 
-## 4. Launching the Local Stack
+## 4. Launching the local stack
 
 ```bash
 # Build images and start all services in detached background mode
@@ -227,7 +227,7 @@ docker compose logs -f order-service
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -237,7 +237,7 @@ docker compose logs -f order-service
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
 - [Spring Boot Layered JAR Docker Packaging Guide](https://docs.spring.io/spring-boot/reference/packaging/container-images/dockerfiles.html).
 - [Docker Compose Specification](https://docs.docker.com/compose/compose-file/).
@@ -245,7 +245,7 @@ docker compose logs -f order-service
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why does extracting Spring Boot Layered JARs speed up Docker build and deployment times?"
     **Answer**: It isolates infrequently changing dependencies (90% of image size) into lower cached Docker layers, so only the small application layer (2MB) is rebuilt when code changes.
@@ -258,10 +258,10 @@ docker compose logs -f order-service
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0068: CAP Theorem in Action: Consistency vs Availability**](0068-cap-theorem-consistency-availability-payments.md) | [**All Lessons**](index.md) | [➡️ **0070: Kubernetes Orchestration: Pods, Deployments & Services**](0070-kubernetes-orchestration-pods-services.md) |
+| [**0068: CAP Theorem in Action: Consistency vs Availability**](0068-cap-theorem-consistency-availability-payments.md) | [**All Lessons**](index.md) | [ **0070: Kubernetes Orchestration: Pods, Deployments & Services**](0070-kubernetes-orchestration-pods-services.md) |
 
 🎉 **Lesson 0069 completed! Proceed to Lesson 0070 to master container orchestration in production Kubernetes clusters.**

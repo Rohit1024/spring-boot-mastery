@@ -2,20 +2,20 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting Spring Security 6 Filter Chains, JWT Exceptions & CORS Pitfalls
+# Troubleshooting Spring Security 6 filter chains, JWT exceptions, and CORS pitfalls
 
-Spring Security filters execute before requests reach `DispatcherServlet`. Consequently, standard Spring MVC exception handlers (`@RestControllerAdvice`, `@ExceptionHandler`) **cannot catch** security filter exceptions by default, often causing confusing 500 errors, silent 403 authorization denials, or blocked CORS preflight requests.
+Spring Security filters execute before requests reach `DispatcherServlet`. Consequently, standard Spring MVC exception handlers (`@RestControllerAdvice`, `@ExceptionHandler`) do not catch security filter exceptions by default. This causes confusing 500 errors, silent 403 authorization denials, or blocked CORS preflight requests.
 
-This diagnostic guide walks through the root causes and production solutions for the three most common Spring Security 6 runtime pitfalls.
+Here are the root causes and production solutions for the three most common Spring Security 6 runtime pitfalls.
 
 ---
 
-## 1. Issue 1: JWT Filter Exceptions Triggering 500 Instead of 401
+## 1. Issue 1: JWT filter exceptions triggering 500 instead of 401
 
-### The Symptom
+### Symptoms
 When a client sends an expired or tampered JWT, JJWT throws `ExpiredJwtException` or `SignatureException`. Instead of returning a clean RFC 7807 `401 Unauthorized` JSON envelope, the API crashes with an unformatted `500 Internal Server Error` and stack trace.
 
-### Root Cause Architecture
+### Root cause architecture
 
 ``` mermaid
 sequenceDiagram
@@ -27,22 +27,22 @@ sequenceDiagram
     participant EntryPoint as AuthenticationEntryPoint
 
     Client->>Filter: GET /api/orders (Expired JWT)
-    Filter->>Filter: jjwt.parseSignedClaims() -> Throws ExpiredJwtException!
+    Filter->>Filter: jjwt.parseSignedClaims() -> Throws ExpiredJwtException.
     
     rect rgb(255, 235, 235)
-        Note over Filter,Advice: 💥 FAILS TO REACH DISPATCHERSERVLET:<br/>Filter is upstream of MVC context.<br/>@RestControllerAdvice NEVER sees this exception!
+        Note over Filter,Advice: Fails to reach DispatcherServlet.<br/>Filter is upstream of MVC context.<br/>@RestControllerAdvice never sees this exception.
     end
 
     alt Unhandled in Filter
-        Filter-->>Client: 500 Internal Server Error (Tomcat Default Error Page) ❌
+        Filter-->>Client: 500 Internal Server Error (Tomcat Default Error Page)
     else Delegated via HandlerExceptionResolver
         Filter->>EntryPoint: resolver.resolveException(request, response, null, ex)
         EntryPoint->>Advice: Dispatches into MVC Global Exception Handler
-        Advice-->>Client: 401 Unauthorized (Clean ProblemDetail JSON) ✅
+        Advice-->>Client: 401 Unauthorized (Clean ProblemDetail JSON)
     end
 ```
 
-### The Fix: Delegating to `HandlerExceptionResolver`
+### The fix: Delegating to `HandlerExceptionResolver`
 
 Inject Spring MVC's `HandlerExceptionResolver` into `JwtAuthenticationFilter`:
 
@@ -54,7 +54,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final HandlerExceptionResolver handlerExceptionResolver;
 
-    // Inject the primary Spring MVC exception resolver
     public JwtAuthenticationFilter(
             JwtService jwtService,
             UserDetailsService userDetailsService,
@@ -90,7 +89,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
         } catch (Exception ex) {
-            // 🛡️ Forward filter exception to @RestControllerAdvice!
+            // Forward filter exception to @RestControllerAdvice.
             handlerExceptionResolver.resolveException(request, response, null, ex);
         }
     }
@@ -99,50 +98,51 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 ---
 
-## 2. Issue 2: Role Prefix Mismatch Causing Silent 403 Forbidden
+## 2. Issue 2: Role prefix mismatch causing silent 403 Forbidden
 
-### The Symptom
-A user possesses the role `"ADMIN"`, but calling a method annotated with `@PreAuthorize("hasRole('ADMIN')")` or hitting `.requestMatchers("/api/admin/**").hasRole("ADMIN")` consistently fails with `403 Forbidden`.
+### Symptoms
+A user possesses the role `"ADMIN"`, but calling a method annotated with `@PreAuthorize("hasRole('ADMIN')")` or hitting `.requestMatchers("/api/admin/**").hasRole("ADMIN")` fails with `403 Forbidden`.
 
-### Root Cause
-Spring Security distinguishes between **Roles** and **Authorities**:
+### Root cause
+Spring Security distinguishes between roles and authorities:
 - `hasRole("ADMIN")` internally prepends `"ROLE_"`, expecting `GrantedAuthority.getAuthority()` to return `"ROLE_ADMIN"`.
 - If your JWT claims or `UserDetailsService` sets authorities as `"ADMIN"` (without `ROLE_`), `hasRole("ADMIN")` returns `false`.
 
 ``` mermaid
 flowchart TD
     UserAuth["GrantedAuthority in Token: 'ADMIN'"] --> Check["hasRole('ADMIN') Check"]
-    Check --> Prepend["Prepend prefix: 'ROLE_' + 'ADMIN' = 'ROLE_ADMIN'"]
+    Prepend["Prepend prefix: 'ROLE_' + 'ADMIN' = 'ROLE_ADMIN'"]
+    Check --> Prepend
     Prepend --> Compare{"'ADMIN' == 'ROLE_ADMIN'?"}
-    Compare -->|No Match| Denied["❌ 403 Access Denied"]
-    Compare -->|Match| Granted["✅ 200 OK"]
+    Compare -->|No Match| Denied["403 Access Denied"]
+    Compare -->|Match| Granted["200 OK"]
 ```
 
-### The Fix
+### The fix
 Ensure consistent prefixing in your `UserDetailsService` or JWT converter:
 
 ```java
-// ✅ CORRECT: Add "ROLE_" prefix when populating authorities
+// Add "ROLE_" prefix when populating authorities:
 List<GrantedAuthority> authorities = user.getRoles().stream()
         .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
         .collect(Collectors.toList());
 
-// OR use hasAuthority instead of hasRole if omitting prefixes:
+// Or use hasAuthority instead of hasRole if omitting prefixes:
 @PreAuthorize("hasAuthority('ADMIN')")
 ```
 
 ---
 
-## 3. Issue 3: CORS Preflight `OPTIONS` Blocked by Security Filter Chain
+## 3. Issue 3: CORS preflight `OPTIONS` blocked by security filter chain
 
-### The Symptom
-Web frontends (React/Angular) report browser console errors:  
+### Symptoms
+Web frontends report browser console errors:  
 `Access to XMLHttpRequest has been blocked by CORS policy: Response to preflight request doesn't pass access control check: It does not have HTTP ok status (401/403).`
 
-### Root Cause
-Before sending a `POST` or `PUT` request with custom headers (like `Authorization: Bearer`), the browser sends an HTTP `OPTIONS` preflight request. If Spring Security processes authorization before CORS, the preflight request lacks credentials and gets rejected with 401/403.
+### Root cause
+Before sending a `POST` or `PUT` request with custom headers (such as `Authorization: Bearer`), the browser sends an HTTP `OPTIONS` preflight request. If Spring Security processes authorization before CORS, the preflight request lacks credentials and gets rejected with 401 or 403.
 
-### The Fix: Explicitly Enable CORS & Allow `OPTIONS`
+### The fix: Enable CORS and allow `OPTIONS`
 In Spring Security 6, `.cors()` must be declared on `HttpSecurity` alongside a configured `CorsConfigurationSource`:
 
 ```java
@@ -153,7 +153,6 @@ public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Excepti
         .cors(Customizer.withDefaults())
         .csrf(AbstractHttpConfigurer::disable)
         .authorizeHttpRequests(auth -> auth
-            // Explicitly allow all preflight OPTIONS requests if needed
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
             .requestMatchers("/api/public/**").permitAll()
             .anyRequest().authenticated()
@@ -178,8 +177,8 @@ public CorsConfigurationSource corsConfigurationSource() {
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Actuator Exposure & MDC Leaks**](actuator-security-and-logging-leaks.md) | [**All Debugging Guides**](index.md) | [➡️ **Jib Auth & GraalVM Native Troubleshooting**](jib-cloud-auth-and-graalvm-native-pitfalls.md) |
+| [**Troubleshooting Actuator exposure and MDC leaks**](actuator-security-and-logging-leaks.md) | [**All debugging guides**](index.md) | [**Jib auth and GraalVM native troubleshooting**](jib-cloud-auth-and-graalvm-native-pitfalls.md) |

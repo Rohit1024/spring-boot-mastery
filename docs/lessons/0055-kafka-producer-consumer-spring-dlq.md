@@ -2,7 +2,7 @@
 icon: lucide/workflow
 ---
 
-# 0055: Kafka Producer & Consumer Integration with Spring Kafka & DLQ
+# 0055: Kafka producer and consumer integration with Spring Kafka and DLQ
 
 Building resilient event-driven microservices requires more than simple message sending. In production, networks drop packets, databases deadlock, and malformed payloads ("poison pills") can trap consumers in infinite retry loops that stall entire partition pipelines.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring idempotent producers, manual offset 
 
 ---
 
-## 1. Resilient Kafka Event & DLQ Architecture
+## 1. Resilient Kafka event DLQ architecture
 
 ``` mermaid
 flowchart TD
@@ -49,7 +49,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -64,7 +64,7 @@ flowchart TD
 
 ---
 
-## 3. Production Producer Configuration (`KafkaProducerConfig`)
+## 3. Production producer configuration (`kafkaproducerconfig`)
 
 To guarantee zero data loss and prevent duplicate messages during network partitions, configure the producer with `acks=all` and `enable.idempotence=true`:
 
@@ -114,7 +114,7 @@ public class KafkaProducerConfig {
 }
 ```
 
-### Publishing Messages with Asynchronous Callbacks
+### Publishing messages with asynchronous callbacks
 
 ```java
 package com.example.producer;
@@ -161,7 +161,7 @@ public class OrderEventProducer {
 
 ---
 
-## 4. Consumer Configuration with Poison-Pill Protection
+## 4. Consumer configuration with poison-pill protection
 
 > [!CAUTION]
 > **The Poison Pill Trap**: If a producer writes a malformed JSON payload to Kafka, standard deserializers throw a `SerializationException` inside the Kafka polling loop **before** your listener code runs. This halts consumer progress forever unless handled via `ErrorHandlingDeserializer`.
@@ -236,7 +236,7 @@ public class KafkaConsumerConfig {
 
 ---
 
-## 5. Modern Non-Blocking Retries & Dead Letter Queue with `@RetryableTopic`
+## 5. Modern non-blocking retries dead letter queue with `@RetryableTopic`
 
 Spring Kafka 2.7+ introduced `@RetryableTopic`, which creates separate non-blocking retry topics and a Dead Letter Topic (`-dlt`) automatically:
 
@@ -310,7 +310,7 @@ public class OrderEventConsumer {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -320,15 +320,15 @@ public class OrderEventConsumer {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring for Apache Kafka Documentation](https://docs.spring.io/spring-kafka/reference/) — `@KafkaListener`, `@RetryableTopic`, and `DefaultErrorHandler`.
-- [Apache Kafka Producer Configurations](https://kafka.apache.org/documentation/#producerconfigs) — `acks`, `enable.idempotence`, and retry parameters.
+- [Spring for Apache Kafka Documentation](https://docs.spring.io/spring-kafka/reference/), `@KafkaListener`, `@RetryableTopic`, and `DefaultErrorHandler`.
+- [Apache Kafka Producer Configurations](https://kafka.apache.org/documentation/#producerconfigs), `acks`, `enable.idempotence`, and retry parameters.
 - [Spring Kafka Non-Blocking Retries and DLT](https://docs.spring.io/spring-kafka/reference/kafka/annotation-error-handling.html#retry-topic).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: Why is `enable.idempotence=true` essential for Kafka producers in distributed systems?"
     **Answer**: It prevents duplicate messages from being written to the broker when network timeouts cause the producer to retry sending an already-persisted record.
@@ -341,10 +341,10 @@ public class OrderEventConsumer {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0054: Apache Kafka Architecture: Topics, Partitions & Consumer Groups**](0054-apache-kafka-architecture-and-internals.md) | [**All Lessons**](index.md) | [➡️ **0056: Rate Limiting Algorithms in Redis: Token Bucket & Sliding Window**](0056-redis-rate-limiting-algorithms.md) |
+| [**0054: Apache Kafka Architecture: Topics, Partitions & Consumer Groups**](0054-apache-kafka-architecture-and-internals.md) | [**All Lessons**](index.md) | [ **0056: Rate Limiting Algorithms in Redis: Token Bucket & Sliding Window**](0056-redis-rate-limiting-algorithms.md) |
 
 🎉 **Lesson 0055 completed! Proceed to Lesson 0056 to master high-throughput Redis rate limiting algorithms.**

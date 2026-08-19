@@ -2,7 +2,7 @@
 icon: lucide/cloud-cog
 ---
 
-# 0030: Multi-Cloud Artifact Registry Authentication & Portable Configuration with Jib
+# 0030: Multi-cloud artifact registry authentication and configuration with Jib
 
 In enterprise CI/CD pipelines, hardcoding container registry URLs, credentials, or base images inside `pom.xml` is an anti-pattern that destroys build portability and creates severe security risks. A single Spring Boot service must be able to push seamlessly to **Google Cloud Artifact Registry (GAR)**, **AWS Elastic Container Registry (ECR)**, **Azure Container Registry (ACR)**, or private **Harbor / GitHub Container Registry (ghcr.io)** across dev, staging, and production environments.
 
@@ -10,7 +10,7 @@ In this lesson, you will master multi-cloud credential helper authentication wit
 
 ---
 
-## 1. Multi-Cloud Registry Authentication Architecture
+## 1. Multi-cloud registry authentication architecture
 
 Jib supports four secure authentication mechanisms in order of enterprise preference:
 
@@ -31,14 +31,14 @@ flowchart TD
 
 ---
 
-## 2. Cloud Provider Authentication Playbooks
+## 2. Cloud provider authentication playbooks
 
-### A. Google Cloud Artifact Registry / GCR
+### A. google Cloud artifact registry / gcr
 
 Google Cloud Artifact Registry endpoints follow the format:  
 `LOCATION-docker.pkg.dev/PROJECT_ID/REPOSITORY/IMAGE_NAME:TAG`
 
-#### Method 1: Using `docker-credential-gcr` Helper (Recommended)
+#### Method 1: Using `docker-credential-gcr` helper (recommended)
 ```xml
 <configuration>
     <to>
@@ -48,7 +48,7 @@ Google Cloud Artifact Registry endpoints follow the format:
 </configuration>
 ```
 
-#### Method 2: In CI/CD with OAuth2 Access Token (GitHub Actions / GitLab CI)
+#### Method 2: In CI/CD with OAuth2 access token (github actions / gitlab ci)
 In pipelines authenticated via GCP Workload Identity Federation:
 ```bash
 # Generate short-lived OAuth2 access token
@@ -61,7 +61,7 @@ mvn compile com.google.cloud.tools:jib-maven-plugin:build \
     -Djib.to.auth.password=$GCP_TOKEN
 ```
 
-#### Method 3: Using Service Account Key File (`_json_key`)
+#### Method 3: Using service account key file (`_json_key`)
 ```bash
 mvn compile jib:build \
     -Djib.to.auth.username=_json_key \
@@ -70,12 +70,12 @@ mvn compile jib:build \
 
 ---
 
-### B. AWS Elastic Container Registry (ECR)
+### B. AWS elastic container registry (ECR)
 
 AWS ECR endpoints follow the format:  
 `ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/IMAGE_NAME:TAG`
 
-#### Method 1: Using `docker-credential-ecr-login` Helper (Recommended)
+#### Method 1: Using `docker-credential-ecr-login` helper (recommended)
 ```xml
 <configuration>
     <to>
@@ -85,7 +85,7 @@ AWS ECR endpoints follow the format:
 </configuration>
 ```
 
-#### Method 2: In CI/CD with AWS CLI Temporary STS Token
+#### Method 2: In CI/CD with AWS cli temporary sts token
 ```bash
 # Fetch 12-hour temporary authorization token
 export AWS_ECR_PASSWORD=$(aws ecr get-login-password --region us-east-1)
@@ -98,12 +98,12 @@ mvn compile jib:build \
 
 ---
 
-### C. Azure Container Registry (ACR)
+### C. azure container registry (ACR)
 
 Azure ACR endpoints follow the format:  
 `REGISTRY_NAME.azurecr.io/IMAGE_NAME:TAG`
 
-#### Method 1: Using `docker-credential-acr-env` Helper
+#### Method 1: Using `docker-credential-acr-env` helper
 ```xml
 <configuration>
     <to>
@@ -113,7 +113,7 @@ Azure ACR endpoints follow the format:
 </configuration>
 ```
 
-#### Method 2: Azure Service Principal or Managed Identity
+#### Method 2: Azure service principal or managed identity
 ```bash
 mvn compile jib:build \
     -Djib.to.image=mycompanyacr.azurecr.io/order-service:${GIT_COMMIT} \
@@ -123,7 +123,7 @@ mvn compile jib:build \
 
 ---
 
-### D. GitHub Container Registry (ghcr.io) & Harbor via `settings.xml`
+### D. github container registry (ghcrio) harbor via `settings.xml`
 
 For standard token-based registries (GitHub Packages, Docker Hub, Harbor, Nexus):
 
@@ -148,11 +148,11 @@ For standard token-based registries (GitHub Packages, Docker Hub, Harbor, Nexus)
 
 ---
 
-## 3. Dynamic & Portable Configuration Architecture
+## 3. Dynamic portable configuration architecture
 
 To achieve complete portability across environments (local, dev cluster, staging, production cloud), externalize all image parameters into Maven properties with sensible defaults:
 
-### `pom.xml` (Parametrized Template)
+### `pom.xml` (parametrized template)
 ```xml
 <properties>
     <!-- Default local registry / fallback -->
@@ -190,7 +190,7 @@ To achieve complete portability across environments (local, dev cluster, staging
 </build>
 ```
 
-### Overriding at Build Time across Environments:
+### Overriding at build time across environments
 
 ```bash
 # 1. Local Developer Build (Docker Daemon):
@@ -211,7 +211,7 @@ mvn compile jib:build \
 
 ---
 
-## 4. Spring Boot 3 vs Spring Boot 4: Registry & Build Automation
+## 4. Spring Boot 3 vs Spring Boot 4: Registry build automation
 
 ``` mermaid
 flowchart TD
@@ -230,7 +230,7 @@ flowchart TD
     SB3 ==>|Supply Chain Security| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Registry Integration | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -240,15 +240,15 @@ flowchart TD
 
 ---
 
-## 5. Primary Sources & Further Reading
+## 5. Primary sources and further reading
 
-- [Jib Authentication Methods Documentation](https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#what-should-i-do-when-i-get-unauthorized-401-or-forbidden-403) — Resolving authentication failures.
-- [Google Cloud Artifact Registry Authentication](https://cloud.google.com/artifact-registry/docs/docker/authentication) — Setup for `docker-credential-gcr`.
-- [AWS ECR Docker Credential Helper](https://github.com/awslabs/amazon-ecr-credential-helper) — IAM role-based authentication without access keys.
+- [Jib Authentication Methods Documentation](https://github.com/GoogleContainerTools/jib/blob/master/docs/faq.md#what-should-i-do-when-i-get-unauthorized-401-or-forbidden-403), Resolving authentication failures.
+- [Google Cloud Artifact Registry Authentication](https://cloud.google.com/artifact-registry/docs/docker/authentication), Setup for `docker-credential-gcr`.
+- [AWS ECR Docker Credential Helper](https://github.com/awslabs/amazon-ecr-credential-helper), IAM role-based authentication without access keys.
 
 ---
 
-## 6. Knowledge Check & Retrieval Practice
+## 6. Knowledge check and practice
 
 ??? question "Question 1: Why is using `docker-credential-gcr` or `docker-credential-ecr-login` superior to passing static passwords via CLI arguments in CI/CD?"
     **Answer**: Credential helpers generate short-lived, rotating OAuth2 / IAM STS tokens dynamically, preventing long-lived static secrets from being leaked in CI/CD build logs or process trees.
@@ -261,8 +261,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0029: Daemonless Containerization with Jib**](0029-daemonless-containerization-google-jib.md) | [**All Lessons**](index.md) | [➡️ **0031: GraalVM AOT Native Images**](0031-graalvm-aot-native-image-compilation.md) |
+| [**0029: Daemonless Containerization with Jib**](0029-daemonless-containerization-google-jib.md) | [**All Lessons**](index.md) | [ **0031: GraalVM AOT Native Images**](0031-graalvm-aot-native-image-compilation.md) |

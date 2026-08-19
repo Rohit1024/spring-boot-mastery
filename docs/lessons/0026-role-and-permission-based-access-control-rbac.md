@@ -2,15 +2,15 @@
 icon: lucide/shield-alert
 ---
 
-# 0026: Role-Based & Permission-Based Access Control (RBAC) with Method Security (`@PreAuthorize`)
+# 0026: Role-based and permission-based access control (RBAC) with method security (@PreAuthorize)
 
 Authentication verifies identity, but **Authorization** dictates what resources and operations that identity can access. While URL-based request matching protects public routes, enterprise domain logic often demands fine-grained, contextual permissions (e.g., *"A manager can approve orders up to $10,000, but only the creator or an Admin can delete an order"*).
 
-In Spring Security 6, **Method Security** replaces and enhances legacy security models using AOP proxies and Spring Expression Language (SpEL). In this lesson, you will master the difference between Roles and Authorities, configure `@EnableMethodSecurity`, enforce domain-level ownership checks with `@PreAuthorize` and `@PostAuthorize`, and implement custom security evaluator beans.
+In Spring Security 6, **Method Security** replaces and improves legacy security models using AOP proxies and Spring Expression Language (SpEL). In this lesson, you will master the difference between Roles and Authorities, configure `@EnableMethodSecurity`, enforce domain-level ownership checks with `@PreAuthorize` and `@PostAuthorize`, and implement custom security evaluator beans.
 
 ---
 
-## 1. Roles vs Permissions (Authorities) Architecture
+## 1. Roles vs permissions (authorities) architecture
 
 In enterprise security architectures, hardcoding coarse roles throughout business logic creates brittle systems. Modern systems decouple **Roles** (user groups) from **Permissions** (fine-grained capabilities):
 
@@ -49,13 +49,13 @@ flowchart TD
     Users ~~~ Roles ~~~ Authorities
 ```
 
-### Prefix Convention in Spring Security
+### Prefix convention in Spring security
 - **Role (`hasRole('ADMIN')`)**: Spring automatically prefixes with `ROLE_`, looking for `ROLE_ADMIN` in `GrantedAuthority`.
 - **Authority (`hasAuthority('order:refund')`)**: Exact string match without prefix modification.
 
 ---
 
-## 2. Enabling Modern Method Security in Spring Security 6
+## 2. Enabling modern method security in Spring security 6
 
 In Spring Security 6, `@EnableGlobalMethodSecurity` is deprecated in favor of `@EnableMethodSecurity` (which enables `@PreAuthorize`, `@PostAuthorize`, `@PreFilter`, and `@PostFilter` by default):
 
@@ -74,7 +74,7 @@ public class MethodSecurityConfig {
 
 ---
 
-## 3. The Method Security AOP Interception Pipeline
+## 3. The method security AOP interception pipeline
 
 Method security uses Spring AOP proxies around your service or controller beans:
 
@@ -104,9 +104,9 @@ sequenceDiagram
 
 ---
 
-## 4. Practical Method Security Annotations
+## 4. Practical method security annotations
 
-### 1. `@PreAuthorize`: Enforcing Checks Before Invocation
+### 1. `@PreAuthorize`: Enforcing checks before invocation
 Evaluates expressions before the method body runs. Perfect for role, authority, and argument checks.
 
 ```java
@@ -139,7 +139,7 @@ public class OrderService {
 }
 ```
 
-### 2. `@PostAuthorize`: Inspecting Return Values
+### 2. `@PostAuthorize`: Inspecting return values
 Evaluates expressions *after* the method completes. It provides access to the returned object via the built-in `returnObject` variable:
 
 ```java
@@ -156,7 +156,7 @@ Evaluates expressions *after* the method completes. It provides access to the re
 
 ---
 
-## 5. Domain-Level Ownership Checks with Custom SpEL Beans
+## 5. Domain-level ownership checks with custom SpEL beans
 
 For complex business authorization (e.g., verifying database ownership across tenant partitions), avoid giant SpEL strings. Delegate to a dedicated Spring Security bean:
 
@@ -198,7 +198,7 @@ public class OrderSecurityService {
 }
 ```
 
-### Usage in Service / Controller:
+### Usage in service / controller
 ```java
 @RestController
 @RequestMapping("/api/orders")
@@ -221,7 +221,7 @@ public class OrderController {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Method Authorization Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Method authorization evolution
 
 ``` mermaid
 flowchart TD
@@ -240,7 +240,7 @@ flowchart TD
     SB3 ==>|Authorization Modernization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Authorization Feature | Spring Boot 3.x (Security 6) | Spring Boot 4.x (Security 7) |
 | :--- | :--- | :--- |
@@ -250,15 +250,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Spring Security 6 Method Security Documentation](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html) — Architecture of before/after method interceptors.
-- [Spring Expression Language (SpEL) Security Expressions](https://docs.spring.io/spring-security/reference/servlet/authorization/expression-based.html) — Built-in variables (`authentication`, `principal`, `hasRole`, `hasAuthority`).
-- [AuthorizationManager Architecture in Spring Security 6](https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html) — Modern replacement for legacy `AccessDecisionManager`.
+- [Spring Security 6 Method Security Documentation](https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html), Architecture of before/after method interceptors.
+- [Spring Expression Language (SpEL) Security Expressions](https://docs.spring.io/spring-security/reference/servlet/authorization/expression-based.html), Built-in variables (`authentication`, `principal`, `hasRole`, `hasAuthority`).
+- [AuthorizationManager Architecture in Spring Security 6](https://docs.spring.io/spring-security/reference/servlet/authorization/architecture.html), Modern replacement for legacy `AccessDecisionManager`.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the fundamental difference between `hasRole('MANAGER')` and `hasAuthority('MANAGER')` in SpEL expressions?"
     **Answer**: `hasRole('MANAGER')` automatically looks for a `GrantedAuthority` with the `ROLE_` prefix (`ROLE_MANAGER`), whereas `hasAuthority('MANAGER')` checks for the literal string `MANAGER` without prefixing.
@@ -266,13 +266,13 @@ flowchart TD
 ??? question "Question 2: Why should `@PostAuthorize` generally be avoided on state-modifying database write methods (`POST`/`PUT`/`DELETE`)?"
     **Answer**: Because `@PostAuthorize` executes after the method finishes; if a transaction committed changes to the database, an authorization failure prevents returning the response but will not undo the write unless an explicit rollback is triggered.
 
-??? question "Question 3: How does referencing `@orderSecurity.isOwner(#orderId, authentication)` in `@PreAuthorize` enhance clean code architecture?"
+??? question "Question 3: How does referencing `@orderSecurity.isOwner(#orderId, authentication)` in `@PreAuthorize` improve clean code architecture?"
     **Answer**: It encapsulates complex multi-table ownership, tenancy, and domain rules inside a dedicated, testable Spring bean rather than cluttering annotations with messy SpEL expressions.
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0025: Stateless JWT Authentication**](0025-stateless-jwt-authentication-filter.md) | [**All Lessons**](index.md) | [➡️ **0027: Google OAuth2 & OIDC**](0027-google-oauth2-and-openid-connect-oidc.md) |
+| [**0025: Stateless JWT Authentication**](0025-stateless-jwt-authentication-filter.md) | [**All Lessons**](index.md) | [ **0027: Google OAuth2 & OIDC**](0027-google-oauth2-and-openid-connect-oidc.md) |

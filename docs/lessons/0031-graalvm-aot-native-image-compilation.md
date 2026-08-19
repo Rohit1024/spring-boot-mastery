@@ -2,7 +2,7 @@
 icon: lucide/zap
 ---
 
-# 0031: GraalVM AOT Native Image Compilation
+# 0031: GraalVM AOT native image compilation
 
 In standard JVM deployments, the HotSpot JVM executes Java bytecode via interpreters and Just-In-Time (JIT) compilers (C1/C2). While JIT compilers achieve excellent peak throughput through profile-guided optimizations, they suffer from **slow startup times (3-15 seconds)** and **heavy baseline memory consumption (200MB-500MB RSS)**.
 
@@ -12,7 +12,7 @@ In this lesson, you will master the Closed-World Assumption, understand Spring B
 
 ---
 
-## 1. JVM HotSpot (JIT) vs GraalVM Native Image (AOT)
+## 1. JVM hotspot (JIT) vs GraalVM native image (AOT)
 
 ``` mermaid
 flowchart TD
@@ -33,7 +33,7 @@ flowchart TD
     JIT ~~~ AOT
 ```
 
-### Performance & Operational Comparison
+### Performance operational comparison
 
 | Metric | HotSpot JVM (JIT) | GraalVM Native Image (AOT) |
 | :--- | :---: | :---: |
@@ -46,7 +46,7 @@ flowchart TD
 
 ---
 
-## 2. The Closed-World Assumption & Spring AOT Engine
+## 2. The closed-world assumption Spring AOT engine
 
 GraalVM Native Image operates under the **Closed-World Assumption**: all bytecode reachable at runtime must be known and analyzed during compilation. Any unused classes, methods, and fields are permanently stripped from the executable binary.
 
@@ -72,7 +72,7 @@ sequenceDiagram
 
 ---
 
-## 3. Configuring Native Compilation with `native-maven-plugin`
+## 3. Configuring native compilation with `native-maven-plugin`
 
 Spring Boot provides first-class native compilation support via the `native` Maven profile:
 
@@ -112,7 +112,7 @@ Spring Boot provides first-class native compilation support via the `native` Mav
 </profiles>
 ```
 
-### Compiling and Running the Native Binary
+### Compiling and running the native binary
 ```bash
 # 1. Compile the native binary (Requires GraalVM JDK installed locally):
 mvn -Pnative clean native:compile
@@ -135,7 +135,7 @@ mvn -Pnative clean native:compile
 
 ---
 
-## 4. Authoring Custom `RuntimeHints` for Dynamic Reflection
+## 4. Authoring custom `RuntimeHints` for dynamic reflection
 
 When using dynamic libraries, third-party reflection, or serialization (e.g., custom JSON parsers or dynamic Class lookup), the GraalVM static analyzer cannot infer reachability automatically.
 
@@ -187,7 +187,7 @@ public class ThirdPartyLibraryHints implements RuntimeHintsRegistrar {
 }
 ```
 
-#### Register in `META-INF/spring/aot.factories`:
+#### Register in `META-INF/spring/AOT.factories`
 ```properties
 org.springframework.aot.hint.RuntimeHintsRegistrar=\
 com.example.demo.aot.ThirdPartyLibraryHints
@@ -195,7 +195,7 @@ com.example.demo.aot.ThirdPartyLibraryHints
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Native AOT Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Native AOT evolution
 
 ``` mermaid
 flowchart TD
@@ -214,7 +214,7 @@ flowchart TD
     SB3 ==>|AOT Optimization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | AOT & Native Feature | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -224,15 +224,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring Boot Reference Guide: GraalVM Native Image Support](https://docs.spring.io/spring-boot/reference/packaging/native-image/index.html) — Comprehensive native compilation documentation.
-- [GraalVM Official Native Image Documentation](https://www.graalvm.org/latest/reference-manual/native-image/) — Closed-world analysis, SubstrateVM, and build args.
-- [GraalVM Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata) — Centralized community reflection hints for Java libraries.
+- [Spring Boot Reference Guide: GraalVM Native Image Support](https://docs.spring.io/spring-boot/reference/packaging/native-image/index.html), Comprehensive native compilation documentation.
+- [GraalVM Official Native Image Documentation](https://www.graalvm.org/latest/reference-manual/native-image/), Closed-world analysis, SubstrateVM, and build args.
+- [GraalVM Reachability Metadata Repository](https://github.com/oracle/graalvm-reachability-metadata), Centralized community reflection hints for Java libraries.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the Closed-World Assumption in GraalVM Native Image compilation?"
     **Answer**: The assumption that all classes, methods, and fields reachable by the application at runtime must be discovered and analyzed at compile-time; unreferenced code is permanently stripped.
@@ -245,8 +245,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0030: Multi-Cloud Registry Authentication**](0030-multi-cloud-artifact-registry-authentication-jib.md) | [**All Lessons**](index.md) | [➡️ **0032: Containerizing Native Images with Jib**](0032-containerizing-graalvm-native-images-with-jib.md) |
+| [**0030: Multi-Cloud Registry Authentication**](0030-multi-cloud-artifact-registry-authentication-jib.md) | [**All Lessons**](index.md) | [ **0032: Containerizing Native Images with Jib**](0032-containerizing-graalvm-native-images-with-jib.md) |

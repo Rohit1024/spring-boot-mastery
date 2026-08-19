@@ -2,7 +2,7 @@
 icon: lucide/shield-check
 ---
 
-# 0060: API Gateway Routing & Security with Spring Cloud Gateway
+# 0060: API Gateway routing and security with Spring Cloud Gateway
 
 Exposing internal microservices directly to external mobile and web clients introduces serious security risks, tight coupling to internal URLs, and fragmented cross-cutting concerns (authentication, CORS, rate limiting, logging).
 
@@ -12,7 +12,7 @@ In this lesson, you will master route predicates, gateway filter factories, dyna
 
 ---
 
-## 1. Spring Cloud Gateway Architecture
+## 1. Spring Cloud gateway architecture
 
 ``` mermaid
 flowchart TD
@@ -53,7 +53,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 > [!CAUTION]
 > **No Spring MVC Starter**: Spring Cloud Gateway is built on **Spring WebFlux and Netty**. Do not include `spring-boot-starter-web` (Tomcat) in the Gateway project, as it conflicts with the reactive Netty runtime.
@@ -79,7 +79,7 @@ flowchart TD
 
 ---
 
-## 3. Declarative Route Configuration (`application.yml`)
+## 3. Declarative route configuration (`applicationyml`)
 
 Configure routing rules, path predicates, rewrites, and load balancing:
 
@@ -128,7 +128,7 @@ spring:
 
 ---
 
-## 4. Reactive Global JWT Authentication Filter
+## 4. Reactive global JWT authentication filter
 
 A `GlobalFilter` executes on every request passing through the gateway without needing explicit attachment in YAML:
 
@@ -222,25 +222,25 @@ public class JwtAuthenticationGlobalFilter implements GlobalFilter, Ordered {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
-| **Gateway Flavors** | Spring Cloud Gateway Reactive (WebFlux) and new Servlet-based Gateway MVC. | Unified multi-engine gateway architecture leveraging Project Loom Virtual Threads for MVC. |
+| **Gateway Flavors** | Spring Cloud Gateway Reactive (WebFlux) and new Servlet-based Gateway MVC. | Unified multi-engine gateway architecture using Project Loom Virtual Threads for MVC. |
 | **Observability** | Gateway metrics automatically exported to Prometheus via Micrometer. | Native OpenTelemetry distributed span propagation and W3C Baggage carrier injection. |
 | **Security Interoperability** | TokenRelayGatewayFilterFactory with Spring Security 6 OAuth2 Resource Server. | Built-in zero-trust cryptographic mutual TLS (mTLS) gateway routing tunnels. |
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Spring Cloud Gateway Official Reference Guide](https://docs.spring.io/spring-cloud-gateway/reference/) — Predicates, Filter Factories, and Global Filters.
+- [Spring Cloud Gateway Official Reference Guide](https://docs.spring.io/spring-cloud-gateway/reference/), Predicates, Filter Factories, and Global Filters.
 - [Spring Cloud Gateway Server MVC Documentation](https://docs.spring.io/spring-cloud-gateway/reference/spring-cloud-gateway-server-mvc.html).
 - [Project Reactor Core Documentation](https://projectreactor.io/docs/core/release/reference/).
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: Why should `spring-boot-starter-web` NOT be added as a dependency in Spring Cloud Gateway projects?"
     **Answer**: Spring Cloud Gateway is built on the reactive Spring WebFlux and Netty engine; including Tomcat (`spring-boot-starter-web`) introduces classpath conflicts and breaks the non-blocking event loop.
@@ -253,10 +253,10 @@ public class JwtAuthenticationGlobalFilter implements GlobalFilter, Ordered {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0059: Service Registry & Discovery with Eureka**](0059-service-registry-discovery-eureka.md) | [**All Lessons**](index.md) | [➡️ **0061: Centralized Config Server & Dynamic Bus Refresh**](0061-centralized-config-server-bus-refresh.md) |
+| [**0059: Service Registry & Discovery with Eureka**](0059-service-registry-discovery-eureka.md) | [**All Lessons**](index.md) | [ **0061: Centralized Config Server & Dynamic Bus Refresh**](0061-centralized-config-server-bus-refresh.md) |
 
 🎉 **Lesson 0060 completed! Proceed to Lesson 0061 to master centralized externalized configuration with Spring Cloud Config Server and Spring Cloud Bus.**

@@ -2,7 +2,7 @@
 icon: lucide/ship
 ---
 
-# 0070: Kubernetes Orchestration: Pods, Deployments & Services
+# 0070: Kubernetes orchestration: Pods, deployments, and services
 
 Docker Compose is great for local development on a single laptop, but in enterprise cloud production, microservices run across hundreds of bare-metal or cloud VMs (nodes).
 
@@ -12,7 +12,7 @@ In this lesson, you will master writing production-grade Kubernetes manifests (`
 
 ---
 
-## 1. Kubernetes Workload Architecture for Spring Boot
+## 1. Kubernetes workload architecture for Spring Boot
 
 ``` mermaid
 flowchart TD
@@ -56,7 +56,7 @@ flowchart TD
 
 ---
 
-## 2. Production Kubernetes Deployment Manifest (`deployment.yaml`)
+## 2. Production Kubernetes deployment manifest (`deploymentyaml`)
 
 ```yaml
 apiVersion: apps/v1
@@ -127,7 +127,7 @@ spec:
 
 ---
 
-## 3. Kubernetes Service Manifest (`service.yaml`)
+## 3. Kubernetes service manifest (`serviceyaml`)
 
 ```yaml
 apiVersion: v1
@@ -147,7 +147,7 @@ spec:
 
 ---
 
-## 4. ConfigMap & Secret Manifests
+## 4. Configmap secret manifests
 
 ```yaml
 apiVersion: v1
@@ -173,7 +173,7 @@ stringData:
 
 ---
 
-## 5. Horizontal Pod Autoscaler (`hpa.yaml`)
+## 5. Horizontal pod autoscaler (`hpayaml`)
 
 Automatically scales pods between 3 and 10 based on CPU & Memory load:
 
@@ -201,7 +201,7 @@ spec:
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -211,15 +211,15 @@ spec:
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Kubernetes Official Documentation](https://kubernetes.io/docs/) — Pods, Deployments, Services, and HPA.
+- [Kubernetes Official Documentation](https://kubernetes.io/docs/), Pods, Deployments, Services, and HPA.
 - [Spring Boot Kubernetes Reference Guide](https://docs.spring.io/spring-boot/reference/features/cloud-deployments.html#cloud-deployments.kubernetes).
 - [Kubernetes Best Practices: Resource Requests and Limits](https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the difference between a Liveness Probe and a Readiness Probe in Kubernetes?"
     **Answer**: A Liveness Probe detects if the container is frozen/deadlocked and restarts it, while a Readiness Probe detects if the container is ready to accept user network traffic.
@@ -232,10 +232,10 @@ spec:
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0069: Dockerfile Multi-Stage Builds & Docker Compose**](0069-dockerfile-multistage-builds-docker-compose.md) | [**All Lessons**](index.md) | [➡️ **0071: Cloud CI/CD: AWS CodePipeline & Elastic Beanstalk**](0071-cloud-cicd-aws-codepipeline-beanstalk.md) |
+| [**0069: Dockerfile Multi-Stage Builds & Docker Compose**](0069-dockerfile-multistage-builds-docker-compose.md) | [**All Lessons**](index.md) | [ **0071: Cloud CI/CD: AWS CodePipeline & Elastic Beanstalk**](0071-cloud-cicd-aws-codepipeline-beanstalk.md) |
 
 🎉 **Lesson 0070 completed! Proceed to Lesson 0071 to master automated continuous integration and continuous deployment (CI/CD) pipelines.**

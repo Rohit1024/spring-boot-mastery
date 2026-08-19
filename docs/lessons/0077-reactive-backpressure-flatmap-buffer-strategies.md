@@ -2,7 +2,7 @@
 icon: lucide/gauge
 ---
 
-# 0077: Reactive Backpressure Handling: Bounded `flatMap` & Buffer Strategies
+# 0077: Reactive backpressure handling: Bounded flatMap and buffer strategies
 
 In high-volume streaming systems, a **Fast Publisher** can easily emit 100,000 items per second while a **Slow Downstream Consumer** (such as a database writer or third-party payment API) can only process 500 items per second.
 
@@ -14,7 +14,7 @@ In this lesson, you will master handling overflow scenarios with Project Reactor
 
 ---
 
-## 1. Fast Producer vs Slow Consumer with Backpressure
+## 1. Fast producer vs slow consumer with backpressure
 
 ``` mermaid
 flowchart TD
@@ -42,7 +42,7 @@ flowchart TD
 
 ---
 
-## 2. Bounding `flatMap` Concurrency
+## 2. Bounding `flatMap` concurrency
 
 > [!CAUTION]
 > **The Unbounded `flatMap` Trap**: By default, `Flux.flatMap(fn)` runs with an internal concurrency of `Queues.SMALL_BUFFER_SIZE` (256). If called on an unbounded upstream stream, it can open thousands of simultaneous database connections and socket descriptors.
@@ -79,7 +79,7 @@ public class BatchOrderProcessor {
 
 ---
 
-## 3. Reactor Backpressure Overflow Strategies
+## 3. Reactor backpressure overflow strategies
 
 When a producer emits faster than a consumer can request, Reactor provides four deterministic overflow strategies:
 
@@ -90,7 +90,7 @@ When a producer emits faster than a consumer can request, Reactor provides four 
 | **`onBackpressureLatest()`** | Keeps only the single most recent emitted item, discarding intermediate items. | Live stock ticker UI updates where only the latest price matters. |
 | **`onBackpressureError()`** | Immediately terminates the pipeline with an `Exceptions.OverflowException`. | Mission-critical financial pipelines where silent data loss is forbidden. |
 
-### Code Implementation
+### Code implementation
 
 ```java
 public Flux<SensorReading> processTelemetry(Flux<SensorReading> rawSensorStream) {
@@ -109,7 +109,7 @@ public Flux<SensorReading> processTelemetry(Flux<SensorReading> rawSensorStream)
 
 ---
 
-## 4. Rate-Limiting & Sampling Operators
+## 4. Rate-limiting sampling operators
 
 To slow down fast publishers before they reach downstream consumers:
 
@@ -126,7 +126,7 @@ Flux<Order> controlledFlux = ordersFlux.limitRate(100, 75); // Request 100, refi
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -136,7 +136,7 @@ Flux<Order> controlledFlux = ordersFlux.limitRate(100, 75); // Request 100, refi
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
 - [Project Reactor: Backpressure and Reactive Streams](https://projectreactor.io/docs/core/release/reference/#reactive.backpressure).
 - [Reactive Streams Specification: Demand Signals](https://github.com/reactive-streams/reactive-streams-jvm#specification).
@@ -144,7 +144,7 @@ Flux<Order> controlledFlux = ordersFlux.limitRate(100, 75); // Request 100, refi
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the primary purpose of reactive backpressure?"
     **Answer**: To allow a slow consumer to regulate the flow of data from a fast publisher via demand requests, preventing memory exhaustion and system crashes.
@@ -157,10 +157,10 @@ Flux<Order> controlledFlux = ordersFlux.limitRate(100, 75); // Request 100, refi
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0076: Real-Time Streaming with Server-Sent Events (SSE)**](0076-realtime-streaming-server-sent-events-sse.md) | [**All Lessons**](index.md) | [➡️ **0078: Integration Testing Reactive APIs with WebTestClient**](0078-integration-testing-reactive-webtestclient-testcontainers.md) |
+| [**0076: Real-Time Streaming with Server-Sent Events (SSE)**](0076-realtime-streaming-server-sent-events-sse.md) | [**All Lessons**](index.md) | [ **0078: Integration Testing Reactive APIs with WebTestClient**](0078-integration-testing-reactive-webtestclient-testcontainers.md) |
 
 🎉 **Lesson 0077 completed! Proceed to Lesson 0078 to master testing reactive WebFlux pipelines using `StepVerifier` and `WebTestClient`.**

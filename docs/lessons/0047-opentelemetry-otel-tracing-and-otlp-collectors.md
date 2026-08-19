@@ -2,7 +2,7 @@
 icon: lucide/git-commit
 ---
 
-# 0047: OpenTelemetry (OTel): Vendor-Neutral Tracing, Spans & OTLP Collectors
+# 0047: OpenTelemetry (OTel): Vendor-neutral tracing, spans, and OTLP collectors
 
 In distributed microservice architectures, a single user click cascades across dozens of downstream services, database queries, and message brokers. When a request fails or suffers high latency, debugging without end-to-end distributed tracing is impossible.
 
@@ -14,7 +14,7 @@ In this lesson, you will master distributed tracing with W3C TraceContext, confi
 
 ---
 
-## 1. OpenTelemetry Distributed Architecture
+## 1. OpenTelemetry distributed architecture
 
 ``` mermaid
 flowchart TD
@@ -49,7 +49,7 @@ flowchart TD
 
 ---
 
-## 2. Distributed Tracing Concepts & W3C TraceContext
+## 2. Distributed tracing concepts w3c tracecontext
 
 A **Trace** represents the complete journey of a request across all microservices, composed of individual units of work called **Spans**:
 
@@ -67,7 +67,7 @@ flowchart TD
     end
 ```
 
-### Context Propagation (W3C Header Standard)
+### Context propagation (w3c header standard)
 When `OrderService` makes an HTTP request to `PaymentService`, Micrometer Tracing automatically injects the standard W3C HTTP header:
 
 ```http
@@ -78,11 +78,11 @@ traceparent: 00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01
 
 ---
 
-## 3. Configuring Spring Boot with OpenTelemetry & OTLP
+## 3. Configuring Spring Boot with OpenTelemetry OTLP
 
 Add the OpenTelemetry bridge and OTLP exporter to your build:
 
-### Maven Dependencies (`pom.xml`)
+### Maven dependencies (`pomxml`)
 ```xml
 <!-- 1. Micrometer Tracing Bridge to OpenTelemetry -->
 <dependency>
@@ -111,7 +111,7 @@ management:
 
 ---
 
-## 4. Correlating Traces with Structured Application Logs
+## 4. Correlating traces with structured application logs
 
 Micrometer Tracing automatically enriches your SLF4J / Logback **Mapped Diagnostic Context (MDC)** with active `traceId` and `spanId`:
 
@@ -135,7 +135,7 @@ Now, clicking any log line in Grafana Loki or Elasticsearch lets you jump direct
 
 ---
 
-## 5. OpenTelemetry Collector Configuration (`otel-collector-config.yml`)
+## 5. OpenTelemetry collector configuration (`otel-collector-configyml`)
 
 The OTel Collector decouples applications from specific storage backends:
 
@@ -179,7 +179,7 @@ service:
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: OTel Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: OTel evolution
 
 ``` mermaid
 flowchart TD
@@ -198,7 +198,7 @@ flowchart TD
     SB3 ==>|Native OTel Engine & Unified OTLP Transport| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | OTel Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -208,15 +208,15 @@ flowchart TD
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [OpenTelemetry Official Documentation](https://opentelemetry.io/docs/) — Specification, Data Model, and Collector configuration.
-- [Micrometer Tracing Reference Manual](https://micrometer.io/docs/tracing) — Spans, Baggage, and Observation API.
-- [W3C Trace Context Specification](https://www.w3.org/TR/trace-context/) — Standard header definitions (`traceparent`, `tracestate`).
+- [OpenTelemetry Official Documentation](https://opentelemetry.io/docs/), Specification, Data Model, and Collector configuration.
+- [Micrometer Tracing Reference Manual](https://micrometer.io/docs/tracing), Spans, Baggage, and Observation API.
+- [W3C Trace Context Specification](https://www.w3.org/TR/trace-context/), Standard header definitions (`traceparent`, `tracestate`).
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the primary operational advantage of sending telemetry to an OpenTelemetry Collector rather than directly to an APM vendor?"
     **Answer**: The OTel Collector decouples the application from backend storage; switching APM vendors (e.g. from Datadog to Grafana Tempo) only requires updating a collector YAML configuration without touching application code or re-deploying services.
@@ -229,10 +229,10 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0046: Grafana Dashboards (RED & USE)**](0046-grafana-dashboards-red-and-use-metrics.md) | [**All Lessons**](index.md) | [➡️ **0048: Unit Testing with JUnit 5 & AssertJ**](0048-unit-testing-junit-5-assertj.md) |
+| [**0046: Grafana Dashboards (RED & USE)**](0046-grafana-dashboards-red-and-use-metrics.md) | [**All Lessons**](index.md) | [ **0048: Unit Testing with JUnit 5 & AssertJ**](0048-unit-testing-junit-5-assertj.md) |
 
 🎉 **Congratulations on completing Module 10: Vendor-Neutral Observability!**

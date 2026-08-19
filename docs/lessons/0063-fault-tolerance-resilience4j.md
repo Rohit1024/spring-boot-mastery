@@ -2,9 +2,9 @@
 icon: lucide/shield-alert
 ---
 
-# 0063: Fault Tolerance with Resilience4j: Circuit Breaker, Retry & Bulkhead
+# 0063: Fault tolerance with Resilience4j: Circuit Breaker, Retry, and Bulkhead
 
-In a distributed microservice architecture, remote network calls will inevitably fail or experience extreme latency. If a downstream Payment Service begins hanging for 30 seconds per request, upstream services quickly exhaust their Tomcat worker thread pools waiting for socket responses—triggering a catastrophic **cascading outage** across the entire cluster.
+In a distributed microservice architecture, remote network calls will inevitably fail or experience extreme latency. If a downstream Payment Service begins hanging for 30 seconds per request, upstream services quickly exhaust their Tomcat worker thread pools waiting for socket responses, triggering a catastrophic **cascading outage** across the entire cluster.
 
 **Resilience4j** is a lightweight, fault-tolerance library designed for Java functional programming. It provides Circuit Breakers, Retries, Rate Limiters, and Bulkheads to isolate downstream failures and preserve system stability.
 
@@ -12,7 +12,7 @@ In this lesson, you will master Circuit Breaker state machines, configuring slid
 
 ---
 
-## 1. Circuit Breaker State Machine Architecture
+## 1. Circuit breaker state machine architecture
 
 ``` mermaid
 flowchart TD
@@ -30,7 +30,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 ```xml
 <dependency>
@@ -49,7 +49,7 @@ flowchart TD
 
 ---
 
-## 3. Production `application.yml` Configuration
+## 3. Production `application.yml` configuration
 
 Configure sliding windows, timeout limits, and failure thresholds:
 
@@ -97,7 +97,7 @@ resilience4j:
 
 ---
 
-## 4. Implementing Resilient Services & Fallbacks
+## 4. Implementing resilient services fallbacks
 
 > [!IMPORTANT]
 > **Fallback Method Signature Rule**: The fallback method **must** reside in the same class, have the exact same return type and parameter list as the original method, plus a trailing `Throwable` (or specific exception) parameter.
@@ -167,7 +167,7 @@ public class PaymentProcessingService {
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4 Evolution
+## 5. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -177,15 +177,15 @@ public class PaymentProcessingService {
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Resilience4j Official Documentation](https://resilience4j.readme.io/) — CircuitBreaker, Retry, Bulkhead, and RateLimiter.
-- [Release It! Second Edition — Michael Nygard](https://pragprog.com/titles/mnee2/release-it-second-edition/) — Foundational patterns for stability and capacity.
+- [Resilience4j Official Documentation](https://resilience4j.readme.io/), CircuitBreaker, Retry, Bulkhead, and RateLimiter.
+- [Release It! Second Edition, Michael Nygard](https://pragprog.com/titles/mnee2/release-it-second-edition/), Foundational patterns for stability and capacity.
 - [Spring Cloud Circuit Breaker Documentation](https://docs.spring.io/spring-cloud-circuitbreaker/reference/).
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What happens when a Circuit Breaker enters the `OPEN` state?"
     **Answer**: It immediately rejects all incoming calls by throwing a `CallNotPermittedException` (or invoking the fallback) without making any network calls to the downstream service.
@@ -198,10 +198,10 @@ public class PaymentProcessingService {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0062: Distributed Tracing with Micrometer & Zipkin**](0062-distributed-tracing-micrometer-zipkin.md) | [**All Lessons**](index.md) | [➡️ **0064: SAGA Pattern with Kafka Choreography**](0064-distributed-transactions-saga-pattern.md) |
+| [**0062: Distributed Tracing with Micrometer & Zipkin**](0062-distributed-tracing-micrometer-zipkin.md) | [**All Lessons**](index.md) | [ **0064: SAGA Pattern with Kafka Choreography**](0064-distributed-transactions-saga-pattern.md) |
 
 🎉 **Lesson 0063 completed! Proceed to Lesson 0064 to master distributed multi-service transactions with the SAGA Pattern.**

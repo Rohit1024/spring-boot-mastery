@@ -2,15 +2,15 @@
 icon: lucide/cpu
 ---
 
-# Spring Modulith & Virtual Threads Cheatsheet
+# Spring Modulith and virtual threads cheatsheet
 
-A rapid reference guide for Modular Monolith architecture, ArchUnit module boundary verification, Spring Modulith Transactional Event Publication, and Java 21+ Virtual Threads (Project Loom) configuration.
+Reference guide for Modular Monolith architecture, ArchUnit module boundary verification, Spring Modulith transactional event publication, and Java 21+ virtual threads configuration.
 
 ---
 
-## 1. Spring Modulith Verification & Documentation
+## 1. Spring Modulith verification and documentation
 
-### Architecture Verification Test:
+### Architecture verification test
 ```java
 @Test
 void verifyModularStructure() {
@@ -25,17 +25,17 @@ void verifyModularStructure() {
 }
 ```
 
-### Module Package Conventions:
+### Module package conventions
 ```text
 com.example.app.order/            <-- Public API (Exported)
-com.example.app.order.internal/   <-- Encapsulated Internals (Hidden from other modules)
+com.example.app.order.internal/   <-- Encapsulated internals (Hidden from other modules)
 ```
 
 ---
 
-## 2. Transactional Event Publication (Outbox Pattern)
+## 2. Transactional event publication (Outbox pattern)
 
-### 1. Maven Starter:
+### 1. Maven starter
 ```xml
 <dependency>
     <groupId>org.springframework.modulith</groupId>
@@ -43,9 +43,9 @@ com.example.app.order.internal/   <-- Encapsulated Internals (Hidden from other 
 </dependency>
 ```
 
-### 2. Publishing & Consuming Events:
+### 2. Publishing and consuming events
 ```java
-// Publisher (Transactional Outbox write):
+// Publisher (Transactional outbox write):
 @Transactional
 public void placeOrder() {
     orderRepository.save(order);
@@ -57,16 +57,16 @@ public void placeOrder() {
 public class PaymentListener {
     @ApplicationModuleListener
     public void onOrderPlaced(OrderPlacedEvent event) {
-        // Automatically marked COMPLETED in event_publication table upon return!
+        // Automatically marked COMPLETED in event_publication table upon return.
     }
 }
 ```
 
 ---
 
-## 3. Java 21+ Virtual Threads Configuration
+## 3. Java 21+ virtual threads configuration
 
-### 1. `application.yml`:
+### 1. `application.yml`
 ```yaml
 spring:
   threads:
@@ -74,14 +74,14 @@ spring:
       enabled: true
 ```
 
-### 2. Best Practices & Locking:
+### 2. Thread pinning and locking rules
 ```java
-// ❌ WRONG: synchronized blocks pin carrier threads during blocking I/O!
+// Synchronized blocks pin carrier threads during blocking I/O:
 synchronized (lock) {
     restTemplate.getForObject(...);
 }
 
-// ✅ CORRECT: ReentrantLock unmounts Virtual Threads cleanly!
+// ReentrantLock unmounts virtual threads cleanly:
 private final ReentrantLock lock = new ReentrantLock();
 lock.lock();
 try {
@@ -91,7 +91,7 @@ try {
 }
 ```
 
-### 3. Concurrency Limiting:
+### 3. Concurrency limiting
 ```java
 // Limit downstream calls to max 20 concurrent requests without thread pools:
 private final Semaphore semaphore = new Semaphore(20);
@@ -108,8 +108,8 @@ public void callDownstream() throws InterruptedException {
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **GraphQL, gRPC & WebSockets Cheatsheet**](graphql-grpc-websockets.md) | [**All Cheatsheets**](index.md) | [➡️ **Prometheus, Grafana & OTel Cheatsheet**](prometheus-grafana-opentelemetry.md) |
+| [**GraphQL, gRPC, and WebSockets protocol cheatsheet**](graphql-grpc-websockets.md) | [**All cheatsheets**](index.md) | [**Prometheus, Grafana, and OpenTelemetry cheatsheet**](prometheus-grafana-opentelemetry.md) |

@@ -2,7 +2,7 @@
 icon: lucide/git-merge
 ---
 
-# 0014: Entity Relationships (1:1, 1:N, N:N), Fetch Types & The Dreaded N+1 Problem
+# 0014: Entity relationships (1:1, 1:N, N:N), fetch types, and N+1 query troubleshooting
 
 In relational data modeling, entities do not exist in isolation. They connect through foreign keys, junction tables, and parent-child hierarchies. In JPA and Hibernate, mapping these relationships incorrectly is the single most common cause of catastrophic database performance degradation.
 
@@ -10,7 +10,7 @@ In this lesson, you will master **Entity Relationships**, bidirectional synchron
 
 ---
 
-## 1. The 4 JPA Relationship Mappings
+## 1. The 4 JPA relationship mappings
 
 JPA provides four core annotations to represent database associations:
 
@@ -30,12 +30,12 @@ erDiagram
 | **`@ManyToMany`** | Junction/join table (e.g. `Student <-> Course`) | ✅ `LAZY` | `LAZY` |
 
 !!! caution "CRITICAL JPA TRAP: Eager Defaults"
-    In the JPA specification, `@ManyToOne` and `@OneToOne` default to `FetchType.EAGER`. Whenever you fetch an entity, Hibernate will automatically issue immediate `LEFT OUTER JOIN`s or additional `SELECT` statements for all eager associations — even if your business logic never touches them.
+    In the JPA specification, `@ManyToOne` and `@OneToOne` default to `FetchType.EAGER`. Whenever you fetch an entity, Hibernate will automatically issue immediate `LEFT OUTER JOIN`s or additional `SELECT` statements for all eager associations, even if your business logic never touches them.
     **Rule of Thumb**: Always explicitly declare `fetch = FetchType.LAZY` on **every** single relationship!
 
 ---
 
-## 2. Bidirectional Mapping & Relationship Ownership
+## 2. Bidirectional mapping relationship ownership
 
 In a bidirectional relationship, one side must be the **Owning Side** and the other the **Inverse Side**:
 
@@ -60,7 +60,7 @@ classDiagram
     Order --> Customer : @JoinColumn(customer_id)<br/>(Owning Side)
 ```
 
-### Writing Bidirectional Helper Synchronization Methods
+### Writing bidirectional helper synchronization methods
 
 To prevent memory-state desynchronization where an `Order` references a `Customer`, but `customer.getOrders()` doesn't contain the order:
 
@@ -93,14 +93,14 @@ public class Customer {
 
 ---
 
-## 3. Cascade Types vs `orphanRemoval`
+## 3. Cascade types vs `orphanRemoval`
 
 - **`CascadeType.PERSIST` / `CascadeType.ALL`**: Propagates entity operations from parent to child. Calling `em.persist(customer)` automatically persists all items in `customer.getOrders()`.
 - **`orphanRemoval = true`**: If a child entity is removed from the parent's collection (`customer.getOrders().remove(0)`), Hibernate marks that child entity as `REMOVED` and deletes its row from the database upon flush.
 
 ---
 
-## 4. The Dreaded N+1 Query Problem
+## 4. The dreaded n1 query problem
 
 The **N+1 Problem** occurs when an application loads $N$ parent records in 1 query, and then iterates over them accessing a lazy relationship, triggering $N$ additional queries to fetch the children.
 
@@ -129,11 +129,11 @@ If you have 1,000 orders, you just hammered your database with **1,001 separate 
 
 ---
 
-## 5. How to Fix the N+1 Problem
+## 5. How to fix the n1 problem
 
 There are three primary production-tested solutions to eliminate N+1 queries:
 
-### Solution 1: JPQL `JOIN FETCH` (Explicit Eager Join)
+### Solution 1: JPQL `JOIN fetch (explicit eager join)
 
 `JOIN FETCH` instructs Hibernate to retrieve both the parent entity and the related child entity in a single SQL `INNER JOIN` or `LEFT JOIN`:
 
@@ -155,7 +155,7 @@ WHERE o.status = 'COMPLETED';
 
 ---
 
-### Solution 2: Spring Data `@EntityGraph`
+### Solution 2: Spring data `@EntityGraph`
 
 `@EntityGraph` dynamically overrides lazy fetching at query time without rewriting custom JPQL:
 
@@ -170,7 +170,7 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 ---
 
-### Solution 3: Hibernate `@BatchSize` (Batched In-Clause Loading)
+### Solution 3: Hibernate `@BatchSize` (batched in-clause loading)
 
 When fetching collections across complex graphs where `JOIN FETCH` would cause a Cartesian Product (MultipleBagFetchException), annotate the collection with `@BatchSize`:
 
@@ -191,7 +191,7 @@ SELECT * FROM orders WHERE customer_id IN (?, ?, ?, ... 30 IDs);
 
 ---
 
-## 6. Comparison of N+1 Mitigation Strategies
+## 6. Comparison of n1 mitigation strategies
 
 ``` mermaid
 flowchart TD
@@ -204,7 +204,7 @@ flowchart TD
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4: Fetching Optimization Evolution
+## 7. Spring Boot 3 vs Spring Boot 4: Fetching optimization evolution
 
 ``` mermaid
 flowchart TD
@@ -223,7 +223,7 @@ flowchart TD
     SB3 ==>|Query Optimization| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Fetching Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -233,15 +233,15 @@ flowchart TD
 
 ---
 
-## 8. Primary Sources & Further Reading
+## 8. Primary sources and further reading
 
-- [Hibernate ORM User Guide: Fetching Strategies](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#fetching) — Official guide on dynamic vs static fetching.
-- [Vlad Mihalcea: The N+1 Query Problem with JPA and Hibernate](https://vladmihalcea.com/n-plus-1-query-problem-jpa-hibernate/) — Comprehensive diagnostics and solutions for N+1 queries.
-- [Thorben Janssen: JPA 2.1 Entity Graph Explained](https://thorben-janssen.com/jpa-21-entity-graph-part-1-named-entity/) — Named and dynamic entity graph strategies.
+- [Hibernate ORM User Guide: Fetching Strategies](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html#fetching), Official guide on dynamic vs static fetching.
+- [Vlad Mihalcea: The N+1 Query Problem with JPA and Hibernate](https://vladmihalcea.com/n-plus-1-query-problem-jpa-hibernate/), Comprehensive diagnostics and solutions for N+1 queries.
+- [Thorben Janssen: JPA 2.1 Entity Graph Explained](https://thorben-janssen.com/jpa-21-entity-graph-part-1-named-entity/), Named and dynamic entity graph strategies.
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: Why does JPA's default `FetchType.EAGER` on `@ManyToOne` cause unexpected performance issues?"
     **Answer**: It automatically forces immediate SQL joins or secondary selects to fetch associated entities on every query, inflating memory consumption and database query count even when the association is not used.
@@ -254,8 +254,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0013: Spring Data JPA: Repositories & Queries**](0013-spring-data-jpa-repositories-and-queries.md) | [**All Lessons**](index.md) | [➡️ **0015: Transaction Management & Propagation**](0015-transaction-management-and-propagation.md) |
+| [**0013: Spring Data JPA: Repositories & Queries**](0013-spring-data-jpa-repositories-and-queries.md) | [**All Lessons**](index.md) | [ **0015: Transaction Management & Propagation**](0015-transaction-management-and-propagation.md) |

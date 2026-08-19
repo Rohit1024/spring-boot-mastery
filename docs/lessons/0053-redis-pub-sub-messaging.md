@@ -2,7 +2,7 @@
 icon: lucide/radio
 ---
 
-# 0053: Redis Pub/Sub Messaging for Real-Time Event Fanout
+# 0053: Redis Pub/Sub messaging for real-time event fanout
 
 In distributed microservices, services often need to broadcast lightweight events to all running instances simultaneously. Common examples include:
 - **Distributed Cache Invalidation**: Informing 50 microservice pods to instantly purge their local in-memory (Caffeine L1) cache when data changes in the database.
@@ -14,7 +14,7 @@ In this lesson, you will master configuring `RedisMessageListenerContainer`, bui
 
 ---
 
-## 1. Redis Pub/Sub Fanout Architecture
+## 1. Redis pub/sub fanout architecture
 
 ``` mermaid
 flowchart TD
@@ -56,7 +56,7 @@ flowchart TD
 
 ---
 
-## 2. Pub/Sub vs Message Queues vs Kafka
+## 2. Pub/sub vs message queues vs Kafka
 
 Understanding when to use Redis Pub/Sub versus persistent queues is critical for distributed system design:
 
@@ -65,12 +65,12 @@ Understanding when to use Redis Pub/Sub versus persistent queues is critical for
 | **Delivery Semantics** | At-most-once (Fire & Forget). | At-least-once with Consumer Groups. | At-least-once / Exactly-once (Transactional). |
 | **Persistence** | None (Messages dropped if subscriber is offline). | Stored in Redis RAM / RDB / AOF log. | High-durability disk-backed partitioned log. |
 | **Replayability** | ❌ Impossible (No historical log). | ✅ Offset / ID-based message replay. | ✅ Replay by offset across retention period. |
-| **Latency** | Sub-millisecond (< 1ms). | Low (< 5ms). | Low-to-medium (2–15ms batch-dependent). |
+| **Latency** | Sub-millisecond (< 1ms). | Low (< 5ms). | Low-to-medium (2-15ms batch-dependent). |
 | **Primary Use Cases** | Cache invalidations, live UI notifications, WebSocket routing. | Work queues, simple event sourcing, task pipelines. | Enterprise event backbone, analytics, financial ledgers. |
 
 ---
 
-## 3. Publisher Implementation
+## 3. Publisher implementation
 
 Publish events using `RedisTemplate.convertAndSend()`:
 
@@ -108,7 +108,7 @@ public class OrderEventPublisher {
 
 ---
 
-## 4. Subscriber & Container Configuration
+## 4. Subscriber container configuration
 
 In Spring Data Redis, `RedisMessageListenerContainer` maintains long-lived listening connections to the Redis server and dispatches received messages across worker threads:
 
@@ -160,7 +160,7 @@ public class RedisPubSubConfig {
 
 ---
 
-## 5. Event Listener Implementation
+## 5. Event listener implementation
 
 ```java
 package com.example.listener;
@@ -203,7 +203,7 @@ public class OrderEventListener {
 
 ---
 
-## 6. Connection Pool & Threading Considerations
+## 6. Connection pool threading considerations
 
 > [!WARNING]
 > **Dedicated Redis Connections**: Every active `RedisMessageListenerContainer` subscribes to Redis using a **blocking, dedicated TCP connection** that remains continuously open and cannot be used for standard Redis read/write commands (`GET`, `SET`).
@@ -211,7 +211,7 @@ public class OrderEventListener {
 
 ---
 
-## 7. Spring Boot 3 vs Spring Boot 4 Evolution
+## 7. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -221,15 +221,15 @@ public class OrderEventListener {
 
 ---
 
-## 8. Primary Sources & Further Reading
+## 8. Primary sources and further reading
 
-- [Redis Pub/Sub Specification](https://redis.io/docs/interact/pubsub/) — Details on `SUBSCRIBE`, `PUBLISH`, and pattern matching (`PSUBSCRIBE`).
-- [Spring Data Redis Messaging Documentation](https://docs.spring.io/spring-data/redis/reference/redis/messaging.html) — `RedisMessageListenerContainer` and `MessageListenerAdapter`.
+- [Redis Pub/Sub Specification](https://redis.io/docs/interact/pubsub/), Details on `SUBSCRIBE`, `PUBLISH`, and pattern matching (`PSUBSCRIBE`).
+- [Spring Data Redis Messaging Documentation](https://docs.spring.io/spring-data/redis/reference/redis/messaging.html), `RedisMessageListenerContainer` and `MessageListenerAdapter`.
 - [Enterprise Integration Patterns: Publish-Subscribe Channel](https://www.enterpriseintegrationpatterns.com/patterns/messaging/PublishSubscribeChannel.html).
 
 ---
 
-## 9. Knowledge Check & Retrieval Practice
+## 9. Knowledge check and practice
 
 ??? question "Question 1: What happens to a Redis Pub/Sub message if a subscriber pod is momentarily restarting during publication?"
     **Answer**: The message is permanently lost for that restarting subscriber because Redis Pub/Sub is ephemeral and does not retain messages in a buffer or queue.
@@ -242,10 +242,10 @@ public class OrderEventListener {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0052: Spring Cache Abstraction with Redis**](0052-spring-cache-abstraction-redis.md) | [**All Lessons**](index.md) | [➡️ **0054: Apache Kafka Architecture: Topics, Partitions & Consumer Groups**](0054-apache-kafka-architecture-and-internals.md) |
+| [**0052: Spring Cache Abstraction with Redis**](0052-spring-cache-abstraction-redis.md) | [**All Lessons**](index.md) | [ **0054: Apache Kafka Architecture: Topics, Partitions & Consumer Groups**](0054-apache-kafka-architecture-and-internals.md) |
 
 🎉 **Lesson 0053 completed! Proceed to Lesson 0054 to master Apache Kafka distributed architecture and commit log internals.**

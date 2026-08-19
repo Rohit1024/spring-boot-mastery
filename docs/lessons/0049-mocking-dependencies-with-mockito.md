@@ -2,9 +2,9 @@
 icon: lucide/shield-check
 ---
 
-# 0049: Mocking Dependencies with Mockito (`@Mock`, `@InjectMocks`, `verify`)
+# 0049: Mocking dependencies with Mockito (@Mock, @InjectMocks, verify)
 
-Unit tests must test business logic in strict isolation. If a unit test directly calls a real PostgreSQL database, sends real Stripe API charges, or connects to Kafka, it ceases to be a unit test—it becomes slow, flaky, and prone to environmental failures.
+Unit tests must test business logic in strict isolation. If a unit test directly calls a real PostgreSQL database, sends real Stripe API charges, or connects to Kafka, it ceases to be a unit test, it becomes slow, flaky, and prone to environmental failures.
 
 **Mockito** is the de facto mocking framework in the Java ecosystem. It dynamically intercepts collaborator method invocations, returns pre-programmed stubs, and verifies interaction contracts.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring Mockito with JUnit 5, stubbing metho
 
 ---
 
-## 1. Mockito Proxy Interception Architecture
+## 1. Mockito proxy interception architecture
 
 ``` mermaid
 flowchart TD
@@ -44,7 +44,7 @@ flowchart TD
 
 ---
 
-## 2. Core Mockito Annotations with JUnit 5
+## 2. Core Mockito annotations with JUnit 5
 
 Enable Mockito's annotation processor using `@ExtendWith(MockitoExtension.class)`:
 
@@ -105,9 +105,9 @@ class OrderServiceTest {
 
 ---
 
-## 3. Exception Stubbing & Verification Variations
+## 3. Exception stubbing verification variations
 
-### 1. Simulating Collaborator Failures (`thenThrow` / `doThrow`)
+### 1. Simulating collaborator failures (`thenthrow` / `doThrow`)
 ```java
 @Test
 void shouldFailOrderWhenPaymentDeclined() {
@@ -126,7 +126,7 @@ void shouldFailOrderWhenPaymentDeclined() {
 }
 ```
 
-### 2. Spying on Real Instances (`@Spy`)
+### 2. Spying on real instances (`@spy`)
 A `@Spy` wraps a real class instance, allowing selective stubbing while delegating unstubbed methods to the real implementation:
 
 ```java
@@ -143,7 +143,7 @@ void shouldCalculateRealTaxUnlessOverridden() {
 
 ---
 
-## 4. Capturing Arguments with `ArgumentCaptor`
+## 4. Capturing arguments with `ArgumentCaptor`
 
 `ArgumentCaptor` allows inspecting the exact parameters passed to a mock during execution:
 
@@ -170,7 +170,7 @@ void shouldPersistOrderWithUpdatedTimestamp() {
 
 ---
 
-## 5. Mockito Anti-Patterns to Avoid
+## 5. Mockito anti-patterns to avoid
 
 | Anti-Pattern | Why It Is Problematic | Proper Approach |
 | :--- | :--- | :--- |
@@ -180,11 +180,11 @@ void shouldPersistOrderWithUpdatedTimestamp() {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4: Mocking Evolution
+## 6. Spring Boot 3 vs Spring Boot 4: Mocking evolution
 
 ``` mermaid
 flowchart TD
-    subgraph SB3["Spring Boot 3.0–3.3 (Legacy Spring Test)"]
+    subgraph SB3["Spring Boot 3.0-3.3 (Legacy Spring Test)"]
         OldMockBean["@MockBean & @SpyBean (Spring Boot Test Annotations)"]
         ContextPollution["Replaces Bean in Spring ApplicationContext"]
         SlowCacheMiss["Causes Spring Context Cache Miss & Re-initialization"]
@@ -199,23 +199,23 @@ flowchart TD
     SB3 ==>|Deprecation of @MockBean in favor of @MockitoBean| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
-| Mocking Feature | Spring Boot 3.0–3.3 | Spring Boot 3.4+ & 4.x |
+| Mocking Feature | Spring Boot 3.0-3.3 | Spring Boot 3.4+ & 4.x |
 | :--- | :--- | :--- |
 | **Spring Context Mocking** | Used `@MockBean` and `@SpyBean` from `org.springframework.boot.test.mock.mockito`. | **`@MockitoBean` & `@MockitoSpyBean`**: Moved to core Spring Framework (`org.springframework.test.context.bean.override.mockito`). `@MockBean` is officially deprecated. |
 | **Mock Maker Engine** | ByteBuddy Subclass mock maker (required mock-maker-inline for final classes). | **ByteBuddy Inline Mock Maker by Default**: Seamlessly mocks `final` classes, `final` methods, and Java 21 records out of the box. |
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
-- [Mockito Official Documentation](https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html) — Stubs, spies, argument matchers, and BDD Mockito.
-- [Spring Framework 6.2+ `@MockitoBean` Guide](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/bean-overriding/mockito.html) — Official documentation on modern bean overriding in tests.
+- [Mockito Official Documentation](https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html), Stubs, spies, argument matchers, and BDD Mockito.
+- [Spring Framework 6.2+ `@MockitoBean` Guide](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/bean-overriding/mockito.html), Official documentation on modern bean overriding in tests.
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the difference between `@Mock` and `@Spy` in Mockito?"
     **Answer**: `@Mock` creates a pure dynamic proxy where all methods return default empty values (null, 0, false) unless explicitly stubbed; `@Spy` wraps a real object instance and executes real methods unless a specific method is stubbed.
@@ -228,8 +228,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0048: Unit Testing with JUnit 5 & AssertJ**](0048-unit-testing-junit-5-assertj.md) | [**All Lessons**](index.md) | [➡️ **0050: REST API Testing with MockMvc**](0050-integration-testing-rest-apis-mockmvc.md) |
+| [**0048: Unit Testing with JUnit 5 & AssertJ**](0048-unit-testing-junit-5-assertj.md) | [**All Lessons**](index.md) | [ **0050: REST API Testing with MockMvc**](0050-integration-testing-rest-apis-mockmvc.md) |

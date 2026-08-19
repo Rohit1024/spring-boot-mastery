@@ -2,15 +2,15 @@
 icon: lucide/bug
 ---
 
-# Troubleshooting GraphQL N+1, gRPC RPC & WebSocket Broker Pitfalls
+# Troubleshooting GraphQL N+1, gRPC RPC, and WebSocket broker pitfalls
 
-Alternative communication protocols (GraphQL, gRPC, and WebSockets) operate under execution models fundamentally different from standard REST HTTP endpoints. When errors occur, standard REST exception handlers (`@RestControllerAdvice`) do not intercept them.
+Alternative communication protocols (GraphQL, gRPC, and WebSockets) operate under execution models different from standard REST HTTP endpoints. When errors occur, standard REST exception handlers (`@RestControllerAdvice`) do not intercept them.
 
-This playbook provides root-cause diagnostic workflows, reproducible scenarios, and verified remediation steps for GraphQL resolver query storms, gRPC channel failures, and WebSocket multi-pod message dropouts.
+Here are root-cause workflows and resolutions for GraphQL resolver query storms, gRPC channel failures, and WebSocket multi-pod message dropouts.
 
 ---
 
-## 1. Diagnostic Decision Tree
+## 1. Diagnostic decision tree
 
 ``` mermaid
 flowchart TD
@@ -27,9 +27,9 @@ flowchart TD
 
 ---
 
-## 2. Issue 1: GraphQL N+1 Database Query Cascade
+## 2. Issue 1: GraphQL N+1 database query cascade
 
-### Symptoms & Error Log
+### Symptoms
 A single GraphQL query for 50 orders takes several seconds and floods Hibernate logs with 51 separate SQL queries:
 
 ```text
@@ -39,7 +39,7 @@ Hibernate: select c1_0.id, c1_0.name from customers c1_0 where c1_0.id=2
 ... [Repeated 48 more times]
 ```
 
-### Root Cause
+### Root cause
 Using `@SchemaMapping` on a relation field causes Spring for GraphQL to execute the resolver method once for every individual entity in the parent collection.
 
 ### Resolution
@@ -58,18 +58,18 @@ public Map<Order, Customer> customer(List<Order> orders) {
 
 ## 3. Issue 2: gRPC `UNAVAILABLE` / `DEADLINE_EXCEEDED`
 
-### Symptoms & Error Log
+### Symptoms
 ```text
 io.grpc.StatusRuntimeException: UNAVAILABLE: io exception
 Channel Pipeline: [SslHandler#0, ProtocolNegotiators$ClientTlsHandler#0, ...]
 Caused by: javax.net.ssl.SSLHandshakeException: Remote host terminated the handshake
 ```
 
-### Root Cause
-1. **Negotiation Type Mismatch**: The client is attempting TLS/SSL handshakes (`negotiation-type: tls`) against a server configured for `plaintext`, or vice versa.
-2. **Port Mismatch**: The client is querying the standard REST port (`8080`) instead of the dedicated gRPC port (`9090`).
+### Root causes
+1. **Negotiation type mismatch**: The client is attempting TLS/SSL handshakes (`negotiation-type: tls`) against a server configured for `plaintext`, or vice versa.
+2. **Port mismatch**: The client is querying the standard REST port (`8080`) instead of the dedicated gRPC port (`9090`).
 
-### Diagnostic Flowchart
+### Diagnostic flowchart
 
 ``` mermaid
 sequenceDiagram
@@ -78,7 +78,7 @@ sequenceDiagram
     participant Server as gRPC Netty Server (:9090)
 
     Client->>Server: ClientHello (TLS Handshake over Plaintext Socket)
-    Server-->>Client: Connection Reset / Drop ❌
+    Server-->>Client: Connection Reset / Drop
     Note over Client: Throws StatusRuntimeException: UNAVAILABLE
 ```
 
@@ -90,20 +90,20 @@ grpc:
   client:
     order-service:
       address: 'static://localhost:9090'
-      negotiation-type: plaintext # Match server SSL/Plaintext mode!
+      negotiation-type: plaintext # Match server SSL/Plaintext mode.
 ```
 
 ---
 
-## 4. Issue 3: WebSocket Messages Not Delivered Across Clustered Pods
+## 4. Issue 3: WebSocket messages not delivered across clustered pods
 
 ### Symptoms
-Client A connects to `Pod 1` via WebSocket. Client B connects to `Pod 2`. When Client A sends a chat message, Client B never receives it.
+Client A connects to Pod 1 via WebSocket. Client B connects to Pod 2. When Client A sends a chat message, Client B never receives it.
 
-### Root Cause
-`registry.enableSimpleBroker("/topic")` is strictly **in-memory** within a single JVM. Messages sent to Pod 1's broker are never broadcast to Pod 2's connected clients.
+### Root cause
+`registry.enableSimpleBroker("/topic")` is strictly in-memory within a single JVM. Messages sent to Pod 1 broker are never broadcast to Pod 2 connected clients.
 
-### Diagnostic Flowchart
+### Diagnostic flowchart
 
 ``` mermaid
 sequenceDiagram
@@ -115,12 +115,12 @@ sequenceDiagram
 
     Alice->>Pod1: SEND /app/chat (Message payload)
     Pod1->>Pod1: Broadcasts to local subscribers on Pod 1 only
-    Note over Pod1,Pod2: ❌ Pod 1 cannot reach Pod 2's clients!
-    Pod2--xBob: Bob receives nothing!
+    Note over Pod1,Pod2: Pod 1 cannot reach Pod 2 clients.
+    Pod2--xBob: Bob receives nothing.
 ```
 
 ### Resolution
-Replace the simple in-memory broker with a **STOMP Broker Relay** connected to RabbitMQ or ActiveMQ:
+Replace the simple in-memory broker with a STOMP broker relay connected to RabbitMQ or ActiveMQ:
 
 ```java
 @Override
@@ -136,8 +136,8 @@ public void configureMessageBroker(MessageBrokerRegistry registry) {
 
 ---
 
-## 🧭 Navigation & Diagnostic Playbooks
+## Navigation and debugging index
 
-| ⬅️ Previous | 📋 Debugging Index | ➡️ Next |
+| Previous | Debugging index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Troubleshooting Spring Batch & Schedulers**](spring-batch-and-scheduler-locking-pitfalls.md) | [**All Debugging Guides**](index.md) | [➡️ **Spring Modulith & Virtual Threads Debugging**](spring-modulith-and-virtual-thread-pinning-pitfalls.md) |
+| [**Troubleshooting Spring Batch and schedulers**](spring-batch-and-scheduler-locking-pitfalls.md) | [**All debugging guides**](index.md) | [**Spring Modulith and virtual threads debugging**](spring-modulith-and-virtual-thread-pinning-pitfalls.md) |

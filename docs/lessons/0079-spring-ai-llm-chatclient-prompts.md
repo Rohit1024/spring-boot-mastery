@@ -2,7 +2,7 @@
 icon: lucide/bot
 ---
 
-# 0079: Spring AI: LLM Chat Clients, Prompts & Multi-Model Integration
+# 0079: Spring AI: LLM Chat Clients, prompts, and multi-model integration
 
 In modern enterprise software, integrating Large Language Models (LLMs) into backend services is becoming standard for customer support bots, intelligent search, automated code review, and semantic data extraction.
 
@@ -12,7 +12,7 @@ In this lesson, you will master the fluent `ChatClient` API, dynamic `PromptTemp
 
 ---
 
-## 1. Spring AI Portable Architecture
+## 1. Spring AI portable architecture
 
 ``` mermaid
 flowchart TD
@@ -44,7 +44,7 @@ flowchart TD
 
 ---
 
-## 2. Maven Dependencies (`pom.xml`)
+## 2. Maven dependencies (`pomxml`)
 
 Include the Spring AI BOM and the desired model starter (e.g. OpenAI or Ollama):
 
@@ -69,7 +69,7 @@ Include the Spring AI BOM and the desired model starter (e.g. OpenAI or Ollama):
 </dependencies>
 ```
 
-### Configuration (`application.yml`)
+### Configuration (`applicationyml`)
 
 ```yaml
 spring:
@@ -85,7 +85,7 @@ spring:
 
 ---
 
-## 3. The Fluent `ChatClient` API
+## 3. The fluent `ChatClient` API
 
 In Spring AI, `ChatClient` provides a fluent, expressive builder for crafting prompts, injecting system instructions, and retrieving results:
 
@@ -131,7 +131,7 @@ public class AssistantService {
 
 ---
 
-## 4. Dynamic Prompt Templates & Parameter Injection
+## 4. Dynamic prompt templates parameter injection
 
 Never concatenate raw strings into prompts. Use `PromptTemplate` to prevent prompt injection and structure context:
 
@@ -177,7 +177,7 @@ public class CodeReviewService {
 
 ---
 
-## 5. Structured Output Parsing (`BeanOutputConverter`)
+## 5. Structured output parsing (`beanoutputconverter`)
 
 LLMs naturally return unstructured natural language strings. In production microservices, you need typed JSON mapped directly into Java records:
 
@@ -229,7 +229,7 @@ public class SentimentAnalysisService {
 
 ---
 
-## 6. Spring Boot 3 vs Spring Boot 4 Evolution
+## 6. Spring Boot 3 vs Spring Boot 4 evolution
 
 | Feature | Spring Boot 3.x (Spring Framework 6.x) | Spring Boot 4.x (Next-Gen Roadmap) |
 | :--- | :--- | :--- |
@@ -239,7 +239,7 @@ public class SentimentAnalysisService {
 
 ---
 
-## 7. Primary Sources & Further Reading
+## 7. Primary sources and further reading
 
 - [Spring AI Official Reference Documentation](https://docs.spring.io/spring-ai/reference/).
 - [Spring AI ChatClient Guide](https://docs.spring.io/spring-ai/reference/api/chatclient.html).
@@ -247,7 +247,7 @@ public class SentimentAnalysisService {
 
 ---
 
-## 8. Knowledge Check & Retrieval Practice
+## 8. Knowledge check and practice
 
 ??? question "Question 1: What is the main advantage of Spring AI's `ChatClient` over direct REST calls to OpenAI or Anthropic?"
     **Answer**: It provides a unified, portable Java API that allows switching between OpenAI, Gemini, Claude, and local Ollama models by changing only configuration properties.
@@ -260,10 +260,10 @@ public class SentimentAnalysisService {
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0078: Integration Testing Reactive APIs with WebTestClient**](0078-integration-testing-reactive-webtestclient-testcontainers.md) | [**All Lessons**](index.md) | [➡️ **0080: RAG with Vector Stores & Embeddings in Spring AI**](0080-rag-vector-stores-embeddings-spring-ai.md) |
+| [**0078: Integration Testing Reactive APIs with WebTestClient**](0078-integration-testing-reactive-webtestclient-testcontainers.md) | [**All Lessons**](index.md) | [ **0080: RAG with Vector Stores & Embeddings in Spring AI**](0080-rag-vector-stores-embeddings-spring-ai.md) |
 
 🎉 **Lesson 0079 completed! Proceed to Lesson 0080 to master Retrieval-Augmented Generation (RAG) and Vector Stores with Spring AI.**

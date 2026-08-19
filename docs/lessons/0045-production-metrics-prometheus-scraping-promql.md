@@ -2,7 +2,7 @@
 icon: lucide/activity
 ---
 
-# 0045: Production Metrics with Prometheus: Scraping, PromQL & Alert Rules
+# 0045: Production metrics with Prometheus: Scraping, PromQL, and alert rules
 
 In high-availability enterprise environments, guessing application health based on CPU load alone is fatal. Engineers need real-time dimensional metrics to monitor HTTP throughput, P99 latency percentiles, database connection saturation, and JVM garbage collection overhead.
 
@@ -12,7 +12,7 @@ In this lesson, you will master configuring the Prometheus Actuator endpoint, wr
 
 ---
 
-## 1. Prometheus Metrics Collection Architecture
+## 1. Prometheus metrics collection architecture
 
 ``` mermaid
 flowchart TD
@@ -46,11 +46,11 @@ flowchart TD
 
 ---
 
-## 2. Enabling Prometheus Endpoint in Spring Boot
+## 2. Enabling Prometheus endpoint in Spring Boot
 
 Add the Micrometer Prometheus registry to your build:
 
-### Maven Dependency (`pom.xml`)
+### Maven dependency (`pomxml`)
 ```xml
 <dependency>
     <groupId>io.micrometer</groupId>
@@ -89,35 +89,35 @@ http_server_requests_seconds_sum{application="order-service",environment="produc
 
 ---
 
-## 3. Essential PromQL Formulas for Spring Boot
+## 3. Essential PromQL formulas for Spring Boot
 
 PromQL (Prometheus Query Language) transforms raw time-series data into real-time operational insights:
 
-### 1. HTTP Request Throughput (Requests Per Second)
+### 1. Http request throughput (requests per second)
 ```promql
 sum(rate(http_server_requests_seconds_count{application="order-service"}[1m])) by (uri, method, status)
 ```
 
-### 2. HTTP 5xx Error Rate Percentage
+### 2. Http 5xx error rate percentage
 ```promql
 (sum(rate(http_server_requests_seconds_count{status=~"5.."}[5m])) 
  / 
  sum(rate(http_server_requests_seconds_count[5m]))) * 100
 ```
 
-### 3. P99 Request Latency (SLA Monitoring)
+### 3. P99 request latency (sla monitoring)
 ```promql
 histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{application="order-service"}[5m])) by (le, uri))
 ```
 
-### 4. JVM Heap Memory Utilization Percentage
+### 4. JVM heap memory utilization percentage
 ```promql
 (sum(jvm_memory_used_bytes{area="heap"}) 
  / 
  sum(jvm_memory_max_bytes{area="heap"})) * 100
 ```
 
-### 5. HikariCP Database Connection Pool Saturation
+### 5. Hikaricp database connection pool saturation
 ```promql
 (hikaricp_connections_active 
  / 
@@ -126,7 +126,7 @@ histogram_quantile(0.99, sum(rate(http_server_requests_seconds_bucket{applicatio
 
 ---
 
-## 4. Production Prometheus Alerting Rules (`alerts.yml`)
+## 4. Production Prometheus alerting rules (`alertsyml`)
 
 Prometheus evaluates alerting rules continuously against TSDB metrics:
 
@@ -167,7 +167,7 @@ groups:
 
 ---
 
-## 5. Spring Boot 3 vs Spring Boot 4: Prometheus Evolution
+## 5. Spring Boot 3 vs Spring Boot 4: Prometheus evolution
 
 ``` mermaid
 flowchart TD
@@ -186,7 +186,7 @@ flowchart TD
     SB3 ==>|OpenMetrics 2.0 & Loom Metric Gauges| SB4
 ```
 
-### Key Differences & Configuration Comparison
+### Key differences and configuration comparison
 
 | Metric Capability | Spring Boot 3.x | Spring Boot 4.x |
 | :--- | :--- | :--- |
@@ -196,15 +196,15 @@ flowchart TD
 
 ---
 
-## 6. Primary Sources & Further Reading
+## 6. Primary sources and further reading
 
-- [Prometheus Official Documentation](https://prometheus.io/docs/introduction/overview/) — Architecture, scrape configurations, and TSDB internals.
-- [Micrometer Prometheus Meter Registry](https://micrometer.io/docs/registry/prometheus) — Timer, distribution summary, and SLA percentile configuration.
-- [Robust Perception: PromQL Best Practices](https://www.robustperception.io/blog/) — Authoritative guide to PromQL query optimization.
+- [Prometheus Official Documentation](https://prometheus.io/docs/introduction/overview/), Architecture, scrape configurations, and TSDB internals.
+- [Micrometer Prometheus Meter Registry](https://micrometer.io/docs/registry/prometheus), Timer, distribution summary, and SLA percentile configuration.
+- [Robust Perception: PromQL Best Practices](https://www.robustperception.io/blog/), Authoritative guide to PromQL query optimization.
 
 ---
 
-## 7. Knowledge Check & Retrieval Practice
+## 7. Knowledge check and practice
 
 ??? question "Question 1: What is the purpose of `management.metrics.distribution.percentiles-histogram.http.server.requests=true` in `application.yml`?"
     **Answer**: It enables generation of latency histogram buckets (`_bucket{le="..."}`), which are strictly required by Prometheus to calculate percentile queries like P95 and P99 via `histogram_quantile()`.
@@ -217,8 +217,8 @@ flowchart TD
 
 ---
 
-## 🧭 Navigation & Next Steps
+## Navigation and next steps
 
-| ⬅️ Previous | 📋 Catalog | ➡️ Next |
+| Previous | Catalog | Next |
 | :--- | :---: | ---: |
-| [⬅️ **0044: Java 21 Virtual Threads (Loom)**](0044-java-virtual-threads-project-loom-spring-boot.md) | [**All Lessons**](index.md) | [➡️ **0046: Grafana Dashboards (RED & USE)**](0046-grafana-dashboards-red-and-use-metrics.md) |
+| [**0044: Java 21 Virtual Threads (Loom)**](0044-java-virtual-threads-project-loom-spring-boot.md) | [**All Lessons**](index.md) | [ **0046: Grafana Dashboards (RED & USE)**](0046-grafana-dashboards-red-and-use-metrics.md) |

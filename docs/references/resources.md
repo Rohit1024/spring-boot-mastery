@@ -12,7 +12,7 @@
   Official standard for Entity lifecycle, EntityManager, PersistenceContext, and JPQL.
 - [Hibernate ORM User Guide](https://docs.jboss.org/hibernate/orm/current/userguide/html_single/Hibernate_User_Guide.html)
   Authoritative manual for dirty checking, ActionQueue, fetching strategies, Envers, and caching.
-- [High-Performance Java Persistence — Vlad Mihalcea](https://vladmihalcea.com/books/high-performance-java-persistence/)
+- [High-Performance Java Persistence, Vlad Mihalcea](https://vladmihalcea.com/books/high-performance-java-persistence/)
   The definitive industry handbook on optimizing JPA, Hibernate, batching, caching, and connection pooling.
 - [Spring Data JPA Reference Documentation](https://docs.spring.io/spring-data/jpa/reference/)
   Covers repository interfaces, derived queries, entity graphs, and auditing.
@@ -40,11 +40,11 @@
   Guides for Models, ChatClients, Prompt engineering, Vector Stores, RAG, and MCP tool servers.
 - [Project Reactor Core Documentation](https://projectreactor.io/docs/core/release/reference/)
   The foundational reference for reactive streams, Mono, Flux, backpressure, and operators.
-- [Enterprise Integration Patterns — Gregor Hohpe & Bobby Woolf](https://www.enterpriseintegrationpatterns.com/)
+- [Enterprise Integration Patterns, Gregor Hohpe & Bobby Woolf](https://www.enterpriseintegrationpatterns.com/)
   The definitive catalog of messaging patterns (Pub/Sub, Outbox, SAGA, Idempotency, Dead Letter Channel).
-- [Designing Data-Intensive Applications — Martin Kleppmann](https://dataintensive.net/)
+- [Designing Data-Intensive Applications, Martin Kleppmann](https://dataintensive.net/)
   Essential text for distributed systems, CAP theorem, replication, partitions, transactions, and eventual consistency.
-- [Kafka: The Definitive Guide — Gwen Shapira et al.](https://www.oreilly.com/library/view/kafka-the-definitive/9781492043072/)
+- [Kafka: The Definitive Guide, Gwen Shapira et al.](https://www.oreilly.com/library/view/kafka-the-definitive/9781492043072/)
   Primary source for Kafka architecture, partitions, consumer groups, offset management, and delivery guarantees.
 - [R2DBC Official Specification & Drivers](https://r2dbc.io/)
   The reactive relational database connectivity standard for non-blocking SQL in Java.

@@ -2,23 +2,23 @@
 icon: lucide/file-code
 ---
 
-# Redis Caching, Pub/Sub & Apache Kafka Cheatsheet
+# Redis caching, pub/sub, and Apache Kafka cheatsheet
 
-A production-ready reference card for Spring Cache with Redis, Redis Pub/Sub, Apache Kafka producers/consumers, non-blocking DLQ retries, and Redis Lua rate limiting.
+Reference card for Spring Cache with Redis, Redis pub/sub, Apache Kafka producers and consumers, non-blocking dead letter queue retries, and Redis Lua rate limiting.
 
 ---
 
-## 1. Spring Cache with Redis Annotations
+## 1. Spring Cache with Redis annotations
 
-| Annotation | Attribute | Purpose / Example |
+| Annotation | Attribute | Purpose and example |
 | :--- | :--- | :--- |
-| **`@Cacheable`** | `value`, `key`, `unless`, `condition`, `sync` | Caches method return value. `@Cacheable(value = "users", key = "#id", sync = true)` |
-| **`@CachePut`** | `value`, `key` | Always executes method and updates the cache. `@CachePut(value = "users", key = "#user.id")` |
-| **`@CacheEvict`** | `value`, `key`, `allEntries` | Removes entry from cache. `@CacheEvict(value = "users", key = "#id")` or `allEntries = true` |
-| **`@Caching`** | `cacheable`, `put`, `evict` | Combines multiple cache operations on a single method. |
+| `@Cacheable` | `value`, `key`, `unless`, `condition`, `sync` | Caches method return value. `@Cacheable(value = "users", key = "#id", sync = true)` |
+| `@CachePut` | `value`, `key` | Always executes method and updates the cache. `@CachePut(value = "users", key = "#user.id")` |
+| `@CacheEvict` | `value`, `key`, `allEntries` | Removes entry from cache. `@CacheEvict(value = "users", key = "#id")` or `allEntries = true` |
+| `@Caching` | `cacheable`, `put`, `evict` | Combines multiple cache operations on a single method. |
 
 ```java
-// RedisCacheConfiguration with JSON Serialization & Custom TTLs
+// RedisCacheConfiguration with JSON serialization and custom TTLs
 @Bean
 public RedisCacheConfiguration defaultCacheConfig() {
     return RedisCacheConfiguration.defaultCacheConfig()
@@ -31,13 +31,13 @@ public RedisCacheConfiguration defaultCacheConfig() {
 
 ---
 
-## 2. Redis Pub/Sub Messaging Quick Reference
+## 2. Redis pub/sub messaging quick reference
 
 ```java
 // Publisher
 redisTemplate.convertAndSend("events.orders", jsonPayload);
 
-// Subscriber Container Configuration
+// Subscriber container configuration
 @Bean
 public RedisMessageListenerContainer container(RedisConnectionFactory factory, MessageListenerAdapter adapter) {
     RedisMessageListenerContainer container = new RedisMessageListenerContainer();
@@ -49,20 +49,20 @@ public RedisMessageListenerContainer container(RedisConnectionFactory factory, M
 
 ---
 
-## 3. Kafka Producer & Consumer Configuration Matrix
+## 3. Kafka producer and consumer configuration matrix
 
-| Parameter | Recommended Setting | Production Rationale |
+| Parameter | Recommended setting | Production rationale |
 | :--- | :--- | :--- |
 | `acks` | `"all"` (`-1`) | Guarantees all In-Sync Replicas (ISR) have written the record before returning success. |
 | `enable.idempotence` | `true` | Prevents duplicate messages on network retries without ordering degradation. |
-| `retries` | `Integer.MAX_VALUE` | Ensures transient broker failovers do not cause message drops. |
-| `max.in.flight.requests.per.connection` | `5` | Keeps high pipelined throughput while preserving partition order with idempotence enabled. |
+| `retries` | `Integer.MAX_VALUE` | Ensures transient broker failovers do not drop messages. |
+| `max.in.flight.requests.per.connection` | `5` | Keeps high throughput while preserving partition order with idempotence enabled. |
 | `enable.auto.commit` | `false` | Prevents lost records on consumer crash; use `AckMode.MANUAL_IMMEDIATE`. |
 | `auto.offset.reset` | `"earliest"` | New consumer groups read from beginning of partition log rather than dropping historical records. |
 
 ---
 
-## 4. Spring Kafka `@RetryableTopic` & Dead Letter Queue (DLQ)
+## 4. Spring Kafka `@RetryableTopic` and dead letter queue
 
 ```java
 @RetryableTopic(
@@ -85,7 +85,7 @@ public void processDlt(@Payload OrderDto order, @Header(KafkaHeaders.RECEIVED_TO
 
 ---
 
-## 5. Redis Token Bucket Rate Limiter (Lua Script)
+## 5. Redis token bucket rate limiter (Lua script)
 
 ```lua
 -- KEYS[1] = ratelimit:user_123, ARGV[1] = capacity, ARGV[2] = refill_rate_per_sec, ARGV[3] = now_sec
@@ -108,8 +108,8 @@ end
 
 ---
 
-## 🧭 Navigation & Cheatsheet Index
+## Navigation and cheatsheet index
 
-| ⬅️ Previous | 📋 Cheatsheet Index | ➡️ Next |
+| Previous | Cheatsheet index | Next |
 | :--- | :---: | ---: |
-| [⬅️ **Enterprise Testing & Testcontainers Cheatsheet**](enterprise-testing-and-testcontainers.md) | [**All Cheatsheets**](index.md) | [➡️ **Microservices & Kubernetes Cheatsheet**](microservices-kubernetes-and-cloud-cicd.md) |
+| [**Enterprise testing and Testcontainers cheatsheet**](enterprise-testing-and-testcontainers.md) | [**All cheatsheets**](index.md) | [**Microservices, Kubernetes, and cloud CI/CD cheatsheet**](microservices-kubernetes-and-cloud-cicd.md) |
